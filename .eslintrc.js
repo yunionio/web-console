@@ -8,7 +8,7 @@ module.exports = {
     '@vue/standard'
   ],
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    // 'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'vue/attribute-hyphenation': [2, 'always'],
     'vue/html-closing-bracket-newline': ['error', { 'multiline': 'never' }],
