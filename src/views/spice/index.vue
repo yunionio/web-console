@@ -227,7 +227,7 @@ export default {
             this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
             this.host = this.host.slice(0, this.host.indexOf(':'))
           } else {
-            this.port = connectParams.api_server.startsWith('https') ? 443 : 80
+            this.port = connectParams.api_server.indexOf('https') === 0 ? 443 : 80
           }
           const password = connectParams.password
 
