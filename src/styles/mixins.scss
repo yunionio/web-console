@@ -1,0 +1,8 @@
+@mixin make-font-size($font-sizes) {
+  @for $i from 1 through length($font-sizes) {
+    $item: nth($font-sizes, $i);
+    .font-size-#{$item} {
+      font-size: #{$item}px;
+    }
+  }
+}

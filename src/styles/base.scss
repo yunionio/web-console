@@ -1,0 +1,12 @@
+body, html, #app, .app-container, .app-content {
+  height: 100%;
+}
+
+body {
+  -webkit-font-smoothing: initial;
+  -moz-osx-font-smoothing: initial;
+  font-size: 14px;
+  font-family: "Helvetica Neue",Helvetica,"Luxi Sans","DejaVu Sans",Tahoma,"Hiragino Sans GB", STHeiti,"Microsoft YaHei","microsoft yahei ui",Roboto,San Francisco,Arial,PingFangSC-Light,"WenQuanYi Micro Hei","microsoft yahei",sans-serif;
+}
+
+@include make-font-size($font-sizes)
