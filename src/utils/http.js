@@ -11,6 +11,8 @@ import store from '@store'
 import { message } from 'ant-design-vue'
 import { getHttpErrorMessage } from './httpError'
 
+const debug = require('debug')('app:http')
+
 export const http = axios.create({
   baseURL: API_URL,
   timeout: HTTP_TIMEOUT
@@ -28,7 +30,7 @@ http.interceptors.request.use(
     }
   },
   (error) => {
-    console.error(error) // for debug
+    debug(error) // for debug
     Promise.reject(error)
   }
 )
@@ -39,7 +41,7 @@ http.interceptors.response.use(
     return response
   },
   (error) => {
-    console.error(error) // for debug
+    debug(error) // for debug
     message.error(getHttpErrorMessage(error))
     if (error.response) {
       const status = error.response.status

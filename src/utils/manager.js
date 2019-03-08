@@ -23,6 +23,8 @@ import querystring from 'querystring'
 import { http } from './http'
 import { camel2Words } from './base'
 
+const debug = require('debug')('app:manager')
+
 export class UnknownRpcMethodException {
   constructor (method) {
     this.method = method
@@ -120,7 +122,7 @@ export class Manager {
 
   objectRpc (methodname, objId, params) {
     let words = camel2Words(methodname)
-    console.log('objectrpc words', words)
+    debug('objectrpc words', words)
     if (words[0] === 'get') {
       return this._rpcGet(objId, words.slice(1), params)
     } else if (words[0] === 'post' || words[0] === 'do') {
