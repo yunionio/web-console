@@ -44,6 +44,8 @@
 import { getWebConsoleInfoByServerId } from '@/api/webconsole'
 import qs from 'qs'
 
+const debug = require('debug')('app:wmks')
+
 const hadPort = value => {
   const reg = /^.+:\d+$/
   return reg.test(value)
@@ -145,7 +147,7 @@ export default {
               'position': window.WMKS.CONST.Position.CENTER
             })
             .bind('wmksconnecting', function () {
-              console.log('The console is connecting')
+              debug('The console is connecting')
             })
             .bind('wmksconnected', this.connectedToServer)
             .bind('wmksdisconnected', this.disconnectedFromServer)
@@ -153,7 +155,7 @@ export default {
             .bind('wmksiniterror', this.initErrorFromServer)
             .bind('wmksresolutionchanged', this.resolutionChanged)
             .bind('wmksscreensizechange', function (evt, w, h) {
-              console.log(w, h)
+              debug(w, h)
             })
             // .bind('wmkstoggle', function (evt, what, visible) {
             //   if (what === 'RELATIVEPAD') {
@@ -195,27 +197,27 @@ export default {
       return getWebConsoleInfoByServerId(this.serverId)
     },
     connectedToServer () {
-      console.log('连接成功')
+      debug('连接成功')
       this.socketTips.message = '连接成功'
       this.socketTips.type = 'success'
     },
     errorConnectedFromServer () {
-      console.log('连接失败')
+      debug('连接失败')
       this.socketTips.message = '连接失败'
       this.socketTips.type = 'error'
     },
     initErrorFromServer () {
-      console.log('初始化失败')
+      debug('初始化失败')
       this.socketTips.message = '初始化失败'
       this.socketTips.type = 'error'
     },
     disconnectedFromServer () {
-      console.log('连接断开')
+      debug('连接断开')
       this.socketTips.message = '连接断开'
       this.socketTips.type = 'error'
     },
     resolutionChanged () {
-      console.log('正在重连')
+      debug('正在重连')
       this.socketTips.message = '连接成功'
       this.socketTips.type = 'success'
     },

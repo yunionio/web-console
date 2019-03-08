@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+const debug = require('debug')('app:spice')
+
 // !spicearraybuffer
 function SpiceArrayBufferSlice (start, end) {
   start = start || 0
@@ -23,7 +25,7 @@ function SpiceArrayBufferSlice (start, end) {
 
 if (!ArrayBuffer.prototype.slice) {
   ArrayBuffer.prototype.slice = SpiceArrayBufferSlice
-  console.log('WARNING:  ArrayBuffer.slice() is missing; we are extending ArrayBuffer to compensate')
+  debug('WARNING:  ArrayBuffer.slice() is missing; we are extending ArrayBuffer to compensate')
 }
 
 // !enums.js
@@ -606,11 +608,11 @@ function hexdump_buffer (a) {
         i++
       }
 
-      if (last_zeros == 0) { console.log(hex + ' | ' + str) }
+      if (last_zeros == 0) { debug(hex + ' | ' + str) }
 
       if (hex == '00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ') {
         if (last_zeros == 1) {
-          console.log('.')
+          debug('.')
           last_zeros++
         } else if (last_zeros == 0) { last_zeros++ }
       } else { last_zeros = 0 }
@@ -1060,7 +1062,7 @@ function lz_rgb32_decompress (in_buf, at, out_buf, type, default_alpha) {
     var ofs = (ctrl & 31) << 8
 
     // if (type == LZ_IMAGE_TYPE_RGBA)
-    // console.log(ctr++ + ": from " + (encoder + 28) + ", ctrl " + ctrl + ", len " + len + ", ofs " + ofs + ", op " + op);
+    // debug(ctr++ + ": from " + (encoder + 28) + ", ctrl " + ctrl + ", len " + len + ", ofs " + ofs + ", op " + op);
     if (ctrl >= 32) {
       var code
       len--
@@ -1089,7 +1091,7 @@ function lz_rgb32_decompress (in_buf, at, out_buf, type, default_alpha) {
       ref -= ofs
       if (ref == (op - 1)) {
         var b = ref
-        // if (type == LZ_IMAGE_TYPE_RGBA) console.log("alpha " + out_buf[(b*4)+3] + " dupped into pixel " + op + " through pixel " + (op + len));
+        // if (type == LZ_IMAGE_TYPE_RGBA) debug("alpha " + out_buf[(b*4)+3] + " dupped into pixel " + op + " through pixel " + (op + len));
         for (; len; --len) {
           if (type == LZ_IMAGE_TYPE_RGBA) {
             out_buf[(op * 4) + 3] = out_buf[(b * 4) + 3]
@@ -1099,7 +1101,7 @@ function lz_rgb32_decompress (in_buf, at, out_buf, type, default_alpha) {
           op++
         }
       } else {
-        // if (type == LZ_IMAGE_TYPE_RGBA) console.log("alpha copied to pixel " + op + " through " + (op + len) + " from " + ref);
+        // if (type == LZ_IMAGE_TYPE_RGBA) debug("alpha copied to pixel " + op + " through " + (op + len) + " from " + ref);
         for (; len; --len) {
           if (type == LZ_IMAGE_TYPE_RGBA) {
             out_buf[(op * 4) + 3] = out_buf[(ref * 4) + 3]
@@ -1114,7 +1116,7 @@ function lz_rgb32_decompress (in_buf, at, out_buf, type, default_alpha) {
       ctrl++
 
       if (type == LZ_IMAGE_TYPE_RGBA) {
-        // console.log("alpha " + in_buf[encoder] + " set into pixel " + op);
+        // debug("alpha " + in_buf[encoder] + " set into pixel " + op);
         out_buf[(op * 4) + 3] = in_buf[encoder++]
       } else {
         out_buf[(op * 4) + 0] = in_buf[encoder + 2]
@@ -1127,7 +1129,7 @@ function lz_rgb32_decompress (in_buf, at, out_buf, type, default_alpha) {
 
       for (--ctrl; ctrl; ctrl--) {
         if (type == LZ_IMAGE_TYPE_RGBA) {
-          // console.log("alpha " + in_buf[encoder] + " set into pixel " + op);
+          // debug("alpha " + in_buf[encoder] + " set into pixel " + op);
           out_buf[(op * 4) + 3] = in_buf[encoder++]
         } else {
           out_buf[(op * 4) + 0] = in_buf[encoder + 2]
@@ -1356,7 +1358,7 @@ function quic_image_bpc (type) {
       return 8
     case QUIC_IMAGE_TYPE_INVALID:
     default:
-      console.log('quic: bad image type\n')
+      debug('quic: bad image type\n')
       return 0
   }
 }
@@ -1425,10 +1427,10 @@ function QuicModel (bpc) {
     case 0:
     case 2:
     case 4:
-      console.log('quic: findmodelparams(): evol value obsolete!!!\n')
+      debug('quic: findmodelparams(): evol value obsolete!!!\n')
       break
     default:
-      console.log('quic: findmodelparams(): evol out of range!!!\n')
+      debug('quic: findmodelparams(): evol out of range!!!\n')
   }
 
   this.n_buckets = 0
@@ -1579,7 +1581,7 @@ QuicChannel.prototype = {
       for (j = 0; j < this.model_5bpc.n_buckets; j++) { this.family_stat_8bpc.buckets_buf[j].reste(4) }
       this.buckets_ptrs = this.family_stat_5bpc.buckets_ptrs
     } else {
-      console.log('quic: %s: bad bpc %d\n', __FUNCTION__, bpc)
+      debug('quic: %s: bad bpc %d\n', __FUNCTION__, bpc)
       return false
     }
 
@@ -1638,7 +1640,7 @@ function QuicEncoder () {
   for (i = 0; i < 4; i++) {
     this.channels[i] = new QuicChannel(this.model_8bpc, this.model_5bpc)
     if (!this.channels[i]) {
-      console.log('quic: failed to create channel')
+      debug('quic: failed to create channel')
       return undefined
     }
   }
@@ -1715,14 +1717,14 @@ QuicEncoder.prototype.quic_decode_begin = function (io_ptr) {
   var magic = this.io_word
   this.decode_eat32bits()
   if (magic != 0x43495551) /* QUIC */ {
-    console.log('quic: bad magic ' + magic.toString(16))
+    debug('quic: bad magic ' + magic.toString(16))
     return false
   }
 
   var version = this.io_word
   this.decode_eat32bits()
   if (version != ((0 << 16) | (0 & 0xffff))) {
-    console.log('quic: bad version ' + version.toString(16))
+    debug('quic: bad version ' + version.toString(16))
     return false
   }
 
@@ -2286,7 +2288,7 @@ QuicEncoder.prototype.quic_decode = function (buf, stride) {
       };
       break
     case QUIC_IMAGE_TYPE_RGB16:
-      console.log('quic: unsupported output format\n')
+      debug('quic: unsupported output format\n')
       return false
       break
     case QUIC_IMAGE_TYPE_RGBA:
@@ -2315,13 +2317,13 @@ QuicEncoder.prototype.quic_decode = function (buf, stride) {
       break
 
     case QUIC_IMAGE_TYPE_GRAY:
-      console.log('quic: unsupported output format\n')
+      debug('quic: unsupported output format\n')
       return false
       break
 
     case QUIC_IMAGE_TYPE_INVALID:
     default:
-      console.log('quic: bad image type\n')
+      debug('quic: bad image type\n')
       return false
   }
   return true
@@ -4199,8 +4201,8 @@ SpiceWireReader.prototype = {
 }
 
 function wire_blob_catcher (e) {
-  DEBUG > 1 && console.log('>> WebSockets.onmessage')
-  DEBUG > 1 && console.log('id ' + this.wire_reader.sc.connection_id + '; type ' + this.wire_reader.sc.type)
+  DEBUG > 1 && debug('>> WebSockets.onmessage')
+  DEBUG > 1 && debug('id ' + this.wire_reader.sc.connection_id + '; type ' + this.wire_reader.sc.type)
   SpiceWireReader.prototype.inbound.call(this.wire_reader, e.data)
 }
 
@@ -4235,8 +4237,8 @@ function SpiceConn (o) {
   this.warnings = []
 
   this.ws.addEventListener('open', function (e) {
-    DEBUG > 0 && console.log('>> WebSockets.onopen')
-    DEBUG > 0 && console.log('id ' + this.parent.connection_id + '; type ' + this.parent.type)
+    DEBUG > 0 && debug('>> WebSockets.onopen')
+    DEBUG > 0 && debug('id ' + this.parent.connection_id + '; type ' + this.parent.type)
 
     /***********************************************************************
      **          WHERE IT ALL REALLY BEGINS
@@ -4252,9 +4254,9 @@ function SpiceConn (o) {
     this.parent.report_error(e)
   })
   this.ws.addEventListener('close', function (e) {
-    DEBUG > 0 && console.log('>> WebSockets.onclose')
-    DEBUG > 0 && console.log('id ' + this.parent.connection_id + '; type ' + this.parent.type)
-    DEBUG > 0 && console.log(e)
+    DEBUG > 0 && debug('>> WebSockets.onclose')
+    DEBUG > 0 && debug('id ' + this.parent.connection_id + '; type ' + this.parent.type)
+    DEBUG > 0 && debug(e)
     if (this.parent.state != 'closing' && this.parent.state != 'error' && this.parent.onerror !== undefined) {
       var e
       if (this.parent.state == 'connecting') { e = new Error('Connection refused.') } else if (this.parent.state == 'start' || this.parent.state == 'link') { e = new Error('Unexpected protocol mismatch.') } else if (this.parent.state == 'ticket') { e = new Error('Bad password.') } else { e = new Error('Unexpected close while ' + this.parent.state) }
@@ -4306,7 +4308,7 @@ SpiceConn.prototype = {
     hdr.to_buffer(mb)
     msg.to_buffer(mb, hdr.buffer_size())
 
-    DEBUG > 1 && console.log('Sending header:')
+    DEBUG > 1 && debug('Sending header:')
     DEBUG > 2 && hexdump_buffer(mb)
     this.ws.send(mb)
   },
@@ -4319,7 +4321,7 @@ SpiceConn.prototype = {
     var mb = new ArrayBuffer(hdr.buffer_size())
 
     hdr.to_buffer(mb)
-    DEBUG > 1 && console.log('Sending ticket:')
+    DEBUG > 1 && debug('Sending ticket:')
     DEBUG > 2 && hexdump_buffer(mb)
     this.ws.send(mb)
   },
@@ -4328,13 +4330,13 @@ SpiceConn.prototype = {
     var mb = new ArrayBuffer(msg.buffer_size())
     msg.to_buffer(mb)
     this.messages_sent++
-    DEBUG > 0 && console.log('>> hdr ' + this.channel_type() + ' type ' + msg.type + ' size ' + mb.byteLength)
+    DEBUG > 0 && debug('>> hdr ' + this.channel_type() + ' type ' + msg.type + ' size ' + mb.byteLength)
     DEBUG > 2 && hexdump_buffer(mb)
     this.ws.send(mb)
   },
 
   process_inbound: function (mb, saved_header) {
-    DEBUG > 2 && console.log(this.type + ': processing message of size ' + mb.byteLength + '; state is ' + this.state)
+    DEBUG > 2 && debug(this.type + ': processing message of size ' + mb.byteLength + '; state is ' + this.state)
     if (this.state == 'ready') {
       if (saved_header == undefined) {
         var msg = new SpiceMiniData(mb)
@@ -4385,14 +4387,14 @@ SpiceConn.prototype = {
     } else if (this.state == 'ticket') {
       this.auth_reply = new SpiceLinkAuthReply(mb)
       if (this.auth_reply.auth_code == SPICE_LINK_ERR_OK) {
-        DEBUG > 0 && console.log(this.type + ': Connected')
+        DEBUG > 0 && debug(this.type + ': Connected')
 
         if (this.type == SPICE_CHANNEL_DISPLAY) {
           // FIXME - pixmap and glz dictionary config info?
           var dinit = new SpiceMsgcDisplayInit()
           var reply = new SpiceMiniData()
           reply.build_msg(SPICE_MSGC_DISPLAY_INIT, dinit)
-          DEBUG > 0 && console.log('Request display init')
+          DEBUG > 0 && debug('Request display init')
           this.send_msg(reply)
         }
         this.state = 'ready'
@@ -4418,7 +4420,7 @@ SpiceConn.prototype = {
       var ack = new SpiceMsgSetAck(msg.data)
       // FIXME - what to do with generation?
       this.ack_window = ack.window
-      DEBUG > 1 && console.log(this.type + ': set ack to ' + ack.window)
+      DEBUG > 1 && debug(this.type + ': set ack to ' + ack.window)
       this.msgs_until_ack = this.ack_window
       var ackack = new SpiceMsgcAckSync(ack)
       var reply = new SpiceMiniData()
@@ -4428,7 +4430,7 @@ SpiceConn.prototype = {
     }
 
     if (msg.type == SPICE_MSG_PING) {
-      DEBUG > 1 && console.log('ping!')
+      DEBUG > 1 && debug('ping!')
       var pong = new SpiceMiniData()
       pong.type = SPICE_MSGC_PONG
       if (msg.data) {
@@ -4452,7 +4454,7 @@ SpiceConn.prototype = {
   process_message: function (msg) {
     var rc
     var start = Date.now()
-    DEBUG > 0 && console.log('<< hdr ' + this.channel_type() + ' type ' + msg.type + ' size ' + (msg.data && msg.data.byteLength))
+    DEBUG > 0 && debug('<< hdr ' + this.channel_type() + ' type ' + msg.type + ' size ' + (msg.data && msg.data.byteLength))
     rc = this.process_common_messages(msg)
     if (!rc) {
       if (this.process_channel_message) {
@@ -4468,12 +4470,12 @@ SpiceConn.prototype = {
         var ack = new SpiceMiniData()
         ack.type = SPICE_MSGC_ACK
         this.send_msg(ack)
-        DEBUG > 1 && console.log(this.type + ': sent ack')
+        DEBUG > 1 && debug(this.type + ': sent ack')
       }
     }
 
     var delta = Date.now() - start
-    if (DEBUG > 0 || delta > GAP_DETECTION_THRESHOLD) { console.log('delta ' + this.channel_type() + ':' + msg.type + ' ' + delta) }
+    if (DEBUG > 0 || delta > GAP_DETECTION_THRESHOLD) { debug('delta ' + this.channel_type() + ':' + msg.type + ' ' + delta) }
     return rc
   },
 
@@ -4484,7 +4486,7 @@ SpiceConn.prototype = {
 
   log_info: function () {
     var msg = Array.prototype.join.call(arguments, ' ')
-    console.log(msg)
+    debug(msg)
     if (this.message_id) {
       var p = document.createElement('p')
       p.appendChild(document.createTextNode(msg))
@@ -4495,7 +4497,7 @@ SpiceConn.prototype = {
 
   log_warn: function () {
     var msg = Array.prototype.join.call(arguments, ' ')
-    console.log('WARNING: ' + msg)
+    debug('WARNING: ' + msg)
     if (this.message_id) {
       var p = document.createElement('p')
       p.appendChild(document.createTextNode(msg))
@@ -4506,7 +4508,7 @@ SpiceConn.prototype = {
 
   log_err: function () {
     var msg = Array.prototype.join.call(arguments, ' ')
-    console.log('ERROR: ' + msg)
+    debug('ERROR: ' + msg)
     if (this.message_id) {
       var p = document.createElement('p')
       p.appendChild(document.createTextNode(msg))
@@ -4587,7 +4589,7 @@ SpiceDisplayConn.prototype.process_channel_message = function (msg) {
   }
 
   if (msg.type == SPICE_MSG_DISPLAY_RESET) {
-    DEBUG > 2 && console.log('Display reset')
+    DEBUG > 2 && debug('Display reset')
     this.surfaces[this.primary_surface].canvas.context.restore()
     return true
   }
@@ -4927,7 +4929,7 @@ SpiceDisplayConn.prototype.process_channel_message = function (msg) {
     if (!('surfaces' in this)) { this.surfaces = [] }
 
     var m = new SpiceMsgSurfaceCreate(msg.data)
-    DEBUG > 1 && console.log(this.type + ': MsgSurfaceCreate id ' + m.surface.surface_id +
+    DEBUG > 1 && debug(this.type + ': MsgSurfaceCreate id ' + m.surface.surface_id +
       '; ' + m.surface.width + 'x' + m.surface.height +
       '; format ' + m.surface.format +
       '; flags ' + m.surface.flags)
@@ -4966,19 +4968,19 @@ SpiceDisplayConn.prototype.process_channel_message = function (msg) {
 
   if (msg.type == SPICE_MSG_DISPLAY_SURFACE_DESTROY) {
     var m = new SpiceMsgSurfaceDestroy(msg.data)
-    DEBUG > 1 && console.log(this.type + ': MsgSurfaceDestroy id ' + m.surface_id)
+    DEBUG > 1 && debug(this.type + ': MsgSurfaceDestroy id ' + m.surface_id)
     this.delete_surface(m.surface_id)
     return true
   }
 
   if (msg.type == SPICE_MSG_DISPLAY_STREAM_CREATE) {
     var m = new SpiceMsgDisplayStreamCreate(msg.data)
-    STREAM_DEBUG > 0 && console.log(this.type + ': MsgStreamCreate id' + m.id + '; type ' + m.codec_type +
+    STREAM_DEBUG > 0 && debug(this.type + ': MsgStreamCreate id' + m.id + '; type ' + m.codec_type +
       '; width ' + m.stream_width + '; height ' + m.stream_height +
       '; left ' + m.dest.left + '; top ' + m.dest.top
     )
     if (!this.streams) { this.streams = new Array() }
-    if (this.streams[m.id]) { console.log('Stream ' + m.id + ' already exists') } else { this.streams[m.id] = m }
+    if (this.streams[m.id]) { debug('Stream ' + m.id + ' already exists') } else { this.streams[m.id] = m }
 
     if (m.codec_type == SPICE_VIDEO_CODEC_TYPE_VP8) {
       var media = new MediaSource()
@@ -5013,7 +5015,7 @@ SpiceDisplayConn.prototype.process_channel_message = function (msg) {
       media.stream = s
       media.spiceconn = this
       v.spice_stream = s
-    } else if (m.codec_type == SPICE_VIDEO_CODEC_TYPE_MJPEG) { this.streams[m.id].frames_loading = 0 } else { console.log('Unhandled stream codec: ' + m.codec_type) }
+    } else if (m.codec_type == SPICE_VIDEO_CODEC_TYPE_MJPEG) { this.streams[m.id].frames_loading = 0 } else { debug('Unhandled stream codec: ' + m.codec_type) }
     return true
   }
 
@@ -5023,7 +5025,7 @@ SpiceDisplayConn.prototype.process_channel_message = function (msg) {
     if (msg.type == SPICE_MSG_DISPLAY_STREAM_DATA_SIZED) { m = new SpiceMsgDisplayStreamDataSized(msg.data) } else { m = new SpiceMsgDisplayStreamData(msg.data) }
 
     if (!this.streams[m.base.id]) {
-      console.log('no stream for data')
+      debug('no stream for data')
       return false
     }
 
@@ -5051,14 +5053,14 @@ SpiceDisplayConn.prototype.process_channel_message = function (msg) {
 
   if (msg.type == SPICE_MSG_DISPLAY_STREAM_CLIP) {
     var m = new SpiceMsgDisplayStreamClip(msg.data)
-    STREAM_DEBUG > 1 && console.log(this.type + ': MsgStreamClip id' + m.id)
+    STREAM_DEBUG > 1 && debug(this.type + ': MsgStreamClip id' + m.id)
     this.streams[m.id].clip = m.clip
     return true
   }
 
   if (msg.type == SPICE_MSG_DISPLAY_STREAM_DESTROY) {
     var m = new SpiceMsgDisplayStreamDestroy(msg.data)
-    STREAM_DEBUG > 0 && console.log(this.type + ': MsgStreamDestroy id' + m.id)
+    STREAM_DEBUG > 0 && debug(this.type + ': MsgStreamDestroy id' + m.id)
 
     if (this.streams[m.id].codec_type == SPICE_VIDEO_CODEC_TYPE_VP8) {
       document.getElementById(this.parent.screen_id).removeChild(this.streams[m.id].video)
@@ -5078,7 +5080,7 @@ SpiceDisplayConn.prototype.process_channel_message = function (msg) {
   if (msg.type == SPICE_MSG_DISPLAY_INVAL_LIST) {
     var m = new SpiceMsgDisplayInvalList(msg.data)
     var i
-    DEBUG > 1 && console.log(this.type + ': MsgInvalList ' + m.count + ' items')
+    DEBUG > 1 && debug(this.type + ': MsgInvalList ' + m.count + ' items')
     for (i = 0; i < m.count; i++) {
       if (this.cache[m.resources[i].id] != undefined) { delete this.cache[m.resources[i].id] }
     }
@@ -5209,7 +5211,7 @@ SpiceDisplayConn.prototype.log_draw = function (prefix, draw) {
     } else { str += '; mask.bitmap is null' }
   }
 
-  console.log(str)
+  debug(str)
 }
 
 SpiceDisplayConn.prototype.hook_events = function () {
@@ -5462,18 +5464,18 @@ function handle_append_video_buffer_done (e) {
   }
 
   if (!stream.video) {
-    if (STREAM_DEBUG > 0) { console.log('Stream id ' + stream.id + ' received updateend after video is gone.') }
+    if (STREAM_DEBUG > 0) { debug('Stream id ' + stream.id + ' received updateend after video is gone.') }
     return
   }
 
   if (stream.video.buffered.length > 0 &&
     stream.video.currentTime < stream.video.buffered.start(stream.video.buffered.length - 1)) {
-    console.log('Video appears to have fallen behind; advancing to ' +
+    debug('Video appears to have fallen behind; advancing to ' +
       stream.video.buffered.start(stream.video.buffered.length - 1))
     stream.video.currentTime = stream.video.buffered.start(stream.video.buffered.length - 1)
   }
 
-  if (STREAM_DEBUG > 1) { console.log(stream.video.currentTime + ':id ' + stream.id + ' updateend ' + dump_media_element(stream.video)) }
+  if (STREAM_DEBUG > 1) { debug(stream.video.currentTime + ':id ' + stream.id + ' updateend ' + dump_media_element(stream.video)) }
 }
 
 function handle_video_buffer_error (e) {
@@ -5526,16 +5528,16 @@ function video_handle_event_debug (e) {
   var s = this.spice_stream
   if (s.video) {
     if (STREAM_DEBUG > 0 || s.video.buffered.len > 1) {
-      console.log(s.video.currentTime + ':id ' + s.id + ' event ' + e.type +
+      debug(s.video.currentTime + ':id ' + s.id + ' event ' + e.type +
         dump_media_element(s.video))
     }
   }
 
-  if (STREAM_DEBUG > 1 && s.media) { console.log('  media_source ' + dump_media_source(s.media)) }
+  if (STREAM_DEBUG > 1 && s.media) { debug('  media_source ' + dump_media_source(s.media)) }
 
-  if (STREAM_DEBUG > 1 && s.source_buffer) { console.log('  source_buffer ' + dump_source_buffer(s.source_buffer)) }
+  if (STREAM_DEBUG > 1 && s.source_buffer) { debug('  source_buffer ' + dump_source_buffer(s.source_buffer)) }
 
-  if (STREAM_DEBUG > 1 || s.queue.length > 1) { console.log('  queue len ' + s.queue.length + '; append_okay: ' + s.append_okay) }
+  if (STREAM_DEBUG > 1 || s.queue.length > 1) { debug('  queue len ' + s.queue.length + '; append_okay: ' + s.append_okay) }
 }
 
 function video_debug_listen_for_one_event (name) {
@@ -5567,7 +5569,7 @@ function listen_for_video_events (stream) {
 
 // !port
 function SpicePortConn () {
-  DEBUG > 0 && console.log('SPICE port: created SPICE port channel. Args:', arguments)
+  DEBUG > 0 && debug('SPICE port: created SPICE port channel. Args:', arguments)
   SpiceConn.apply(this, arguments)
   this.port_name = null
 }
@@ -5580,13 +5582,13 @@ SpicePortConn.prototype.process_channel_message = function (msg) {
       var m = new SpiceMsgPortInit(msg.data)
       this.portName = arraybuffer_to_str(new Uint8Array(m.name))
       this.portOpened = m.opened
-      DEBUG > 0 && console.log('SPICE port: Port', this.portName, 'initialized')
+      DEBUG > 0 && debug('SPICE port: Port', this.portName, 'initialized')
       return true
     }
 
-    DEBUG > 0 && console.log('SPICE port: Port', this.port_name, 'is already initialized.')
+    DEBUG > 0 && debug('SPICE port: Port', this.port_name, 'is already initialized.')
   } else if (msg.type == SPICE_MSG_PORT_EVENT) {
-    DEBUG > 0 && console.log('SPICE port: Port event received for', this.portName, msg)
+    DEBUG > 0 && debug('SPICE port: Port event received for', this.portName, msg)
     var event = new CustomEvent('spice-port-event', {
       detail: {
         channel: this,
@@ -5599,7 +5601,7 @@ SpicePortConn.prototype.process_channel_message = function (msg) {
     window.dispatchEvent(event)
     return true
   } else if (msg.type == SPICE_MSG_SPICEVMC_DATA) {
-    DEBUG > 0 && console.log('SPICE port: Data received in port', this.portName, msg)
+    DEBUG > 0 && debug('SPICE port: Data received in port', this.portName, msg)
     var event = new CustomEvent('spice-port-data', {
       detail: {
         channel: this,
@@ -5611,7 +5613,7 @@ SpicePortConn.prototype.process_channel_message = function (msg) {
     window.dispatchEvent(event)
     return true
   } else {
-    DEBUG > 0 && console.log('SPICE port: SPICE message type not recognized:', msg)
+    DEBUG > 0 && debug('SPICE port: SPICE message type not recognized:', msg)
   }
 
   return false
@@ -5620,7 +5622,7 @@ SpicePortConn.prototype.process_channel_message = function (msg) {
 // !main
 export var SpiceMainConn = function () {
   if (typeof WebSocket === 'undefined') { throw new Error('WebSocket unavailable.  You need to use a different browser.') }
-  console.log(arguments, 'arguments')
+  debug(arguments, 'arguments')
   SpiceConn.apply(this, arguments)
 
   this.agent_msg_queue = []
@@ -5692,7 +5694,7 @@ SpiceMainConn.prototype.process_channel_message = function (msg) {
   if (msg.type == SPICE_MSG_MAIN_CHANNELS_LIST) {
     var i
     var chans
-    DEBUG > 0 && console.log('channels')
+    DEBUG > 0 && debug('channels')
     chans = new SpiceMsgChannels(msg.data)
     for (i = 0; i < chans.channels.length; i++) {
       var conn = {
@@ -6016,19 +6018,19 @@ SpiceInputsConn.prototype.process_channel_message = function (msg) {
   if (msg.type == SPICE_MSG_INPUTS_INIT) {
     var inputs_init = new SpiceMsgInputsInit(msg.data)
     this.keyboard_modifiers = inputs_init.keyboard_modifiers
-    DEBUG > 1 && console.log('MsgInputsInit - modifier ' + this.keyboard_modifiers)
+    DEBUG > 1 && debug('MsgInputsInit - modifier ' + this.keyboard_modifiers)
     // FIXME - We don't do anything with the keyboard modifiers...
     return true
   }
   if (msg.type == SPICE_MSG_INPUTS_KEY_MODIFIERS) {
     var key = new SpiceMsgInputsKeyModifiers(msg.data)
     this.keyboard_modifiers = key.keyboard_modifiers
-    DEBUG > 1 && console.log('MsgInputsKeyModifiers - modifier ' + this.keyboard_modifiers)
+    DEBUG > 1 && debug('MsgInputsKeyModifiers - modifier ' + this.keyboard_modifiers)
     // FIXME - We don't do anything with the keyboard modifiers...
     return true
   }
   if (msg.type == SPICE_MSG_INPUTS_MOUSE_MOTION_ACK) {
-    DEBUG > 1 && console.log('mouse motion ack')
+    DEBUG > 1 && debug('mouse motion ack')
     this.waiting_for_ack -= SPICE_INPUT_MOTION_ACK_BUNCH
     return true
   }
@@ -6169,22 +6171,22 @@ function check_and_update_modifiers (e, code, sc) {
 
   if (sc && sc.inputs && sc.inputs.state === 'ready') {
     if (Shift_state != e.shiftKey) {
-      console.log('Shift state out of sync')
+      debug('Shift state out of sync')
       update_modifier(e.shiftKey, KEY_SHIFT_L, sc)
       Shift_state = e.shiftKey
     }
     if (Alt_state != e.altKey) {
-      console.log('Alt state out of sync')
+      debug('Alt state out of sync')
       update_modifier(e.altKey, KEY_Alt, sc)
       Alt_state = e.altKey
     }
     if (Ctrl_state != e.ctrlKey) {
-      console.log('Ctrl state out of sync')
+      debug('Ctrl state out of sync')
       update_modifier(e.ctrlKey, KEY_LCtrl, sc)
       Ctrl_state = e.ctrlKey
     }
     if (Meta_state != e.metaKey) {
-      console.log('Meta state out of sync')
+      debug('Meta state out of sync')
       update_modifier(e.metaKey, 0xE0B5, sc)
       Meta_state = e.metaKey
     }
@@ -6762,7 +6764,7 @@ SpicePlaybackConn.prototype.process_channel_message = function (msg) {
   if (msg.type == SPICE_MSG_PLAYBACK_START) {
     var start = new SpiceMsgPlaybackStart(msg.data)
 
-    PLAYBACK_DEBUG > 0 && console.log('PlaybackStart; frequency ' + start.frequency)
+    PLAYBACK_DEBUG > 0 && debug('PlaybackStart; frequency ' + start.frequency)
 
     if (start.frequency != OPUS_FREQUENCY) {
       this.log_err('This player cannot handle frequency ' + start.frequency)
@@ -6807,7 +6809,7 @@ SpicePlaybackConn.prototype.process_channel_message = function (msg) {
     if (this.audio.readyState >= 3 && this.audio.buffered.length > 1 &&
       this.audio.currentTime == this.audio.buffered.end(0) &&
       this.audio.currentTime < this.audio.buffered.start(this.audio.buffered.length - 1)) {
-      console.log('Audio underrun: we appear to have fallen behind; advancing to ' +
+      debug('Audio underrun: we appear to have fallen behind; advancing to ' +
         this.audio.buffered.start(this.audio.buffered.length - 1))
       this.audio.currentTime = this.audio.buffered.start(this.audio.buffered.length - 1)
     }
@@ -6828,17 +6830,17 @@ SpicePlaybackConn.prototype.process_channel_message = function (msg) {
 
     if (this.start_time != 0 && data.time != (this.last_data_time + EXPECTED_PACKET_DURATION)) {
       if (Math.abs(data.time - (EXPECTED_PACKET_DURATION + this.last_data_time)) < MAX_CLUSTER_TIME) {
-        PLAYBACK_DEBUG > 1 && console.log('Hacking time of ' + data.time + ' to ' +
+        PLAYBACK_DEBUG > 1 && debug('Hacking time of ' + data.time + ' to ' +
           (this.last_data_time + EXPECTED_PACKET_DURATION))
         data.time = this.last_data_time + EXPECTED_PACKET_DURATION
       } else {
-        PLAYBACK_DEBUG > 1 && console.log('Apparent gap in audio time; now is ' + data.time + ' last was ' + this.last_data_time)
+        PLAYBACK_DEBUG > 1 && debug('Apparent gap in audio time; now is ' + data.time + ' last was ' + this.last_data_time)
       }
     }
 
     this.last_data_time = data.time
 
-    PLAYBACK_DEBUG > 1 && console.log('PlaybackData; time ' + data.time + '; length ' + data.data.byteLength)
+    PLAYBACK_DEBUG > 1 && debug('PlaybackData; time ' + data.time + '; length ' + data.data.byteLength)
 
     if (this.start_time == 0) { this.start_playback(data) } else if (data.time - this.cluster_time >= MAX_CLUSTER_TIME) { this.new_cluster(data) } else { this.simple_block(data, false) }
 
@@ -6855,7 +6857,7 @@ SpicePlaybackConn.prototype.process_channel_message = function (msg) {
   }
 
   if (msg.type == SPICE_MSG_PLAYBACK_STOP) {
-    PLAYBACK_DEBUG > 0 && console.log('PlaybackStop')
+    PLAYBACK_DEBUG > 0 && debug('PlaybackStop')
     if (this.source_buffer) {
       document.getElementById(this.parent.screen_id).removeChild(this.audio)
       window.URL.revokeObjectURL(this.audio.src)
@@ -7013,16 +7015,16 @@ function playback_handle_event_debug (e) {
   var p = this.spiceconn
   if (p.audio) {
     if (PLAYBACK_DEBUG > 0 || p.audio.buffered.len > 1) {
-      console.log(p.audio.currentTime + ': event ' + e.type +
+      debug(p.audio.currentTime + ': event ' + e.type +
         dump_media_element(p.audio))
     }
   }
 
-  if (PLAYBACK_DEBUG > 1 && p.media_source) { console.log('  media_source ' + dump_media_source(p.media_source)) }
+  if (PLAYBACK_DEBUG > 1 && p.media_source) { debug('  media_source ' + dump_media_source(p.media_source)) }
 
-  if (PLAYBACK_DEBUG > 1 && p.source_buffer) { console.log('  source_buffer ' + dump_source_buffer(p.source_buffer)) }
+  if (PLAYBACK_DEBUG > 1 && p.source_buffer) { debug('  source_buffer ' + dump_source_buffer(p.source_buffer)) }
 
-  if (PLAYBACK_DEBUG > 0 || p.queue.length > 1) { console.log('  queue len ' + p.queue.length + '; append_okay: ' + p.append_okay) }
+  if (PLAYBACK_DEBUG > 0 || p.queue.length > 1) { debug('  queue len ' + p.queue.length + '; append_okay: ' + p.append_okay) }
 }
 
 function playback_debug_listen_for_one_event (name) {
@@ -7075,10 +7077,10 @@ var SpiceSimulateCursor = {
 
     if (!SpiceSimulateCursor.unknown_cursors[sha1]) {
       SpiceSimulateCursor.unknown_cursors[sha1] = curdata
-      console.log('Unknown cursor.  Simulation required.  To avoid simulation for this cursor, create and include a custom javascript file, and add the following line:')
-      console.log('SpiceCursorSimulator.add_cursor("' + sha1 + '"), "<your filename here>.cur");')
-      console.log('And then run following command, redirecting output into <your filename here>.cur:')
-      console.log('php -r "echo urldecode(\'' + curdata + '\');"')
+      debug('Unknown cursor.  Simulation required.  To avoid simulation for this cursor, create and include a custom javascript file, and add the following line:')
+      debug('SpiceCursorSimulator.add_cursor("' + sha1 + '"), "<your filename here>.cur");')
+      debug('And then run following command, redirecting output into <your filename here>.cur:')
+      debug('php -r "echo urldecode(\'' + curdata + '\');"')
     }
   },
 
@@ -7223,7 +7225,7 @@ SpiceCursorConn.prototype = Object.create(SpiceConn.prototype)
 SpiceCursorConn.prototype.process_channel_message = function (msg) {
   if (msg.type == SPICE_MSG_CURSOR_INIT) {
     var cursor_init = new SpiceMsgCursorInit(msg.data)
-    DEBUG > 1 && console.log('SpiceMsgCursorInit')
+    DEBUG > 1 && debug('SpiceMsgCursorInit')
     if (this.parent && this.parent.inputs &&
       this.parent.inputs.mouse_mode == SPICE_MOUSE_MODE_SERVER) {
       // FIXME - this imagines that the server actually
@@ -7239,7 +7241,7 @@ SpiceCursorConn.prototype.process_channel_message = function (msg) {
 
   if (msg.type == SPICE_MSG_CURSOR_SET) {
     var cursor_set = new SpiceMsgCursorSet(msg.data)
-    DEBUG > 1 && console.log('SpiceMsgCursorSet')
+    DEBUG > 1 && debug('SpiceMsgCursorSet')
     if (cursor_set.flags & SPICE_CURSOR_FLAGS_NONE) {
       document.getElementById(this.parent.screen_id).style.cursor = 'none'
       return true
@@ -7263,7 +7265,7 @@ SpiceCursorConn.prototype.process_channel_message = function (msg) {
   }
 
   if (msg.type == SPICE_MSG_CURSOR_HIDE) {
-    DEBUG > 1 && console.log('SpiceMsgCursorHide')
+    DEBUG > 1 && debug('SpiceMsgCursorHide')
     document.getElementById(this.parent.screen_id).style.cursor = 'none'
     return true
   }
@@ -7274,7 +7276,7 @@ SpiceCursorConn.prototype.process_channel_message = function (msg) {
   }
 
   if (msg.type == SPICE_MSG_CURSOR_RESET) {
-    DEBUG > 1 && console.log('SpiceMsgCursorReset')
+    DEBUG > 1 && debug('SpiceMsgCursorReset')
     document.getElementById(this.parent.screen_id).style.cursor = 'auto'
     return true
   }
@@ -7285,7 +7287,7 @@ SpiceCursorConn.prototype.process_channel_message = function (msg) {
   }
 
   if (msg.type == SPICE_MSG_CURSOR_INVAL_ALL) {
-    DEBUG > 1 && console.log('SpiceMsgCursorInvalAll')
+    DEBUG > 1 && debug('SpiceMsgCursorInvalAll')
     // FIXME - There may be something useful to do here...
     return true
   }
@@ -8484,7 +8486,7 @@ function RSA_padding_add_PKCS1_OAEP (tolen, from, param) {
   if (param === undefined) { param = '' }
 
   if (padlen < SHA_DIGEST_LENGTH) {
-    console.log('Error - data too large for key size.')
+    debug('Error - data too large for key size.')
     return null
   }
 
@@ -8517,7 +8519,7 @@ function asn_get_length (u8, at) {
   var len = u8[at++]
   if (len > 0x80) {
     if (len != 0x81) {
-      console.log("Error:  we lazily don't support keys bigger than 255 bytes.  It'd be easy to fix.")
+      debug("Error:  we lazily don't support keys bigger than 255 bytes.  It'd be easy to fix.")
       return null
     }
     len = u8[at++]
@@ -8530,7 +8532,7 @@ function find_sequence (u8, at) {
   var lenblock
   at = at || 0
   if (u8[at++] != 0x30) {
-    console.log('Error:  public key should start with a sequence flag.')
+    debug('Error:  public key should start with a sequence flag.')
     return null
   }
 
@@ -8561,7 +8563,7 @@ function create_rsa_from_mb (mb, at) {
   /* Skip over the contained sequence */
   at = seq[0] + seq[1]
   if (u8[at++] != 0x3) {
-    console.log('Error: expecting bit string next.')
+    debug('Error: expecting bit string next.')
     return null
   }
 
@@ -8571,7 +8573,7 @@ function create_rsa_from_mb (mb, at) {
 
   at = lenblock[0]
   if (u8[at] != 0 && u8[at + 1] != 0x30) {
-    console.log('Error: unexpected values in bit string.')
+    debug('Error: unexpected values in bit string.')
     return null
   }
 
@@ -8581,7 +8583,7 @@ function create_rsa_from_mb (mb, at) {
 
   at = seq[0]
   if (u8[at++] != 0x02) {
-    console.log('Error: expecting integer n next.')
+    debug('Error: expecting integer n next.')
     return null
   }
   lenblock = asn_get_length(u8, at)
@@ -8597,7 +8599,7 @@ function create_rsa_from_mb (mb, at) {
   at += lenblock[1]
 
   if (u8[at++] != 0x02) {
-    console.log('Error: expecting integer e next.')
+    debug('Error: expecting integer e next.')
     return null
   }
   lenblock = asn_get_length(u8, at)

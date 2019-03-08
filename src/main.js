@@ -11,6 +11,12 @@ import store from './store'
 import './permission'
 import './errorLog'
 
+function initDebug () {
+  if (window.Storage && window.localStorage && window.localStorage instanceof Storage) {
+    window.localStorage.setItem('debug', 'app:*')
+  }
+}
+
 const app = new Vue({
   router,
   store,
@@ -20,6 +26,8 @@ const app = new Vue({
 Vue.config.productionTip = false
 
 async function start () {
+  // 初始化 debug
+  initDebug()
   // 初始化用户信息存入 store
   await store.dispatch('setUserInfo')
   app.$mount('#app')
