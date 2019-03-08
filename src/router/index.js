@@ -1,12 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import SSH from '@views/ssh'
-import NoVNC from '@views/no-vnc'
-import Spice from '@views/spice'
-import WMKS from '@views/wmks'
-
 Vue.use(Router)
+
+function loadView (view) {
+  return () => import(/* webpackChunkName: "view-[request]" */ `@views/${view}`)
+}
 
 export const constantRouterMap = [
   {
@@ -15,7 +14,7 @@ export const constantRouterMap = [
     meta: {
       title: 'noVNC'
     },
-    component: NoVNC
+    component: loadView('no-vnc')
   },
   {
     path: '/ssh',
@@ -23,7 +22,7 @@ export const constantRouterMap = [
     meta: {
       title: 'SSH'
     },
-    component: SSH
+    component: loadView('ssh')
   },
   {
     path: '/spice',
@@ -31,7 +30,7 @@ export const constantRouterMap = [
     meta: {
       title: 'Spice'
     },
-    component: Spice
+    component: loadView('spice')
   },
   {
     path: '/wmks',
@@ -39,7 +38,7 @@ export const constantRouterMap = [
     meta: {
       title: 'WMKS'
     },
-    component: WMKS
+    component: loadView('wmks')
   }
 ]
 

@@ -15,6 +15,8 @@ import * as fit from 'xterm/lib/addons/fit/fit'
 import 'xterm/src/xterm.css'
 import io from 'socket.io-client'
 
+const debug = require('debug')('app:ssh')
+
 export default {
   name: 'SSHWebConsole',
   data () {
@@ -101,50 +103,50 @@ export default {
        * reconnecting：正在重连
        */
       this.socket.on('connect', () => {
-        console.log('connect')
+        debug('connect')
         this.socketTips.type = 'success'
         this.socketTips.message = '连接成功'
       })
       this.socket.on('connecting', () => {
-        console.log('connecting')
+        debug('connecting')
         this.socketTips.type = 'info'
         this.socketTips.message = '正在连接...'
       })
       this.socket.on('disconnect', () => {
-        console.log('disconnect')
+        debug('disconnect')
         this.socketTips.type = 'error'
         this.socketTips.message = '连接断开'
         this._socketClose()
       })
       this.socket.on('connect_error', () => {
-        console.log('connect_error')
+        debug('connect_error')
         this.socketTips.type = 'error'
         this.socketTips.message = '连接失败'
       })
       this.socket.on('error', () => {
-        console.log('error')
+        debug('error')
         this.socketTips.type = 'error'
         this.socketTips.message = '连接异常'
       })
       this.socket.on('reconnect_error', () => {
-        console.log('reconnect_error')
+        debug('reconnect_error')
         this.socketTips.type = 'error'
         this.socketTips.message = '重连失败'
       })
       this.socket.on('reconnect', () => {
-        console.log('success')
+        debug('success')
         this.socketTips.type = 'success'
         this.socketTips.message = '重连成功'
       })
       this.socket.on('reconnecting', () => {
-        console.log('reconnecting')
+        debug('reconnecting')
         this.socketTips.type = 'error'
         this.socketTips.message = '正在尝试重连...'
       })
     },
     _socketClose () {
       return () => {
-        console.log('Connection lose!!!')
+        debug('Connection lose!!!')
         this.socket.close()
       }
     },

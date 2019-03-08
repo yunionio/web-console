@@ -45,6 +45,8 @@ import qs from 'qs'
 import { SpiceMainConn, handleFileDragover, handleFileDrop, handleResize, resizeHelper, sendCtrlAltDel, shiftCharmaps, _charmap, SpiceMsgcKeyDown, SpiceMiniData, SpiceMsgcKeyUp, SPICE_MSGC_INPUTS_KEY_DOWN, SPICE_MSGC_INPUTS_KEY_UP, KEY_SHIFT_L } from './src/spice.js'
 import { getWebConsoleInfoByServerId } from '@/api/webconsole'
 
+const debug = require('debug')('app:spice')
+
 const hadPort = value => {
   const reg = /^.+:\d+$/
   return reg.test(value)
@@ -249,7 +251,7 @@ export default {
               onagent: this.agentConnected
             })
           } catch (e) {
-            this.$showHttpErrorMessage(e)
+            debug(e)
             this.disconnect()
           }
         })
@@ -272,7 +274,7 @@ export default {
         this.socketTips.message = '未知情况'
         this.socketTips.type = 'info'
       } else {
-        console.log('File API is not supported')
+        debug('File API is not supported')
       }
     },
     getFormValue () {
