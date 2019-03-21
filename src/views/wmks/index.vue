@@ -12,7 +12,7 @@
             </template>
           </a-menu>
         </a-dropdown>
-        <div class="text flex-fill d-flex justify-content-center align-items-center">{{ name }} - {{ socketTips.message }}</div>
+        <div class="text flex-fill d-flex justify-content-center align-items-center">{{ socketTips.message }}</div>
         <a-button type="primary" @click="sendText" class="custom-button">发送文字</a-button>
       </div>
       <div id="wmks-canvas" />
@@ -41,9 +41,6 @@
 </template>
 
 <script>
-import { getWebConsoleInfoByServerId } from '@/api/webconsole'
-import qs from 'qs'
-
 const debug = require('debug')('app:wmks')
 
 const hadPort = value => {
@@ -124,53 +121,50 @@ export default {
       }
     },
     connectVNC () {
-      this.getNovncIp()
-        .then(({ data }) => {
-          const connectParams = qs.parse(data.connect_params)
-          this.host = connectParams.api_server.slice(connectParams.api_server.indexOf('//') + 2) // 去掉双划线
-          if (hadPort(this.host)) {
-            this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
-            this.host = this.host.slice(0, this.host.indexOf(':'))
-          } else {
-            this.port = connectParams.api_server.indexOf('https') === 0 ? 443 : 80
-          }
-          var scheme = 'ws'
-          if (connectParams.api_server.includes('https:')) {
-            scheme = 'wss'
-          }
-          const uri = `${scheme}://${this.host}:${this.port}/websockify/?access_token=${connectParams.access_token}`
-          this.wmksContainer = window.$('#wmks-canvas')
-            .wmks({
-              'useVNCHandshake': false,
-              'sendProperMouseWheelDeltas': true,
-              'fitToParent': false,
-              'position': window.WMKS.CONST.Position.CENTER
-            })
-            .bind('wmksconnecting', function () {
-              debug('The console is connecting')
-            })
-            .bind('wmksconnected', this.connectedToServer)
-            .bind('wmksdisconnected', this.disconnectedFromServer)
-            .bind('wmkserror', this.errorConnectedFromServer)
-            .bind('wmksiniterror', this.initErrorFromServer)
-            .bind('wmksresolutionchanged', this.resolutionChanged)
-            .bind('wmksscreensizechange', function (evt, w, h) {
-              debug(w, h)
-            })
-            // .bind('wmkstoggle', function (evt, what, visible) {
-            //   if (what === 'RELATIVEPAD') {
-            //     if (visible) {
-            //       $("#trackPad").attr('disabled', true)
-            //     } else {
-            //       $("#trackPad").attr('disabled', false)
-            //     }
-            //   }
-            // })
-            // $("#trackPad").click(function () {
-            //   wmksContainer.wmks("toggleRelativePad")
-            // })
-          this.wmksContainer.wmks('connect', uri)
+      const query = this.$route.query
+      this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
+      if (hadPort(this.host)) {
+        this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
+        this.host = this.host.slice(0, this.host.indexOf(':'))
+      } else {
+        this.port = query.api_server.indexOf('https') === 0 ? 443 : 80
+      }
+      var scheme = 'ws'
+      if (query.api_server.includes('https:')) {
+        scheme = 'wss'
+      }
+      const uri = `${scheme}://${this.host}:${this.port}/websockify/?access_token=${query.access_token}`
+      this.wmksContainer = window.$('#wmks-canvas')
+        .wmks({
+          'useVNCHandshake': false,
+          'sendProperMouseWheelDeltas': true,
+          'fitToParent': false,
+          'position': window.WMKS.CONST.Position.CENTER
         })
+        .bind('wmksconnecting', function () {
+          debug('The console is connecting')
+        })
+        .bind('wmksconnected', this.connectedToServer)
+        .bind('wmksdisconnected', this.disconnectedFromServer)
+        .bind('wmkserror', this.errorConnectedFromServer)
+        .bind('wmksiniterror', this.initErrorFromServer)
+        .bind('wmksresolutionchanged', this.resolutionChanged)
+        .bind('wmksscreensizechange', function (evt, w, h) {
+          debug(w, h)
+        })
+        // .bind('wmkstoggle', function (evt, what, visible) {
+        //   if (what === 'RELATIVEPAD') {
+        //     if (visible) {
+        //       $("#trackPad").attr('disabled', true)
+        //     } else {
+        //       $("#trackPad").attr('disabled', false)
+        //     }
+        //   }
+        // })
+        // $("#trackPad").click(function () {
+        //   wmksContainer.wmks("toggleRelativePad")
+        // })
+      this.wmksContainer.wmks('connect', uri)
     },
     handleConfirm (e) {
       e.preventDefault()
@@ -192,9 +186,6 @@ export default {
     },
     doSendText (text) {
       this.wmksContainer.wmks('sendInputString', text)
-    },
-    getNovncIp () {
-      return getWebConsoleInfoByServerId(this.serverId)
     },
     connectedToServer () {
       debug('连接成功')

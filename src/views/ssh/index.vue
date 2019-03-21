@@ -1,15 +1,13 @@
 <template>
   <div class="content d-flex flex-column">
     <div class="header p-2 text-center" :class="socketTips.type">
-      {{ name }} - {{ ip }} - {{ socketTips.message }}
+      {{ socketTips.message }}
     </div>
     <div class="xterm flex-fill" ref="xterm"></div>
   </div>
 </template>
 
 <script>
-import { getSSHInfoByBaremetalId, getSSHInfoByIp } from '@/api/webconsole'
-import qs from 'qs'
 import { Terminal } from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import 'xterm/src/xterm.css'
@@ -28,20 +26,6 @@ export default {
       },
       connectParams: {},
       socket: {}
-    }
-  },
-  computed: {
-    ip () {
-      return this.$route.query.ip
-    },
-    name () {
-      return this.$route.query.name
-    },
-    isBaremetal () {
-      return this.$route.query.isBaremetal
-    },
-    id () {
-      return this.$route.query.id
     }
   },
   created () {
@@ -151,22 +135,9 @@ export default {
       }
     },
     getWebConsoleInfo () {
-      this.loading = true
-      let promise = null
-      if (this.isBaremetal) {
-        promise = getSSHInfoByBaremetalId(this.id)
-      } else {
-        promise = getSSHInfoByIp(this.ip)
-      }
-      promise.then(res => {
-        this.loading = false
-        const connectParams = res.data.connect_params
-        this.connectParams = qs.parse(connectParams)
+      this.connectParams = this.$route.query
+      this.$nextTick(() => {
         this.initTerminal()
-      }).catch(() => {
-        this.loading = false
-        this.socketTips.type = 'error'
-        this.socketTips.message = '连接失败'
       })
     }
   }
