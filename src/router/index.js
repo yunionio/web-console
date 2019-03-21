@@ -9,6 +9,14 @@ function loadView (view) {
 
 export const constantRouterMap = [
   {
+    path: '/',
+    name: 'index',
+    meta: {
+      title: 'Index'
+    },
+    component: loadView('index')
+  },
+  {
     path: '/no-vnc',
     name: 'noVNC',
     meta: {

@@ -12,7 +12,7 @@
             </template>
           </a-menu>
         </a-dropdown>
-        <div class="text flex-fill d-flex justify-content-center align-items-center">{{ name }} - {{ socketTips.message }}</div>
+        <div class="text flex-fill d-flex justify-content-center align-items-center">{{ socketTips.message }}</div>
         <a-button ref="sendTextBtn" type="primary" @click="sendText" class="custom-button">发送文字</a-button>
       </div>
       <div id="spice-canvas" />
@@ -41,9 +41,7 @@
 </template>
 
 <script>
-import qs from 'qs'
 import { SpiceMainConn, handleFileDragover, handleFileDrop, handleResize, resizeHelper, sendCtrlAltDel, shiftCharmaps, _charmap, SpiceMsgcKeyDown, SpiceMiniData, SpiceMsgcKeyUp, SPICE_MSGC_INPUTS_KEY_DOWN, SPICE_MSGC_INPUTS_KEY_UP, KEY_SHIFT_L } from './src/spice.js'
-import { getWebConsoleInfoByServerId } from '@/api/webconsole'
 
 const debug = require('debug')('app:spice')
 
@@ -206,9 +204,6 @@ export default {
         }
       }
     },
-    getIp () {
-      return getWebConsoleInfoByServerId(this.serverId)
-    },
     spiceError () {
       this.disconnect()
     },
@@ -221,40 +216,37 @@ export default {
       panel.innerHTML = msg
     },
     connect () {
-      this.getIp()
-        .then(({ data }) => {
-          const connectParams = qs.parse(data.connect_params)
-          this.host = connectParams.api_server.slice(connectParams.api_server.indexOf('//') + 2) // 去掉双划线
-          if (hadPort(this.host)) {
-            this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
-            this.host = this.host.slice(0, this.host.indexOf(':'))
-          } else {
-            this.port = connectParams.api_server.indexOf('https') === 0 ? 443 : 80
-          }
-          const password = connectParams.password
+      const query = this.$route.query
+      this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
+      if (hadPort(this.host)) {
+        this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
+        this.host = this.host.slice(0, this.host.indexOf(':'))
+      } else {
+        this.port = query.api_server.indexOf('https') === 0 ? 443 : 80
+      }
+      const password = query.password
 
-          var scheme = 'ws'
-          if (this.sc) this.sc.stop()
-          if (connectParams.api_server.includes('https:')) {
-            scheme = 'wss'
-          }
-          const uri = `${scheme}://${this.host}:${this.port}/websockify/?access_token=${connectParams.access_token}`
-          try {
-            this.sc = new SpiceMainConn({
-              uri,
-              screen_id: 'spice-canvas',
-              // dump_id: 'debug-div',
-              // message_id: 'message-div',
-              password,
-              onerror: this.spiceError,
-              onsuccess: this.spiceSuccess,
-              onagent: this.agentConnected
-            })
-          } catch (e) {
-            debug(e)
-            this.disconnect()
-          }
+      var scheme = 'ws'
+      if (this.sc) this.sc.stop()
+      if (query.api_server.includes('https:')) {
+        scheme = 'wss'
+      }
+      const uri = `${scheme}://${this.host}:${this.port}/websockify/?access_token=${query.access_token}`
+      try {
+        this.sc = new SpiceMainConn({
+          uri,
+          screen_id: 'spice-canvas',
+          // dump_id: 'debug-div',
+          // message_id: 'message-div',
+          password,
+          onerror: this.spiceError,
+          onsuccess: this.spiceSuccess,
+          onagent: this.agentConnected
         })
+      } catch (e) {
+        debug(e)
+        this.disconnect()
+      }
     },
     disconnect () {
       this.socketTips.message = '连接失败'
