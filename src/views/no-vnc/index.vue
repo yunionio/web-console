@@ -13,7 +13,7 @@
             </template>
           </a-menu>
         </a-dropdown>
-        <div class="text flex-fill d-flex justify-content-center align-items-center">{{ name }} - {{ socketTips.message }}</div>
+        <div class="text flex-fill d-flex justify-content-center align-items-center">{{ socketTips.message }}</div>
         <a-button type="primary" @click="sendText" class="custom-button">发送文字</a-button>
       </div>
       <div id="noVNC_canvas" @keyup.ctrl.86="keyListener" />
@@ -41,8 +41,6 @@
 </template>
 
 <script>
-import { getWebConsoleInfoByServerId } from '@/api/webconsole'
-import qs from 'qs'
 import RFB from '@novnc/novnc/core/rfb'
 import KeyTable from '@novnc/novnc/core/input/keysym'
 import { charmap, shiftCharmap } from './src/VncChartMap'
@@ -196,35 +194,29 @@ export default {
     },
     connectVNC () {
       const oTarget = document.getElementById('noVNC_canvas')
-      getWebConsoleInfoByServerId(this.serverId)
-        .then(({ data }) => {
-          const connectParams = qs.parse(data.connect_params)
-          this.host = connectParams.api_server.slice(connectParams.api_server.indexOf('//') + 2) // 去掉双划线
-          if (hadPort(this.host)) {
-            this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
-            this.host = this.host.slice(0, this.host.indexOf(':'))
-          } else {
-            this.port = connectParams.api_server.indexOf('https') === 0 ? 443 : 80
-          }
-          let scheme = 'ws'
-          if (connectParams.api_server.includes('https:')) {
-            scheme = 'wss'
-          }
-          const sPassword = connectParams.password
-          this.cRfb = new RFB(oTarget, `${scheme}://${this.host}:${this.port}/websockify/?access_token=${connectParams.access_token}`, {
-            share: true,
-            credentials: { password: sPassword }
-          })
-          this.cRfb.addEventListener('connect', this.connectedToServer)
-          this.cRfb.addEventListener('disconnect', this.disconnectedFromServer)
-          this.cRfb.addEventListener('credentialsrequired', this.credentialsAreRequired)
-          this.cRfb.addEventListener('desktopname', this.updateDesktopName)
-          this.cRfb.scaleViewport = true
-          this.cRfb.viewOnly = false // 是否应该阻止任何事件，(例如按键或鼠标移动)发送到服务器。默认情况下禁用。
-        })
-        .catch(() => {
-          this.disconnectedFromServer()
-        })
+      const query = this.$route.query
+      this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
+      if (hadPort(this.host)) {
+        this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
+        this.host = this.host.slice(0, this.host.indexOf(':'))
+      } else {
+        this.port = query.api_server.indexOf('https') === 0 ? 443 : 80
+      }
+      let scheme = 'ws'
+      if (query.api_server.includes('https:')) {
+        scheme = 'wss'
+      }
+      const sPassword = query.password
+      this.cRfb = new RFB(oTarget, `${scheme}://${this.host}:${this.port}/websockify/?access_token=${query.access_token}`, {
+        share: true,
+        credentials: { password: sPassword }
+      })
+      this.cRfb.addEventListener('connect', this.connectedToServer)
+      this.cRfb.addEventListener('disconnect', this.disconnectedFromServer)
+      this.cRfb.addEventListener('credentialsrequired', this.credentialsAreRequired)
+      this.cRfb.addEventListener('desktopname', this.updateDesktopName)
+      this.cRfb.scaleViewport = true
+      this.cRfb.viewOnly = false // 是否应该阻止任何事件，(例如按键或鼠标移动)发送到服务器。默认情况下禁用。
     },
     connectedToServer (e) {
       this.socketTips.message = '连接成功'

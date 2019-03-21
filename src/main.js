@@ -29,7 +29,7 @@ async function start () {
   // 初始化 debug
   initDebug()
   // 初始化用户信息存入 store
-  await store.dispatch('setUserInfo')
+  // await store.dispatch('setUserInfo')
   app.$mount('#app')
 }
 
