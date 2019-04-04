@@ -1,0 +1,67 @@
+<!doctype html>
+<head>
+  <meta charset="utf-8">
+  <title>flexVDI WebPortal</title>
+  <meta name="description" content="flexVDI">
+  <meta name="keywords" content="flexVDI">
+  <meta name="author" content="flexVDI">
+</head>
+<body class="login">
+  <form class="loginForm" id="loginform" name="loginform">
+  </form>
+  <script type="text/javascript" src="flexvdi/extwin.js"></script>
+  <script>
+
+    function createCookie(name, value, days) {
+      var expires;
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toGMTString();
+      } else {
+        expires = "";
+      }
+      document.cookie = escape(name) + "=" + escape(value) + expires + "; path=/";
+    }
+
+    function readCookie(name) {
+      var nameEQ = escape(name) + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) === 0) return unescape(c.substring(nameEQ.length, c.length));
+      }
+      return null;
+    }
+
+    function eraseCookie(name) {
+      createCookie(name, "", -1);
+    }
+
+    if (exturl != null && exturl != "") {
+      var username = readCookie("username");
+      var password = readCookie("password");
+
+      eraseCookie("username");
+      eraseCookie("password");
+
+      var parm_user = document.createElement('input');
+      parm_user.name = 'user';
+      parm_user.type = 'hidden';
+      parm_user.value = username;
+			
+      var parm_pass = document.createElement('input');
+      parm_pass.name = 'otp';
+      parm_pass.type = 'hidden';
+      parm_pass.value = password;
+
+      var form = document.loginform;
+      form.method = 'post';
+      form.action = exturl;
+      form.appendChild(parm_user);
+      form.appendChild(parm_pass);
+      form.submit();
+   }
+  </script>
+</body>

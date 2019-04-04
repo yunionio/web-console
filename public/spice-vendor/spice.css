@@ -1,0 +1,232 @@
+body
+{
+  background-color: #f2f2f2;
+  color: #000000; margin: 0; padding: 0;
+  font-family: "Lucida Grande", "Lucida Sans Unicode", "Helvetica Neue", Helvetica, Arial, Verdana, sans-serif;
+  font-size: 12pt;
+  line-height: 1.5em;
+  overflow: hidden;
+}
+
+* { margin: 0; }
+
+#login
+{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    z-index: 1;
+
+    margin-left: auto;
+    margin-right: auto;
+    background-color: rgba(0, 161, 193, 0.9);
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    margin-bottom: 4px;
+    min-height: 40px;
+    //position:fixed;
+
+    -webkit-box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.28);
+    -moz-box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.28);
+    box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.28);
+
+}
+#login.hidden
+{
+    position: fixed;
+    margin-top: -34px;
+}
+#login.hidden-peek
+{
+    position: fixed;
+}
+#login span.logo
+{
+    display: inline-block;
+    margin: 2.5px;
+    background-image: url(resources/flexvdi-logo.png);
+    height: 25px;
+    width: 120px;
+    background-size: cover;
+}
+
+#login .float-right
+{
+    float:right;
+    margin-right: .5em;
+    margin-top: .25em;
+}
+#login label { color: #ffffff; text-shadow: 1px 1px 0px rgba(175, 210, 220, 0.8); }
+#login input
+{
+    padding: 5px;
+    background-color: #fAfAfA;
+    border: 1px inset #999999;
+    outline: none;
+    -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+#login input#host { width: 200px; }
+#login input#port { width: 75px; }
+#login input#password { width: 100px; }
+#login button
+{
+    padding: 5px 10px 5px 10px;
+    margin: 3px 5px;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+}
+#login button:hover
+{
+    background-color: rgba(0, 0, 0, 0.1);
+    color: rgba(255, 255, 255, 1);
+}
+#login button#close
+{
+    background-position: 50% 50%;
+    background-size: 50%;
+    background-image:url(resources/button-close.png);
+    background-repeat: no-repeat;
+}
+#login button#close:hover
+{
+    background-image:url(resources/button-close-highlight.png);
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: rgba(0, 161, 193, 0.9);
+    padding: 5px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 3;
+}
+
+.dropdown-content button {
+    display: block;
+}
+
+.show {display:block;}
+
+#overlay {
+    visibility: hidden;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.8;
+    text-align: center;
+    z-index: 2;
+}
+
+.overlay-dialog {
+    visibility: hidden;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    width: 600px;
+    margin: 300px auto;
+    background-color: #fff;
+    padding: 0px;
+    z-index: 3;
+}
+
+.overlay-text {
+    font-size: 10pt;
+    font-family: 'arial';
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: center;
+}
+
+.overlay-text-end {
+    font-size: 10pt;
+    font-family: 'arial';
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 15px;
+    padding-right: 15px;
+    text-align: center;
+}
+
+.overlay-input {
+    background-color: #ddd;
+    border-top: 1px solid #bbb;
+    padding: 10px;
+    height: 25px;
+}
+
+.overlay-input .float-right {
+    margin-right: 10px;
+    float: right;
+}
+
+#extwin {
+    visibility: hidden;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    width: 600px;
+    height: 600px;
+    margin: 100px auto;
+    background-color: #fff;
+    padding: 0px;
+    z-index: 3;
+}
+
+#extwin-title {
+    //background-color: rgba(0, 161, 193, 0.9);
+    background-color: rgba(0, 161, 193, 0.9);
+    width: 100%;
+    height: 30px;
+}
+
+#extwin button#extwin-close
+{
+    padding: 5px 10px 5px 10px;
+    margin-top: 3px;
+    margin-left: 5px;
+    padding: 3px 10px;
+    border: none;
+    cursor: pointer;
+    background-color: transparent;
+    color: rgba(255, 255, 255, 0.8);
+    -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
+    background-position: 50% 50%;
+    background-size: 50%;
+    background-image:url(resources/button-close.png);
+    background-repeat: no-repeat;
+    float:right;
+    margin-right: .5em;
+    margin-top: .25em;
+}
+
+#extwin button#extwin-close:hover {
+    background-image:url(resources/button-close-highlight.png);
+}
+
+#extwin iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
