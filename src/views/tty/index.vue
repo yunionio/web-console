@@ -16,7 +16,7 @@ import io from 'socket.io-client'
 const debug = require('debug')('app:ssh')
 
 export default {
-  name: 'SSHWebConsole',
+  name: 'TTYWebConsole',
   data () {
     return {
       loading: false,
