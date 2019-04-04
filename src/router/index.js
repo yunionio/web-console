@@ -25,12 +25,12 @@ export const constantRouterMap = [
     component: loadView('no-vnc')
   },
   {
-    path: '/ssh',
-    name: 'ssh',
+    path: '/tty',
+    name: 'tty',
     meta: {
-      title: 'SSH'
+      title: 'TTY'
     },
-    component: loadView('ssh')
+    component: loadView('tty')
   },
   {
     path: '/spice',
