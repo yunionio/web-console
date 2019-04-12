@@ -138,8 +138,8 @@ export default {
       }
     },
     handleCancle () {
-      this.form.resetFields()
       this.visible = false
+      this.form.resetFields()
     },
     rebuiltConfirm () {
       this.cRfb.sendCtrlAltDel()
@@ -151,7 +151,7 @@ export default {
         if (!err) {
           this.doSendText(this.getFormValue()['command'])
           this.$nextTick(() => {
-            this.visible = false
+            this.handleCancle()
           })
         }
       })

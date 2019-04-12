@@ -177,6 +177,8 @@ Application = $.spcExtend(wdi.DomainObject, {
   },
 
   onChannelConnected: function (params) {
+    $('#login').removeClass('error')
+    $('#header-tips').text('连接成功')
     var channel = params
     if (channel === wdi.SpiceVars.SPICE_CHANNEL_INPUTS) {
       this.clientGui.releaseAllKeys()
@@ -188,6 +190,8 @@ Application = $.spcExtend(wdi.DomainObject, {
   },
 
   onDisconnect: function (params) {
+    $('#login').addClass('error')
+    $('#header-tips').text('连接失败')
     var error = params
     this.executeExternalCallback('error', error)
   },
@@ -365,7 +369,7 @@ Application = $.spcExtend(wdi.DomainObject, {
   },
 
   enableKeyboard: function () {
-    	this.clientGui.enableKeyboard()
+    this.clientGui.enableKeyboard()
   },
 
   disableKeyboard: function () {

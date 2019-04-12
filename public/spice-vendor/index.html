@@ -129,9 +129,9 @@ must display the words "Powered by eyeos" and retain the original copyright noti
         <script src="run.js"></script>
         <!-- end core -->
         <meta content="yes" name="apple-mobile-web-app-capable" />
-
-    <link rel="stylesheet" type="text/css" href="spice.css">
-    <link rel="stylesheet" type="text/css" href="lib/jquery.nok.min.css">
+        <link rel="stylesheet" type="text/css" href="antd.min.css">
+        <link rel="stylesheet" type="text/css" href="spice.css">
+        <link rel="stylesheet" type="text/css" href="lib/jquery.nok.min.css">
         <style type="text/css">
             body {
                 background-color:#222;
@@ -180,39 +180,40 @@ must display the words "Powered by eyeos" and retain the original copyright noti
     </head>
     <body>
         <div id="login" onMouseOver="showMenuBar();" onMouseOut="hideMenuBar();">
-            <span class="logo"></span>
-            <div class="float-right">
-                <button id="uploadfile" onclick="showExtWin();">Subir Fichero</button>
-                <button id="menubarbutton" onclick="toggleMenuBar();">Ocultar Menu</button>
-                <button id="fullscreen" onclick="toggleFullScreen(document.body);">Pantalla Completa</button>
+            <!-- <span class="logo"></span> -->
+            <div id="header-tips">连接中...</div>
+            <div class="action-group">
+                <button id="uploadfile" onclick="showExtWin();" style="display: none;">Subir Fichero</button>
+                <button id="menubarbutton" onclick="toggleMenuBar();" style="display: none;">Ocultar Menu</button>
+                <button id="fullscreen" onclick="toggleFullScreen(document.body);" style="display: none;">Pantalla Completa</button>
                 <div class="dropdown">
-                    <button id="keystroke" onclick="showKeystrokesMenu()" class="dropbtn">Combinación de teclas</button>
-                    <div id="keystrokes-menu" class="dropdown-content">
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+Del</button>
-                        <button onclick="sendKeystroke(this)">Alt+Tab</button>
-                        <button onclick="sendKeystroke(this)">Win+L</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Win+Right</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Win+Left</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F1</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F2</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F3</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F4</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F5</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F6</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F7</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F8</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F9</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F10</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F11</button>
-                        <button onclick="sendKeystroke(this)">Ctrl+Alt+F12</button>
-                    </div>
+                    <button id="keystroke" onclick="showKeystrokesMenu()" class="dropbtn ant-btn ant-btn-primary ant-dropdown-trigger">Combinación de teclas</button>
+                    <ul id="keystrokes-menu" class="ant-dropdown-menu dropdown-content">
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+Del</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Alt+Tab</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Win+L</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Win+Right</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Win+Left</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F1</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F2</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F3</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F4</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F5</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F6</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F7</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F8</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F9</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F10</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F11</li>
+                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F12</li>
+                    </ul>
                 </div>
                 <button id="showclientid" onclick="showClientID();">Mostrar Id</button>
-                <button id="close" onclick="showCloseDialog();">&nbsp</button>
+                <button id="close" onclick="showCloseDialog();" style="display: none;">&nbsp</button>
             </div>
         </div>
 
-        <div id="screen"></div>
+        <div id="screen" style="position: absolute; top: 32px; bottom: 0; width: 100%; left: 0;"></div>
         <input type="button" value="getStats" style="display:none;position:absolute;top:0px;right:0px;z-index:100;width:200px;height:200px;" id="getStats" />
         <input type="text" id="hiddeninput" style="display:none;opacity:0;font-size: 60px;color:transparent"/>
         <div id="canvasSpace" style="display: none; height: 1024px"></div>
