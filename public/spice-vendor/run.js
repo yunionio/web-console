@@ -54,6 +54,7 @@ function translate () {
         continue
       }
     }
+    lang = 'zh-cn'
     tr = translations[lang]
     break
   }

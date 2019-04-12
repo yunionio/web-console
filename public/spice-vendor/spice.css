@@ -17,20 +17,27 @@ body
     left: 0px;
     width: 100%;
     z-index: 1;
+    color: #fff;
 
     margin-left: auto;
     margin-right: auto;
-    background-color: rgba(0, 161, 193, 0.9);
+    background-color: #67c23a;
     -moz-border-radius: 0px;
     -webkit-border-radius: 0px;
     border-radius: 0px;
     margin-bottom: 4px;
-    min-height: 40px;
-    //position:fixed;
+    height: 32px;
 
     -webkit-box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.28);
     -moz-box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.28);
     box-shadow: 0px 3px 7px 0px rgba(0,0,0,0.28);
+    /* height: 40px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #67c23a;
+    color: #fff; */
 
 }
 #login.hidden
@@ -73,21 +80,10 @@ body
 #login input#host { width: 200px; }
 #login input#port { width: 75px; }
 #login input#password { width: 100px; }
-#login button
-{
-    padding: 5px 10px 5px 10px;
-    margin: 3px 5px;
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    background-color: transparent;
-    color: rgba(255, 255, 255, 0.8);
-    -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px;
-}
 #login button:hover
 {
-    background-color: rgba(0, 0, 0, 0.1);
-    color: rgba(255, 255, 255, 1);
+    /* background-color: rgba(0, 0, 0, 0.1);
+    color: rgba(255, 255, 255, 1); */
 }
 #login button#close
 {
@@ -101,6 +97,28 @@ body
     background-image:url(resources/button-close-highlight.png);
 }
 
+#login #header-tips {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    line-height: 32px;
+    text-align: center;
+    z-index: 1;
+}
+
+#login.error {
+    background-color: #f56c6c;
+}
+
+#login .action-group {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
 .dropdown {
     position: relative;
     display: inline-block;
@@ -109,9 +127,9 @@ body
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: rgba(0, 161, 193, 0.9);
-    padding: 5px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    /* background-color: rgba(0, 161, 193, 0.9); */
+    /* padding: 5px; */
+    /* box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
     z-index: 3;
 }
 
