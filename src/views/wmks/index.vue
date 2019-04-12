@@ -172,7 +172,7 @@ export default {
         if (!err) {
           this.doSendText(this.getFormValue()['command'])
           this.$nextTick(() => {
-            this.visible = false
+            this.handleCancle()
           })
         }
       })
@@ -181,8 +181,8 @@ export default {
       window.$('#wmks-canvas canvas').focus()
     },
     handleCancle () {
-      this.form.resetFields()
       this.visible = false
+      this.form.resetFields()
     },
     doSendText (text) {
       this.wmksContainer.wmks('sendInputString', text)
