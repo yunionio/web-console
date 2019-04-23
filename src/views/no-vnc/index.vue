@@ -246,6 +246,7 @@ export default {
 .novnc-wrapper {
   height: 100%;
   overflow: hidden;
+  background-color: #333;
   .novnc-wrapper-inner {
     height: 100%;
     position: relative;
@@ -275,9 +276,10 @@ export default {
     color: #fff;
     position: absolute;
     top: 32px;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    width: 1024px;
+    height: 768px;
+    left: 50%;
+    margin-left: -512px;
   }
 }
 </style>
