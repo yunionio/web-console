@@ -13,6 +13,7 @@
           </a-menu>
         </a-dropdown>
         <div class="text flex-fill d-flex justify-content-center align-items-center">{{ socketTips.message }}</div>
+        <a-button @click="toggleTrackpad" :disabled="trackpadDisable" class="mr-2 custom-button">Trackpad</a-button>
         <a-button type="primary" @click="sendText" class="custom-button">发送文字</a-button>
       </div>
       <div id="wmks-canvas" />
@@ -52,6 +53,7 @@ export default {
   name: 'WMKSWebConsole',
   data () {
     return {
+      trackpadDisable: false,
       form: this.$form.createForm(this),
       visible: false,
       host: '',
@@ -92,6 +94,9 @@ export default {
     })
   },
   methods: {
+    toggleTrackpad () {
+      this.wmksContainer.wmks('toggleRelativePad')
+    },
     sendText (pastedText) {
       if (pastedText && typeof pastedText === 'string') {
         this.form.setFieldsValue({
@@ -152,18 +157,15 @@ export default {
         .bind('wmksscreensizechange', function (evt, w, h) {
           debug(w, h)
         })
-        // .bind('wmkstoggle', function (evt, what, visible) {
-        //   if (what === 'RELATIVEPAD') {
-        //     if (visible) {
-        //       $("#trackPad").attr('disabled', true)
-        //     } else {
-        //       $("#trackPad").attr('disabled', false)
-        //     }
-        //   }
-        // })
-        // $("#trackPad").click(function () {
-        //   wmksContainer.wmks("toggleRelativePad")
-        // })
+        .bind('wmkstoggle', function (evt, what, visible) {
+          if (what === 'RELATIVEPAD') {
+            if (visible) {
+              this.trackpadDisable = true
+            } else {
+              this.trackpadDisable = false
+            }
+          }
+        })
       this.wmksContainer.wmks('connect', uri)
     },
     handleConfirm (e) {
