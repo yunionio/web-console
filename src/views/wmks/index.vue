@@ -105,21 +105,13 @@ export default {
       }
       this.visible = true
     },
-    rebuiltConfirm () {
-      this.wmksContainer.wmks('sendKeyCodes', [17, 18, 46])
-      this.handleCancle()
-    },
     dropdownClick (item) {
       if (item.key === 'Delete') {
         if (this.isLinux) {
-          this.$confirm({
-            title: '重启机器',
-            content: '提示：此操作会重启该云服务器，请慎重。',
-            onOk: () => {
-              this.rebuiltConfirm()
-            },
-            onCancel: () => {}
-          })
+          const r = confirm('Ctrl-Alt-Delete组合键将重启服务器，确定重启？')
+          if (r) {
+            this.wmksContainer.wmks('sendKeyCodes', [17, 18, 46])
+          }
         } else {
           this.wmksContainer.wmks('sendKeyCodes', [17, 18, 46])
         }
