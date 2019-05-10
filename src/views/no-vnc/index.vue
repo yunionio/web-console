@@ -141,10 +141,6 @@ export default {
       this.visible = false
       this.form.resetFields()
     },
-    rebuiltConfirm () {
-      this.cRfb.sendCtrlAltDel()
-      this.handleCancle()
-    },
     handleConfirm (e) {
       e.preventDefault()
       this.form.validateFields((err, values) => {
@@ -173,14 +169,10 @@ export default {
     dropdownClick (e) {
       if (e.key === 'Delete') {
         if (this.isLinux) {
-          this.$confirm({
-            title: '重启机器',
-            content: '提示：此操作会重启该云服务器，请慎重。',
-            onOk: () => {
-              this.rebuiltConfirm()
-            },
-            onCancel: () => {}
-          })
+          const r = confirm('Ctrl-Alt-Delete组合键将重启服务器，确定重启？')
+          if (r) {
+            this.cRfb.sendCtrlAltDel()
+          }
         } else {
           this.cRfb.sendCtrlAltDel()
         }
@@ -244,17 +236,20 @@ export default {
 
 <style lang="scss" scoped>
 .novnc-wrapper {
-  height: 100%;
-  overflow: hidden;
+  height: 100vh;
   background-color: #333;
+  position: relative;
   .novnc-wrapper-inner {
-    height: 100%;
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
   .header {
     color: #fff;
     height: 32px;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -274,12 +269,27 @@ export default {
   #noVNC_canvas {
     background-color: #000;
     color: #fff;
-    position: absolute;
+    position: fixed;
     top: 32px;
     width: 1024px;
     height: 768px;
     left: 50%;
     margin-left: -512px;
+    overflow: hidden;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .novnc-wrapper {
+    #noVNC_canvas {
+      position: fixed;
+      top: 32px;
+      width: auto;
+      height: auto;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin-left: 0;
+    }
   }
 }
 </style>
