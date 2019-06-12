@@ -14,6 +14,7 @@
           </a-menu>
         </a-dropdown>
         <div class="text flex-fill d-flex justify-content-center align-items-center">{{ socketTips.message }}</div>
+        <a-button @click="dropdownClick(deleteEvent)" class="mr-2 custom-button">Ctrl-Alt-Delete</a-button>
         <a-button type="primary" @click="sendText" class="custom-button">发送文字</a-button>
       </div>
       <div id="noVNC_canvas" @keyup.ctrl.86="keyListener" />
@@ -66,7 +67,11 @@ export default {
         type: 'info',
         message: '正在连接'
       },
-      dropdownOps: ['Delete', 'F1', 'F2', 'F3', 'F4', 'F5', 'F6']
+      dropdownOps: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6'],
+      deleteEvent: {
+        key: 'Delete',
+        keyPath: ['Delete']
+      }
     }
   },
   computed: {
