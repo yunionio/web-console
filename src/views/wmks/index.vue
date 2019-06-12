@@ -2,7 +2,7 @@
   <div class="wmks-wrapper" ref="canvas">
     <div class="wmks-wrapper-inner">
       <div class="header text-center d-flex" :class="socketTips.type">
-        <a-dropdown :trigger="['click']">
+        <!-- <a-dropdown :trigger="['click']">
           <a-button type="primary" class="custom-dropdown">
             发送远程命令<a-icon type="down" />
           </a-button>
@@ -11,9 +11,10 @@
               <a-menu-item :key="item">Ctrl-Alt-{{ item }}</a-menu-item>
             </template>
           </a-menu>
-        </a-dropdown>
+        </a-dropdown> -->
         <div class="text flex-fill d-flex justify-content-center align-items-center">{{ socketTips.message }}</div>
         <a-button @click="toggleTrackpad" :disabled="trackpadDisable" class="mr-2 custom-button">Trackpad</a-button>
+        <a-button @click="dropdownClick(deleteEvent)" class="mr-2 custom-button">Ctrl-Alt-Delete</a-button>
         <a-button type="primary" @click="sendText" class="custom-button">发送文字</a-button>
       </div>
       <div id="wmks-canvas" />
@@ -63,7 +64,11 @@ export default {
         message: '正在连接'
       },
       dropdownOps: ['Delete'],
-      wmksContainer: null
+      wmksContainer: null,
+      deleteEvent: {
+        key: 'Delete',
+        keyPath: ['Delete']
+      }
     }
   },
   computed: {
