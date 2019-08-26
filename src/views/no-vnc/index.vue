@@ -17,7 +17,9 @@
         <a-button @click="dropdownClick(deleteEvent)" class="mr-2 custom-button">Ctrl-Alt-Delete</a-button>
         <a-button type="primary" @click="sendText" class="custom-button">发送文字</a-button>
       </div>
-      <div id="noVNC_canvas" @keyup.ctrl.86="keyListener" />
+      <div class="vnc-canvas-wrap">
+        <div id="noVNC_canvas" @keyup.ctrl.86="keyListener" />
+      </div>
     </div>
     <a-modal
       title="发送文字"
@@ -242,7 +244,7 @@ export default {
 <style lang="scss" scoped>
 .novnc-wrapper {
   height: 100vh;
-  background-color: #333;
+  background-color: rgb(40, 40, 40);
   position: relative;
   .novnc-wrapper-inner {
     position: absolute;
@@ -271,30 +273,25 @@ export default {
       color: #fff;
     }
   }
-  #noVNC_canvas {
-    background-color: #000;
-    color: #fff;
+  .vnc-canvas-wrap {
     position: fixed;
     top: 32px;
-    width: 1024px;
-    height: 768px;
-    left: 50%;
-    margin-left: -512px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-items: center;
     overflow: hidden;
   }
-}
-@media screen and (max-width: 1024px) {
-  .novnc-wrapper {
-    #noVNC_canvas {
-      position: fixed;
-      top: 32px;
-      width: auto;
-      height: auto;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      margin-left: 0;
-    }
+  #noVNC_canvas {
+    background-color: rgb(40, 40, 40);
+    color: #fff;
+    max-width: 1920px;
+    max-height: 1080px;
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
   }
 }
 </style>
