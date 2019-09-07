@@ -229,7 +229,7 @@ export default {
   .header {
     color: #fff;
     height: 32px;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
@@ -249,7 +249,7 @@ export default {
   #wmks-canvas {
     background-color: #000;
     color: #fff;
-    position: absolute;
+    position: fixed;
     top: 32px;
     left: 0;
     right: 0;
