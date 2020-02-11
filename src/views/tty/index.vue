@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import { Base64 } from 'js-base64'
+import qs from 'qs'
 import { Terminal } from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import 'xterm/src/xterm.css'
@@ -135,7 +137,14 @@ export default {
       }
     },
     getWebConsoleInfo () {
-      this.connectParams = this.$route.query
+      let query = this.$route.query
+      if (query.data) {
+        query = {
+          ...qs.parse(Base64.decode(query.data)),
+          ...query
+        }
+      }
+      this.connectParams = query
       this.$nextTick(() => {
         this.initTerminal()
       })
