@@ -5,6 +5,9 @@
 </template>
 
 <script>
+import { Base64 } from 'js-base64'
+import qs from 'qs'
+
 export default {
   computed: {
     spiceUrl () {
@@ -15,7 +18,16 @@ export default {
     delete window.getQuery
   },
   created () {
-    window.getQuery = () => this.$route.query
+    window.getQuery = () => {
+      let query = this.$route.query
+      if (query.data) {
+        query = {
+          ...qs.parse(Base64.decode(query.data)),
+          ...query
+        }
+      }
+      return query
+    }
   }
 }
 </script>

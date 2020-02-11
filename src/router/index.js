@@ -1,11 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Index from '@views/index'
+import NoVNC from '@views/no-vnc'
+import TTY from '@views/tty'
+import Spice from '@views/spice'
+import WMKS from '@views/wmks'
 
 Vue.use(Router)
-
-function loadView (view) {
-  return () => import(/* webpackChunkName: "view-[request]" */ `@views/${view}`)
-}
 
 export const constantRouterMap = [
   {
@@ -14,7 +15,7 @@ export const constantRouterMap = [
     meta: {
       title: 'Index'
     },
-    component: loadView('index')
+    component: Index
   },
   {
     path: '/no-vnc',
@@ -22,7 +23,7 @@ export const constantRouterMap = [
     meta: {
       title: 'noVNC'
     },
-    component: loadView('no-vnc')
+    component: NoVNC
   },
   {
     path: '/tty',
@@ -30,7 +31,7 @@ export const constantRouterMap = [
     meta: {
       title: 'TTY'
     },
-    component: loadView('tty')
+    component: TTY
   },
   {
     path: '/spice',
@@ -38,7 +39,7 @@ export const constantRouterMap = [
     meta: {
       title: 'Spice'
     },
-    component: loadView('spice')
+    component: Spice
   },
   {
     path: '/wmks',
@@ -46,7 +47,7 @@ export const constantRouterMap = [
     meta: {
       title: 'WMKS'
     },
-    component: loadView('wmks')
+    component: WMKS
   }
 ]
 

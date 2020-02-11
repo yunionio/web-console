@@ -43,6 +43,9 @@
 </template>
 
 <script>
+import { Base64 } from 'js-base64'
+import qs from 'qs'
+
 const debug = require('debug')('app:wmks')
 
 const hadPort = value => {
@@ -123,7 +126,13 @@ export default {
       }
     },
     connectVNC () {
-      const query = this.$route.query
+      let query = this.$route.query
+      if (query.data) {
+        query = {
+          ...qs.parse(Base64.decode(query.data)),
+          ...query
+        }
+      }
       this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
       if (hadPort(this.host)) {
         this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
