@@ -26,7 +26,7 @@ function fsExistsSync (path) {
 const devServerCoustomConfig = fsExistsSync(resolve('./dev.server.config.js')) ? require('./dev.server.config.js') : {}
 
 module.exports = {
-  publicPath: '/web-console',
+  publicPath: '/web-console/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: true,
