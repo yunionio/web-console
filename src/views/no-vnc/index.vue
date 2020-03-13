@@ -24,9 +24,12 @@
     <a-modal
       title="发送文字"
       :visible="visible"
-      @ok="handleConfirm"
       @cancel="handleCancle"
       :after-close="handleAfterClose">
+      <template v-slot:footer>
+        <a-button key="submit" type="primary" @click="handleConfirm">确定</a-button>
+        <a-button key="back" @click="handleCancle">取消</a-button>
+      </template>
       <a-form :form="form" @submit="handleConfirm">
         <a-tag color="orange" class="d-block">提示：如果发送内容为登录密码，请点击确定后输入回车键。</a-tag>
         <a-form-item label="内容">
