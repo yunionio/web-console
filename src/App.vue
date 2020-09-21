@@ -28,10 +28,6 @@ export default {
     layout () {
       return `${(this.$route.meta.layout || 'default')}-layout`
     }
-  },
-  mounted () {
-    const loadingElement = document.querySelector('#preloader')
-    loadingElement && loadingElement.parentNode.removeChild(loadingElement)
   }
 }
 </script>

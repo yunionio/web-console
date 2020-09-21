@@ -1,0 +1,26 @@
+{
+  "common": {
+    "ok": "确定",
+    "cancel": "取消",
+    "content": "内容",
+    "placeholder": {
+      "text": "请输入文字",
+      "password": "请输入密码"
+    }
+  },
+  "connection": {
+    "ing": "正在连接",
+    "success": "连接成功",
+    "fail": "连接失败",
+    "disconnect": "连接断开",
+    "abnormal": "连接异常",
+    "reconnection_fail": "重连失败",
+    "reconnection_success": "重连成功",
+    "reconnection_ing": "正在尝试重连",
+    "init_fail": "初始化失败"
+  },
+  "send_remote_command": "发送远程命令",
+  "send_text": "发送文字",
+  "common_text1": "提示：如果发送内容为登录密码，请点击确定后输入回车键。",
+  "common_text2": "Ctrl-Alt-Delete组合键将重启服务器，确定重启？"
+}

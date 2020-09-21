@@ -7,6 +7,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import i18n from './locales'
 
 import './permission'
 import './errorLog'
@@ -20,6 +21,7 @@ function initDebug () {
 const app = new Vue({
   router,
   store,
+  i18n,
   ...App
 })
 

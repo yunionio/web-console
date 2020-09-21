@@ -1,0 +1,26 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "content": "Content",
+    "placeholder": {
+      "text": "Please enter text",
+      "password": "Please enter a password"
+    }
+  },
+  "connection": {
+    "ing": "Connecting",
+    "success": "Connected successfully",
+    "fail": "Connection failed",
+    "disconnect": "Disconnected",
+    "abnormal": "Connection abnormal",
+    "reconnection_fail": "Reconnection failed",
+    "reconnection_success": "Reconnection successfully",
+    "reconnection_ing": "Trying to reconnect",
+    "init_fail": "Initialization failed"
+  },
+  "send_remote_command": "Send remote command",
+  "send_text": "Send text",
+  "common_text1": "Prompt: If the content sent is the login password, please click OK and enter the Enter key.",
+  "common_text2": "Ctrl-Alt-Delete will restart the server. Are you sure to restart?"
+}
