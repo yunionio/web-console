@@ -4,7 +4,7 @@
       <div class="header text-center d-flex" :class="socketTips.type">
         <a-dropdown :trigger="['click']">
           <a-button type="primary" class="custom-dropdown">
-            发送远程命令<a-icon type="down" />
+            {{ $t('send_remote_command') }}<a-icon type="down" />
           </a-button>
           <a-menu slot="overlay" @click="dropdownClick">
             <template v-for="(item, idx) in dropdownOps">
@@ -15,29 +15,29 @@
         </a-dropdown>
         <div class="text flex-fill d-flex justify-content-center align-items-center">{{ socketTips.message }}</div>
         <a-button @click="dropdownClick(deleteEvent)" class="mr-2 custom-button">Ctrl-Alt-Delete</a-button>
-        <a-button type="primary" @click="sendText" class="custom-button">发送文字</a-button>
+        <a-button type="primary" @click="sendText" class="custom-button">{{ $t('send_text') }}</a-button>
       </div>
       <div class="vnc-canvas-wrap">
         <div id="noVNC_canvas" @keyup.ctrl.86="keyListener" />
       </div>
     </div>
     <a-modal
-      title="发送文字"
+      :title="$t('send_text')"
       :visible="visible"
       @cancel="handleCancle"
       :after-close="handleAfterClose">
       <template v-slot:footer>
-        <a-button key="submit" type="primary" @click="handleConfirm">确定</a-button>
-        <a-button key="back" @click="handleCancle">取消</a-button>
+        <a-button key="submit" type="primary" @click="handleConfirm">{{ $t('common.ok') }}</a-button>
+        <a-button key="back" @click="handleCancle">{{ $t('common.cancel') }}</a-button>
       </template>
       <a-form :form="form" @submit="handleConfirm">
-        <a-tag color="orange" class="d-block">提示：如果发送内容为登录密码，请点击确定后输入回车键。</a-tag>
-        <a-form-item label="内容">
+        <a-tag color="orange" class="d-block">{{ $t('common_text1') }}</a-tag>
+        <a-form-item :label="$t('common.content')">
           <a-textarea
             ref="textarea"
             :autosize="{ minRows: 4 }"
             v-decorator="['command', {
-              rules: [{ required: true, message: '请输入文字' }]
+              rules: [{ required: true, message: $t('common.placeholder.text') }]
             }]">
           </a-textarea>
         </a-form-item>
@@ -72,7 +72,7 @@ export default {
       port: '',
       socketTips: {
         type: 'info',
-        message: '正在连接'
+        message: this.$t('connection.ing')
       },
       dropdownOps: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6'],
       deleteEvent: {
@@ -157,7 +157,7 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.doSendText(this.getFormValue()['command'])
+          this.doSendText(this.getFormValue().command)
           this.$nextTick(() => {
             this.handleCancle()
           })
@@ -181,7 +181,7 @@ export default {
     dropdownClick (e) {
       if (e.key === 'Delete') {
         if (this.isLinux) {
-          const r = confirm('Ctrl-Alt-Delete组合键将重启服务器，确定重启？')
+          const r = confirm(this.$t('common_text2'))
           if (r) {
             this.cRfb.sendCtrlAltDel()
           }
@@ -229,15 +229,15 @@ export default {
       this.cRfb.viewOnly = false // 是否应该阻止任何事件，(例如按键或鼠标移动)发送到服务器。默认情况下禁用。
     },
     connectedToServer (e) {
-      this.socketTips.message = '连接成功'
+      this.socketTips.message = this.$t('connection.success')
       this.socketTips.type = 'success'
     },
     disconnectedFromServer (e) {
-      this.socketTips.message = '连接失败'
+      this.socketTips.message = this.$t('connection.fail')
       this.socketTips.type = 'error'
     },
     credentialsAreRequired (e) {
-      this.socketTips.message = '请输入密码'
+      this.socketTips.message = this.$t('common.placeholder.password')
       this.socketTips.type = 'info'
       const password = prompt('Password Required:')
       this.cRfb.sendCredentials({ password: password })

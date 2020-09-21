@@ -15,28 +15,28 @@
         <div class="text flex-fill d-flex justify-content-center align-items-center">{{ socketTips.message }}</div>
         <a-button @click="toggleTrackpad" :disabled="trackpadDisable" class="mr-2 custom-button">Trackpad</a-button>
         <a-button @click="dropdownClick(deleteEvent)" class="mr-2 custom-button">Ctrl-Alt-Delete</a-button>
-        <a-button type="primary" @click="sendText" class="custom-button">发送文字</a-button>
+        <a-button type="primary" @click="sendText" class="custom-button">{{ $t('send_text') }}</a-button>
       </div>
       <div id="wmks-canvas" />
       <div id="clipboard_div"></div>
     </div>
     <a-modal
-      title="发送文字"
+      :title="$t('send_text')"
       :visible="visible"
       @cancel="handleCancle"
       :after-close="handleAfterClose">
       <template v-slot:footer>
-        <a-button key="submit" type="primary" @click="handleConfirm">确定</a-button>
-        <a-button key="back" @click="handleCancle">取消</a-button>
+        <a-button key="submit" type="primary" @click="handleConfirm">{{ $t('common.ok') }}</a-button>
+        <a-button key="back" @click="handleCancle">{{ $t('common.cancel') }}</a-button>
       </template>
       <a-form :form="form" @submit="handleConfirm">
-        <a-tag color="orange" class="d-block">提示：如果发送内容为登录密码，请点击确定后输入回车键。</a-tag>
-        <a-form-item label="内容">
+        <a-tag color="orange" class="d-block">{{ $t('common_text1') }}</a-tag>
+        <a-form-item :label="$t('common.content')">
           <a-textarea
             ref="textarea"
             :autosize="{ minRows: 4 }"
             v-decorator="['command', {
-              rules: [{ required: true, message: '请输入文字' }]
+              rules: [{ required: true, message: $t('common.placeholder.text') }]
             }]">
           </a-textarea>
         </a-form-item>
@@ -67,7 +67,7 @@ export default {
       port: '',
       socketTips: {
         type: 'info',
-        message: '正在连接'
+        message: this.$t('connection.ing')
       },
       dropdownOps: ['Delete'],
       wmksContainer: null,
@@ -119,7 +119,7 @@ export default {
     dropdownClick (item) {
       if (item.key === 'Delete') {
         if (this.isLinux) {
-          const r = confirm('Ctrl-Alt-Delete组合键将重启服务器，确定重启？')
+          const r = confirm(this.$t('common_text2'))
           if (r) {
             this.wmksContainer.wmks('sendKeyCodes', [17, 18, 46])
           }
@@ -150,10 +150,10 @@ export default {
       const uri = `${scheme}://${this.host}:${this.port}/websockify/?access_token=${query.access_token}`
       this.wmksContainer = window.$('#wmks-canvas')
         .wmks({
-          'useVNCHandshake': false,
-          'sendProperMouseWheelDeltas': true,
-          'fitToParent': false,
-          'position': window.WMKS.CONST.Position.CENTER
+          useVNCHandshake: false,
+          sendProperMouseWheelDeltas: true,
+          fitToParent: false,
+          position: window.WMKS.CONST.Position.CENTER
         })
         .bind('wmksconnecting', function () {
           debug('The console is connecting')
@@ -181,7 +181,7 @@ export default {
       e.preventDefault()
       this.form.validateFields((err, values) => {
         if (!err) {
-          this.doSendText(this.getFormValue()['command'])
+          this.doSendText(this.getFormValue().command)
           this.$nextTick(() => {
             this.handleCancle()
           })
@@ -199,28 +199,28 @@ export default {
       this.wmksContainer.wmks('sendInputString', text)
     },
     connectedToServer () {
-      debug('连接成功')
-      this.socketTips.message = '连接成功'
+      debug(this.$t('connection.success'))
+      this.socketTips.message = this.$t('connection.success')
       this.socketTips.type = 'success'
     },
     errorConnectedFromServer () {
-      debug('连接失败')
-      this.socketTips.message = '连接失败'
+      debug(this.$t('connection.fail'))
+      this.socketTips.message = this.$t('connection.fail')
       this.socketTips.type = 'error'
     },
     initErrorFromServer () {
-      debug('初始化失败')
-      this.socketTips.message = '初始化失败'
+      debug(this.$t('connection.init_fail'))
+      this.socketTips.message = this.$t('connection.init_fail')
       this.socketTips.type = 'error'
     },
     disconnectedFromServer () {
-      debug('连接断开')
-      this.socketTips.message = '连接断开'
+      debug(this.$t('connection.disconnect'))
+      this.socketTips.message = this.$t('connection.disconnect')
       this.socketTips.type = 'error'
     },
     resolutionChanged () {
-      debug('正在重连')
-      this.socketTips.message = '连接成功'
+      debug(this.$t('connection.success'))
+      this.socketTips.message = this.$t('connection.success')
       this.socketTips.type = 'success'
     },
     getFormValue () {

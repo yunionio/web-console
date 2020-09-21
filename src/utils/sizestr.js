@@ -38,7 +38,7 @@ function numScale (num) {
 }
 
 function round (num, bits) {
-  let scale = numScale(num)
+  const scale = numScale(num)
   if (scale > bits) {
     bits = 0
   } else {
@@ -55,7 +55,7 @@ export default function (sz, unit, base, precision) {
   if (typeof precision === 'undefined') {
     precision = 2
   }
-  let nsz = normalizeSize(sz, unit, base)
+  const nsz = normalizeSize(sz, unit, base)
   if (nsz < base) {
     return '' + nsz
   }
