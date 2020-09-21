@@ -76,7 +76,7 @@ export class Manager {
   }
 
   batchCreate (data, count, ctx = []) {
-    data['__count__'] = count
+    data.__count__ = count
     return http.post(`${this.contextPath(ctx)}${this.resource}`, data)
   }
 
@@ -121,7 +121,7 @@ export class Manager {
   }
 
   objectRpc (methodname, objId, params) {
-    let words = camel2Words(methodname)
+    const words = camel2Words(methodname)
     debug('objectrpc words', words)
     if (words[0] === 'get') {
       return this._rpcGet(objId, words.slice(1), params)
@@ -133,7 +133,7 @@ export class Manager {
   }
 
   rpc (methodname, params) {
-    let words = camel2Words(methodname)
+    const words = camel2Words(methodname)
     if (words[0] === 'get') {
       return this._rpcGet(null, words.slice(1), params)
     } else if (words[0] === 'post' || words[0] === 'do') {
@@ -154,7 +154,7 @@ export class Manager {
 
   _rpcGet (idstr, words, params) {
     let url = this._rpcURL(idstr, words)
-    let qs = querystring.stringify(params)
+    const qs = querystring.stringify(params)
     if (qs) {
       url += '?' + qs
     }
@@ -162,12 +162,12 @@ export class Manager {
   }
 
   _rpcPost (idstr, words, params) {
-    let url = this._rpcURL(idstr, words)
+    const url = this._rpcURL(idstr, words)
     return http.post(url, params)
   }
 
   objectCsrf (methodname, objId, params) {
-    let words = camel2Words(methodname)
+    const words = camel2Words(methodname)
     if (words[0] === 'get') {
       return this._csrfGet(objId, words.slice(1), params)
     } else if (words[0] === 'post' || words[0] === 'do') {
@@ -178,7 +178,7 @@ export class Manager {
   }
 
   csrf (methodname, params) {
-    let words = camel2Words(methodname)
+    const words = camel2Words(methodname)
     if (words[0] === 'get') {
       return this._csrfGet(null, words.slice(1), params)
     } else if (words[0] === 'post' || words[0] === 'do') {
@@ -199,7 +199,7 @@ export class Manager {
 
   _csrfGet (idstr, words, params) {
     let url = this._csrfURL(idstr, words)
-    let qs = querystring.stringify(params)
+    const qs = querystring.stringify(params)
     if (qs) {
       url += '?' + qs
     }
@@ -207,7 +207,7 @@ export class Manager {
   }
 
   _csrfPost (idstr, words, params) {
-    let url = this._csrfURL(idstr, words)
+    const url = this._csrfURL(idstr, words)
     return http.post(url, params)
   }
 }

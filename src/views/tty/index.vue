@@ -24,7 +24,7 @@ export default {
       loading: false,
       socketTips: {
         type: 'info',
-        message: '正在连接'
+        message: this.$t('connection.ing')
       },
       connectParams: {},
       socket: {}
@@ -39,11 +39,11 @@ export default {
   methods: {
     initTerminal () {
       Terminal.applyAddon(fit)
-      this.socket = io(this.connectParams['api_server'], {
+      this.socket = io(this.connectParams.api_server, {
         transports: ['websocket'],
         path: '/connect',
         query: {
-          access_token: this.connectParams['access_token']
+          access_token: this.connectParams.access_token
         }
       })
       const term = new Terminal({
@@ -51,7 +51,7 @@ export default {
         rows: 24,
         ScrollBar: true
       })
-      const terminalDom = this.$refs['xterm']
+      const terminalDom = this.$refs.xterm
       term.open(terminalDom)
       term.focus()
       term.on('resize', size => {
@@ -91,43 +91,43 @@ export default {
       this.socket.on('connect', () => {
         debug('connect')
         this.socketTips.type = 'success'
-        this.socketTips.message = '连接成功'
+        this.socketTips.message = this.$t('connection.success')
       })
       this.socket.on('connecting', () => {
         debug('connecting')
         this.socketTips.type = 'info'
-        this.socketTips.message = '正在连接...'
+        this.socketTips.message = this.$t('connection.ing')
       })
       this.socket.on('disconnect', () => {
         debug('disconnect')
         this.socketTips.type = 'error'
-        this.socketTips.message = '连接断开'
+        this.socketTips.message = this.$t('connection.disconnect')
         this._socketClose()
       })
       this.socket.on('connect_error', () => {
         debug('connect_error')
         this.socketTips.type = 'error'
-        this.socketTips.message = '连接失败'
+        this.socketTips.message = this.$t('connection.fail')
       })
       this.socket.on('error', () => {
         debug('error')
         this.socketTips.type = 'error'
-        this.socketTips.message = '连接异常'
+        this.socketTips.message = this.$t('connection.abnormal')
       })
       this.socket.on('reconnect_error', () => {
         debug('reconnect_error')
         this.socketTips.type = 'error'
-        this.socketTips.message = '重连失败'
+        this.socketTips.message = this.$t('connection.reconnection_fail')
       })
       this.socket.on('reconnect', () => {
         debug('success')
         this.socketTips.type = 'success'
-        this.socketTips.message = '重连成功'
+        this.socketTips.message = this.$t('connection.reconnection_success')
       })
       this.socket.on('reconnecting', () => {
         debug('reconnecting')
         this.socketTips.type = 'error'
-        this.socketTips.message = '正在尝试重连...'
+        this.socketTips.message = this.$t('connection.reconnection_ing')
       })
     },
     _socketClose () {
