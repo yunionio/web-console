@@ -205,7 +205,11 @@ export default {
           ...query
         }
       }
-      this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
+      if (query.api_server.includes('//')) {
+        this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
+      } else {
+        this.host = query.api_server
+      }
       if (hadPort(this.host)) {
         this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
         this.host = this.host.slice(0, this.host.indexOf(':'))
