@@ -1,5 +1,5 @@
 <template>
-  <a-locale-provider :locale="locale">
+  <a-config-provider :locale="locale">
     <div id="app">
       <div class="app-content">
         <component :is="layout">
@@ -7,7 +7,7 @@
         </component>
       </div>
     </div>
-  </a-locale-provider>
+  </a-config-provider>
 </template>
 
 <script>
