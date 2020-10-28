@@ -18,6 +18,8 @@ function isLogin (to) {
       } catch (error) {
         flag = false
       }
+    } else {
+      flag = false
     }
   }
   return flag
