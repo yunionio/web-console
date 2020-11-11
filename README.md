@@ -1,4 +1,4 @@
-# net-monitor-fe
+# Web console
 
 ## Project setup
 ```
