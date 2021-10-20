@@ -1,6 +1,6 @@
 <template>
-  <div class="wrap">
-    <iframe :src="spiceUrl" scrolling="no" />
+  <div class="wrap" id="spice-wrap">
+    <!-- <iframe :src="spiceUrl" scrolling="no" /> -->
   </div>
 </template>
 
@@ -11,7 +11,12 @@ import qs from 'qs'
 export default {
   computed: {
     spiceUrl () {
-      return `${process.env.BASE_URL}/spice-vendor/index.html`
+      let url = `${process.env.BASE_URL}/spice-vendor/index.html`
+      const { ips, instanceName } = this.$route.query
+      if (ips && instanceName) {
+        url += `?ips=${ips}&instanceName=${instanceName}`
+      }
+      return url
     }
   },
   destroyed () {
@@ -27,6 +32,40 @@ export default {
         }
       }
       return query
+    }
+  },
+  mounted () {
+    this.initNode()
+  },
+  methods: {
+    getSpecilUrl () {
+      let url = `${process.env.BASE_URL}/spice-vendor/index.html`
+      const { ips, instanceName } = this.$route.query
+      if (ips && instanceName) {
+        url += `?ips=${ips}&instanceName=${instanceName}`
+      }
+      return url
+    },
+    initNode () {
+      const { ips } = this.$route.query
+      if (ips) {
+        document.title = ips
+      }
+      const iframe = document.createElement('iframe')
+      iframe.src = this.getSpecilUrl()
+      iframe.style.width = '100%'
+      iframe.style.height = '100%'
+      iframe.style.margin = 0
+      iframe.style.padding = 0
+      iframe.style.border = 'none'
+
+      const fn = function () {
+        setTimeout(function () {
+          console.log('load iframe')
+        }, 0)
+      }
+      iframe.addEventListener('load', fn)
+      document.getElementById('spice-wrap').appendChild(iframe)
     }
   }
 }

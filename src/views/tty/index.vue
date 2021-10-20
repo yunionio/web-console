@@ -1,7 +1,7 @@
 <template>
   <div class="content d-flex flex-column">
     <div class="header p-2 text-center" :class="socketTips.type">
-      {{ socketTips.message }}
+      {{ instanceName }}{{ socketTips.message }}
     </div>
     <div class="xterm flex-fill" ref="xterm"></div>
   </div>
@@ -28,6 +28,19 @@ export default {
       },
       connectParams: {},
       socket: {}
+    }
+  },
+  computed: {
+    instanceName () {
+      let name = ''
+      const { instanceName, ips } = this.$route.query
+      if (instanceName) {
+        name += instanceName
+      }
+      if (ips) {
+        name += ` (${ips}) `
+      }
+      return name
     }
   },
   created () {
@@ -92,6 +105,7 @@ export default {
         debug('connect')
         this.socketTips.type = 'success'
         this.socketTips.message = this.$t('connection.success')
+        this.changeTitle(this.$route.query.ips)
       })
       this.socket.on('connecting', () => {
         debug('connecting')
@@ -148,6 +162,21 @@ export default {
       this.$nextTick(() => {
         this.initTerminal()
       })
+    },
+    changeTitle: function (title) {
+      if (!title) return
+      document.title = title
+      const iframe = document.getElementsByTag
+      iframe.src = ''
+      iframe.style.display = 'none'
+      const fn = function () {
+        setTimeout(function () {
+          iframe.removeEventListener('load', fn)
+          document.body.remove('iframe')
+        }, 0)
+      }
+      iframe.addEventListener('load', fn)
+      document.appendChild(iframe)
     }
   }
 }

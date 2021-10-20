@@ -69,7 +69,7 @@ Application = $.spcExtend(wdi.DomainObject, {
   run: function (c) {
     console.log(c)
 	    if (c.hasOwnProperty('seamlessDesktopIntegration')) {
-		    wdi.SeamlessIntegration = c['seamlessDesktopIntegration']
+		    wdi.SeamlessIntegration = c.seamlessDesktopIntegration
 	    }
 
     if (!this.packetProcess) {
@@ -99,47 +99,47 @@ Application = $.spcExtend(wdi.DomainObject, {
     this.busConnection.connect(c)
     this.timeLapseDetector.startTimer()
 
-    if (c['canvasMargin']) {
-      this.clientGui.setCanvasMargin(c['canvasMargin'])
+    if (c.canvasMargin) {
+      this.clientGui.setCanvasMargin(c.canvasMargin)
     }
 
-    if (c['disableClipboard']) {
+    if (c.disableClipboard) {
       this.agent.disableClipboard()
       this.clientGui.disableClipboard()
       this.enableCtrlV()
     }
 
-    if (c['layer']) {
-      this.clientGui.setLayer(c['layer'])
+    if (c.layer) {
+      this.clientGui.setLayer(c.layer)
     }
 
     if (this.clientGui.checkFeatures()) {
       if (wdi.SeamlessIntegration) {
         this.disableKeyboard()// keyboard should start disabled is integrated
       }
-      wdi.Keymap.loadKeyMap(c['layout'])
-      this.setExternalCallback(c['callback'], c['context'])
+      wdi.Keymap.loadKeyMap(c.layout)
+      this.setExternalCallback(c.callback, c.context)
 
       try {
         this.connect({
-          host: c['host'],
-          port: c['port'],
-          protocol: c['protocol'],
-          vmHost: c['vmHost'],
-          vmPort: c['vmPort'],
-          vmInfoToken: c['vmInfoToken'],
-          busHost: c['busHost'],
-          token: c['token'],
-          connectionControl: c['connectionControl'],
-          heartbeatToken: c['heartbeatToken'],
-          heartbeatTimeout: c['heartbeatTimeout']
+          host: c.host,
+          port: c.port,
+          protocol: c.protocol,
+          vmHost: c.vmHost,
+          vmPort: c.vmPort,
+          vmInfoToken: c.vmInfoToken,
+          busHost: c.busHost,
+          token: c.token,
+          connectionControl: c.connectionControl,
+          heartbeatToken: c.heartbeatToken,
+          heartbeatTimeout: c.heartbeatTimeout
         })
       } catch (e) {
         this.executeExternalCallback('error', 1)
       }
     }
     if (c.hasOwnProperty('externalClipboardHandling')) {
-      this.externalClipoardHandling = c['externalClipboardHandling']
+      this.externalClipoardHandling = c.externalClipboardHandling
     }
   },
 
@@ -175,10 +175,20 @@ Application = $.spcExtend(wdi.DomainObject, {
     this.timeLapseDetector.addListener('timeLapseDetected', this.onTimeLapseDetected, this)
     this.enableKeyboard()
   },
-
+  getInstanceName: function () {
+    const paramMap = new URLSearchParams(location.search)
+    let name = ''
+    if (paramMap.has('instanceName') && paramMap.get('instanceName')) {
+      name += paramMap.get('instanceName')
+    }
+    if (paramMap.has('ips') && paramMap.get('ips')) {
+      name += ` (${paramMap.get('ips')}) `
+    }
+    return name
+  },
   onChannelConnected: function (params) {
+    $('#header-tips').text(this.getInstanceName() + '连接成功')
     $('#login').removeClass('error')
-    $('#header-tips').text('连接成功')
     var channel = params
     if (channel === wdi.SpiceVars.SPICE_CHANNEL_INPUTS) {
       this.clientGui.releaseAllKeys()
@@ -191,7 +201,7 @@ Application = $.spcExtend(wdi.DomainObject, {
 
   onDisconnect: function (params) {
     $('#login').addClass('error')
-    $('#header-tips').text('连接失败')
+    $('#header-tips').text(this.getInstanceName() + '连接失败')
     var error = params
     this.executeExternalCallback('error', error)
   },
@@ -333,37 +343,37 @@ Application = $.spcExtend(wdi.DomainObject, {
   sendCommand: function (action, params) {
     switch (action) {
       case 'close':
-        this.busProcess.closeWindow(params['hwnd'])
+        this.busProcess.closeWindow(params.hwnd)
         break
       case 'move':
-        this.busProcess.moveWindow(params['hwnd'], params['x'], params['y'])
+        this.busProcess.moveWindow(params.hwnd, params.x, params.y)
         break
       case 'minimize':
-        this.busProcess.minimizeWindow(params['hwnd'])
+        this.busProcess.minimizeWindow(params.hwnd)
         break
       case 'maximize':
-        this.busProcess.maximizeWindow(params['hwnd'])
+        this.busProcess.maximizeWindow(params.hwnd)
         break
       case 'restore':
-        this.busProcess.restoreWindow(params['hwnd'])
+        this.busProcess.restoreWindow(params.hwnd)
         break
       case 'focus':
-        this.busProcess.focusWindow(params['hwnd'])
+        this.busProcess.focusWindow(params.hwnd)
         break
       case 'resize':
-        this.busProcess.resizeWindow(params['hwnd'], params['width'], params['height'])
+        this.busProcess.resizeWindow(params.hwnd, params.width, params.height)
         break
       case 'run':
-        this.busProcess.executeCommand(params['cmd'])
+        this.busProcess.executeCommand(params.cmd)
         break
       case 'setResolution':
-        this.agent.setResolution(params['width'], params['height'])
+        this.agent.setResolution(params.width, params.height)
         break
       case 'getMenu':
         this.busProcess.getMenu()
         break
       case 'reMountNetworkDrive':
-        this.busProcess.reMountNetworkDrive(params['host'], params['username'], params['password'])
+        this.busProcess.reMountNetworkDrive(params.host, params.username, params.password)
         break
     }
   },
@@ -397,10 +407,10 @@ Application = $.spcExtend(wdi.DomainObject, {
         'keydown',
         [
           {
-            'generated': true,
-            'type': 'keydown',
-            'keyCode': keys[i],
-            'charCode': 0
+            generated: true,
+            type: 'keydown',
+            keyCode: keys[i],
+            charCode: 0
           }
         ]
       ], 'keydown')
@@ -411,10 +421,10 @@ Application = $.spcExtend(wdi.DomainObject, {
         'keyup',
         [
           {
-            'generated': true,
-            'type': 'keyup',
-            'keyCode': keys[i],
-            'charCode': 0
+            generated: true,
+            type: 'keyup',
+            keyCode: keys[i],
+            charCode: 0
           }
         ]
       ], 'keyup')
@@ -492,12 +502,12 @@ Application = $.spcExtend(wdi.DomainObject, {
   }
 })
 
-window['Application'] = Application
-Application.prototype['run'] = Application.prototype.run
-Application.prototype['sendCommand'] = Application.prototype.sendCommand
-Application.prototype['enableKeyboard'] = Application.prototype.enableKeyboard
-Application.prototype['disableKeyboard'] = Application.prototype.disableKeyboard
-Application.prototype['dispose'] = Application.prototype.dispose
-Application.prototype['getKeyboardHandler'] = Application.prototype.getKeyboardHandler
-Application.prototype['getClientGui'] = Application.prototype.getClientGui
-Application.prototype['setCurrentWindow'] = Application.prototype.setCurrentWindow
+window.Application = Application
+Application.prototype.run = Application.prototype.run
+Application.prototype.sendCommand = Application.prototype.sendCommand
+Application.prototype.enableKeyboard = Application.prototype.enableKeyboard
+Application.prototype.disableKeyboard = Application.prototype.disableKeyboard
+Application.prototype.dispose = Application.prototype.dispose
+Application.prototype.getKeyboardHandler = Application.prototype.getKeyboardHandler
+Application.prototype.getClientGui = Application.prototype.getClientGui
+Application.prototype.setCurrentWindow = Application.prototype.setCurrentWindow
