@@ -13,8 +13,8 @@
             </template>
           </a-menu>
         </a-dropdown>
-        <div class="text flex-fill d-flex justify-content-center align-items-center">{{ socketTips.message }}</div>
-        <a-button @click="dropdownClick(deleteEvent)" class="mr-2 custom-button">Ctrl-Alt-Delete</a-button>
+        <a-button @click="dropdownClick(deleteEvent)" class="ml-2 custom-button">Ctrl-Alt-Delete</a-button>
+        <div class="text flex-fill d-flex justify-content-center align-items-center" style="margin-right:8rem">{{ instanceName }}{{ socketTips.message }}</div>
         <a-button type="primary" @click="sendText" class="custom-button">{{ $t('send_text') }}</a-button>
       </div>
       <div class="vnc-canvas-wrap">
@@ -74,7 +74,7 @@ export default {
         type: 'info',
         message: this.$t('connection.ing')
       },
-      dropdownOps: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6'],
+      dropdownOps: ['F1', 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'F10', 'F11', 'F12'],
       deleteEvent: {
         key: 'Delete',
         keyPath: ['Delete']
@@ -90,6 +90,17 @@ export default {
     },
     isLinux () {
       return this.$route.query.os_type === 'Linux'
+    },
+    instanceName () {
+      let name = ''
+      const { instanceName, ips } = this.$route.query
+      if (instanceName) {
+        name += instanceName
+      }
+      if (ips) {
+        name += ` (${ips}) `
+      }
+      return name
     }
   },
   mounted () {
@@ -235,6 +246,7 @@ export default {
     connectedToServer (e) {
       this.socketTips.message = this.$t('connection.success')
       this.socketTips.type = 'success'
+      this.changeTitle(this.$route.query.ips)
     },
     disconnectedFromServer (e) {
       this.socketTips.message = this.$t('connection.fail')
@@ -251,6 +263,21 @@ export default {
     },
     getFormValue () {
       return this.form.getFieldsValue()
+    },
+    changeTitle: function (title) {
+      if (!title) return
+      document.title = title
+      const iframe = document.getElementsByTag
+      iframe.src = ''
+      iframe.style.display = 'none'
+      const fn = function () {
+        setTimeout(function () {
+          iframe.removeEventListener('load', fn)
+          document.body.remove('iframe')
+        }, 0)
+      }
+      iframe.addEventListener('load', fn)
+      document.appendChild(iframe)
     }
   }
 }
