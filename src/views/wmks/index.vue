@@ -12,7 +12,7 @@
             </template>
           </a-menu>
         </a-dropdown> -->
-        <div class="text flex-fill d-flex justify-content-center align-items-center">{{ socketTips.message }}</div>
+        <div class="text flex-fill d-flex justify-content-center align-items-center">{{ instanceName }}{{ socketTips.message }}</div>
         <a-button @click="toggleTrackpad" :disabled="trackpadDisable" class="mr-2 custom-button">Trackpad</a-button>
         <a-button @click="dropdownClick(deleteEvent)" class="mr-2 custom-button">Ctrl-Alt-Delete</a-button>
         <a-button type="primary" @click="sendText" class="custom-button">{{ $t('send_text') }}</a-button>
@@ -86,6 +86,17 @@ export default {
     },
     isLinux () {
       return this.$route.query.os_type === 'Linux'
+    },
+    instanceName () {
+      let name = ''
+      const { instanceName, ips } = this.$route.query
+      if (instanceName) {
+        name += instanceName
+      }
+      if (ips) {
+        name += ` (${ips}) `
+      }
+      return name
     }
   },
   mounted () {
@@ -202,6 +213,7 @@ export default {
       debug(this.$t('connection.success'))
       this.socketTips.message = this.$t('connection.success')
       this.socketTips.type = 'success'
+      this.changeTitle(this.$route.query.ips)
     },
     errorConnectedFromServer () {
       debug(this.$t('connection.fail'))
@@ -225,6 +237,21 @@ export default {
     },
     getFormValue () {
       return this.form.getFieldsValue()
+    },
+    changeTitle: function (title) {
+      if (!title) return
+      document.title = title
+      const iframe = document.getElementsByTag
+      iframe.src = ''
+      iframe.style.display = 'none'
+      const fn = function () {
+        setTimeout(function () {
+          iframe.removeEventListener('load', fn)
+          document.body.remove('iframe')
+        }, 0)
+      }
+      iframe.addEventListener('load', fn)
+      document.appendChild(iframe)
     }
   }
 }
