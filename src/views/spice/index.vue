@@ -60,9 +60,7 @@ export default {
       iframe.style.border = 'none'
 
       const fn = function () {
-        setTimeout(function () {
-          console.log('load iframe')
-        }, 0)
+        setTimeout(function () {}, 0)
       }
       iframe.addEventListener('load', fn)
       document.getElementById('spice-wrap').appendChild(iframe)
