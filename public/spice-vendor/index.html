@@ -188,8 +188,6 @@ must display the words "Powered by eyeos" and retain the original copyright noti
                 <button id="fullscreen" onclick="toggleFullScreen(document.body);" style="display: none;">Pantalla Completa</button>
                 <div class="dropdown">
                     <button id="keystroke" onclick="showKeystrokesMenu()" class="dropbtn ant-btn ant-btn-primary ant-dropdown-trigger">Combinación de teclas</button>
-                    <button onclick="sendKeystroke(this)" class="ant-btn custom-button">Ctrl+Alt+Del</button>
-                    <button onclick="sendKeystroke(this)" class="ant-btn custom-button">F8</button>
                     <ul id="keystrokes-menu" class="ant-dropdown-menu dropdown-content">
                         <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Alt+Tab</li>
                         <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Win+L</li>
@@ -211,6 +209,10 @@ must display the words "Powered by eyeos" and retain the original copyright noti
                 </div>
                 <button id="showclientid" onclick="showClientID();">Mostrar Id</button>
                 <button id="close" onclick="showCloseDialog();" style="display: none;">&nbsp</button>
+            </div>
+            <div class="action-group2">
+                <button onclick="sendKeystroke(this)" class="ant-btn custom-button">F8</button>
+                <button onclick="sendKeystroke(this)" class="ant-btn custom-button">Ctrl+Alt+Del</button>
             </div>
         </div>
 

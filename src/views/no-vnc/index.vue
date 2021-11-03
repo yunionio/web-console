@@ -13,8 +13,8 @@
             </template>
           </a-menu>
         </a-dropdown>
-        <a-button @click="dropdownClick(deleteEvent)" class="ml-2 custom-button">Ctrl-Alt-Delete</a-button>
         <div class="text flex-fill d-flex justify-content-center align-items-center" style="margin-right:8rem">{{ instanceName }}{{ socketTips.message }}</div>
+        <a-button @click="dropdownClick(deleteEvent)" class="mr-2 custom-button">Ctrl-Alt-Delete</a-button>
         <a-button type="primary" @click="sendText" class="custom-button">{{ $t('send_text') }}</a-button>
       </div>
       <div class="vnc-canvas-wrap">
