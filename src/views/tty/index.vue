@@ -166,17 +166,6 @@ export default {
     changeTitle: function (title) {
       if (!title) return
       document.title = title
-      const iframe = document.getElementsByTag
-      iframe.src = ''
-      iframe.style.display = 'none'
-      const fn = function () {
-        setTimeout(function () {
-          iframe.removeEventListener('load', fn)
-          document.body.remove('iframe')
-        }, 0)
-      }
-      iframe.addEventListener('load', fn)
-      document.appendChild(iframe)
     }
   }
 }
