@@ -93,8 +93,16 @@ wdi.Agent = $.spcExtend(wdi.EventObject.prototype, {
       width = 800
     }
 
+    if (width > 1400) {
+      width = 1400
+    }
+
     if (height < 600) {
       height = 600
+    }
+
+    if (height > 1050) {
+      height = 1050
     }
 
     // adapt resolution, TODO: this needs to be refractored

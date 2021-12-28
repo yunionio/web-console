@@ -98,12 +98,12 @@ function start () {
       $(params.eventLayer).remove()
     } else if (action == 'windowMoved') {
       $(params.canvas).css({
-        'top': params.info.top + 'px',
-        'left': params.info.left + 'px'
+        top: params.info.top + 'px',
+        left: params.info.left + 'px'
       })
       $(params.eventLayer).css({
-        'top': params.info.top + 'px',
-        'left': params.info.left + 'px'
+        top: params.info.top + 'px',
+        left: params.info.left + 'px'
       })
     } else if (action == 'init' || action == 'windowCreated') {
       var item = null
@@ -115,15 +115,15 @@ function start () {
         item = params[i]
         var position = item.position * 2
         canvas = $(item.canvas).css({
-          'zIndex': 10000 - position - 1,
-          'position': 'absolute',
-          'top': item.info.top + 'px',
-          'left': item.info.left + 'px'
+          zIndex: 10000 - position - 1,
+          position: 'absolute',
+          top: item.info.top + 'px',
+          left: item.info.left + 'px'
         })
         eventlayer = $(item.eventLayer).css({
-          'top': item.info.top + 'px',
-          'left': item.info.left + 'px',
-          'zIndex': 10000 - position
+          top: item.info.top + 'px',
+          left: item.info.left + 'px',
+          zIndex: 10000 - position
         })
         body.append(canvas)
         body.append(eventlayer)
@@ -147,43 +147,43 @@ function start () {
 
       login = document.getElementById('login')
       if (login != null && login.className == '') {
-        height -= 40
+        // height -= 40
       }
 
       app.sendCommand('setResolution', {
-        'width': width,
-        'height': height
+        width: width,
+        height: height
       })
       if (wdi.IntegrationBenchmarkEnabled) {
-        $('#integrationBenchmark').css({ 'display': 'inline' })
+        $('#integrationBenchmark').css({ display: 'inline' })
         $('#launchWordButton').prop('disabled', false)
       }
     } else if (action == 'resolution') {
 
     } else if (action == 'windowMinimized') {
       // in eyeos, this should minimize the window, not close it
-      $(params.canvas).css({ 'display': 'none' })
-      $(params.eventLayer).css({ 'display': 'none' })
+      $(params.canvas).css({ display: 'none' })
+      $(params.eventLayer).css({ display: 'none' })
     } else if (action == 'windowMaximized') {
       $(params.canvas).css({
-        'top': params.info.top + 'px',
-        'left': params.info.left + 'px'
+        top: params.info.top + 'px',
+        left: params.info.left + 'px'
       })
       $(params.eventLayer).css({
-        'top': params.info.top + 'px',
-        'left': params.info.left + 'px'
+        top: params.info.top + 'px',
+        left: params.info.left + 'px'
       })
     } else if (action == 'windowRestored') {
       // in eyeos, this should restore the window
-      $(params.canvas).css({ 'display': 'block' })
-      $(params.eventLayer).css({ 'display': 'block' })
+      $(params.canvas).css({ display: 'block' })
+      $(params.eventLayer).css({ display: 'block' })
       $(params.canvas).css({
-        'top': params.info.top + 'px',
-        'left': params.info.left + 'px'
+        top: params.info.top + 'px',
+        left: params.info.left + 'px'
       })
       $(params.eventLayer).css({
-        'top': params.info.top + 'px',
-        'left': params.info.left + 'px'
+        top: params.info.top + 'px',
+        left: params.info.left + 'px'
       })
     } else if (action == 'windowFocused') {
       // debugger; //eyeos should move the window to front!
@@ -219,7 +219,7 @@ function start () {
     }
   }
 
-  $(window)['resize'](function () {
+  $(window).resize(function () {
     width = $(window).width()
     height = $(window).height()
 
@@ -230,8 +230,8 @@ function start () {
       }
     }
     app.sendCommand('setResolution', {
-      'width': width,
-      'height': height
+      width: width,
+      height: height
     })
   })
 
@@ -255,38 +255,38 @@ function start () {
     document.getElementById('showclientid').style.display = 'none'
   }
 
-  $('title').text((data['title'] || 'flexVDI Client') + ' - powered by eyeOS')
+  $('title').text((data.title || 'flexVDI Client') + ' - powered by eyeOS')
 
   app.run({
-    'callback': f,
-    'context': this,
-    'host': data['spice_address'] || '',
-    'port': data['spice_port'] || 0,
-    'protocol': getURLParameter('protocol') || 'ws',
-    'token': data['spice_password'] || '',
-    'vmHost': getURLParameter('vmhost') || false,
-    'vmPort': getURLParameter('vmport') || false,
-    'useBus': false,
-    'busHost': '10.11.12.200',
-    'busPort': 61613,
-    'busSubscriptions': ['/topic/00000000-0000-0000-0000-000000000000'],
-    'busUser': '00000000-0000-0000-0000-000000000000',
-    'busPass': 'potato',
+    callback: f,
+    context: this,
+    host: data.spice_address || '',
+    port: data.spice_port || 0,
+    protocol: getURLParameter('protocol') || 'ws',
+    token: data.spice_password || '',
+    vmHost: getURLParameter('vmhost') || false,
+    vmPort: getURLParameter('vmport') || false,
+    useBus: false,
+    busHost: '10.11.12.200',
+    busPort: 61613,
+    busSubscriptions: ['/topic/00000000-0000-0000-0000-000000000000'],
+    busUser: '00000000-0000-0000-0000-000000000000',
+    busPass: 'potato',
     // Connection Control
-    'connectionControl': false,
-    'heartbeatToken': 'heartbeat',
-    'heartbeatTimeout': 4000, // miliseconds
-    'busFileServerBaseUrl': 'https://10.11.12.200/fileserver/',
-    'layout': data['layout'] || 'zh-cn',
-    'useWorkers': useWorkers,
-    'seamlessDesktopIntegration': false,
-    'externalClipboardHandling': false,
-    'disableClipboard': true,
-    'layer': document.getElementById('screen'),
-    'vmInfoToken': getURLParameter('vmInfoToken'),
-    'canvasMargin': {
-      'x': 0,
-      'y': 40
+    connectionControl: false,
+    heartbeatToken: 'heartbeat',
+    heartbeatTimeout: 4000, // miliseconds
+    busFileServerBaseUrl: 'https://10.11.12.200/fileserver/',
+    layout: data.layout || 'zh-cn',
+    useWorkers: useWorkers,
+    seamlessDesktopIntegration: false,
+    externalClipboardHandling: false,
+    disableClipboard: true,
+    layer: document.getElementById('screen'),
+    vmInfoToken: getURLParameter('vmInfoToken'),
+    canvasMargin: {
+      x: 0,
+      y: 0
     }
     // 'language': navigator.language
   })
