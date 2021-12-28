@@ -14,33 +14,33 @@ function toggleMenuBar () {
 
   if (document.getElementById('login').className == '') {
     document.getElementById('login').className = 'hidden'
-    document.getElementById('menubarbutton').firstChild.data = tr['menubarbutton_alt']
+    document.getElementById('menubarbutton').firstChild.data = tr.menubarbutton_alt
 
     var canvas = document.getElementById('canvas_0')
     var eventLayer = document.getElementById('eventLayer')
     if (canvas != null && eventLayer != null) {
       canvas.style.top = '0px'
       eventLayer.style.top = '0px'
-      app.clientGui.setCanvasMargin({ 'x': 0, 'y': 0 })
+      app.clientGui.setCanvasMargin({ x: 0, y: 0 })
       app.sendCommand('setResolution', {
-			    'width': width,
-			    'height': height
+			    width: width,
+			    height: height
 		    })
     }
   } else {
     var canvas = document.getElementById('canvas_0')
     var eventLayer = document.getElementById('eventLayer')
     if (canvas != null && eventLayer != null) {
-      canvas.style.top = '40px'
-      eventLayer.style.top = '40px'
-      app.clientGui.setCanvasMargin({ 'x': 0, 'y': 40 })
+      canvas.style.top = '0px'
+      eventLayer.style.top = '0px'
+      app.clientGui.setCanvasMargin({ x: 0, y: 0 })
       app.sendCommand('setResolution', {
-        'width': width,
-        'height': height - 40
+        width: width,
+        height: height
       })
     }
     document.getElementById('login').className = ''
-    document.getElementById('menubarbutton').firstChild.data = tr['menubarbutton']
+    document.getElementById('menubarbutton').firstChild.data = tr.menubarbutton
   }
 }
 function showMenuBar () {
@@ -60,7 +60,7 @@ function closeSession (inactivity) {
   app.sendKeystroke('Win+L')
   app.disconnect()
 
-  if (document.getElementById('fullscreen').firstChild.data == tr['fullscreen_alt']) {
+  if (document.getElementById('fullscreen').firstChild.data == tr.fullscreen_alt) {
     toggleFullScreen(document.body)
   }
 
@@ -76,7 +76,7 @@ function closeSession (inactivity) {
 }
 function showClientID () {
   var hwaddress = read_cookie('hwaddress')
-  alert(tr['show_id'].replace('_', hwaddress))
+  alert(tr.show_id.replace('_', hwaddress))
 }
 var progFS = false
 var isFS = false
@@ -86,7 +86,7 @@ function toggleFullScreen (elem) {
     if (elem.mozRequestFullScreen) {
       elem.mozRequestFullScreen()
     } else {
-      alert(tr['no_auto_fs'])
+      alert(tr.no_auto_fs)
     }
   } else {
     if (document.mozCancelFullScreen) {
@@ -127,12 +127,12 @@ function hideExtWin () {
 }
 function isFullScreen () {
   isFS = true
-  document.getElementById('fullscreen').firstChild.data = tr['fullscreen_alt']
+  document.getElementById('fullscreen').firstChild.data = tr.fullscreen_alt
   document.getElementById('menubarbutton').style.visibility = 'hidden'
 }
 function notFullScreen () {
   isFS = false
-  document.getElementById('fullscreen').firstChild.data = tr['fullscreen']
+  document.getElementById('fullscreen').firstChild.data = tr.fullscreen
   document.getElementById('menubarbutton').style.visibility = 'visible'
   if (progFS) {
     progFS = false
@@ -180,7 +180,7 @@ function inactivityHandler () {
 }
 function startInactivityCountdown () {
   document.getElementById('inactivity_close_text').innerHTML =
-        tr['inactivity_close_text'].replace('_', inactivityGrace)
+        tr.inactivity_close_text.replace('_', inactivityGrace)
   document.getElementById('overlay').style.visibility = 'visible'
   document.getElementById('inactivity-close').style.visibility = 'visible'
   if (inactivityCountdownTimer != null) {
@@ -209,7 +209,7 @@ function inactivityCountdownHandler () {
     return
   }
   document.getElementById('inactivity_close_text').innerHTML =
-        tr['inactivity_close_text'].replace('_', inactivityCountdownSecs)
+        tr.inactivity_close_text.replace('_', inactivityCountdownSecs)
   if (inactivityCountdownTimer != null) {
     clearTimeout(inactivityCountdownTimer)
   }
