@@ -12,6 +12,8 @@ import i18n from './locales'
 import './permission'
 import './errorLog'
 
+import './styles/global.scss'
+
 function initDebug () {
   if (window.Storage && window.localStorage && window.localStorage instanceof Storage) {
     window.localStorage.setItem('debug', 'app:*')

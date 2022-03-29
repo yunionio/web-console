@@ -98,11 +98,11 @@ function start () {
       $(params.eventLayer).remove()
     } else if (action == 'windowMoved') {
       $(params.canvas).css({
-        top: params.info.top + 'px',
+        top: '0px',
         left: params.info.left + 'px'
       })
       $(params.eventLayer).css({
-        top: params.info.top + 'px',
+        top: '0px',
         left: params.info.left + 'px'
       })
     } else if (action == 'init' || action == 'windowCreated') {
@@ -166,11 +166,11 @@ function start () {
       $(params.eventLayer).css({ display: 'none' })
     } else if (action == 'windowMaximized') {
       $(params.canvas).css({
-        top: params.info.top + 'px',
+        top: '0px',
         left: params.info.left + 'px'
       })
       $(params.eventLayer).css({
-        top: params.info.top + 'px',
+        top: '0px',
         left: params.info.left + 'px'
       })
     } else if (action == 'windowRestored') {
@@ -178,11 +178,11 @@ function start () {
       $(params.canvas).css({ display: 'block' })
       $(params.eventLayer).css({ display: 'block' })
       $(params.canvas).css({
-        top: params.info.top + 'px',
+        top: '0px',
         left: params.info.left + 'px'
       })
       $(params.eventLayer).css({
-        top: params.info.top + 'px',
+        top: '0px',
         left: params.info.left + 'px'
       })
     } else if (action == 'windowFocused') {
