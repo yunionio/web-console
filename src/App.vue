@@ -28,6 +28,19 @@ export default {
     layout () {
       return `${(this.$route.meta.layout || 'default')}-layout`
     }
+  },
+  mounted () {
+    window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
+  },
+  methods: {
+    beforeunloadHandler (e) {
+      e = e || window.event
+      if (e) {
+        e.returnValue = '关闭提示'
+      }
+      return '关闭提示'
+    }
   }
+
 }
 </script>
