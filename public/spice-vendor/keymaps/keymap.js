@@ -153,11 +153,13 @@ wdi.Keymap = {
       this.ctrlKeymap = wdi['Keymap' + layout].getCtrlKeymap()
       this.reservedCtrlKeymap = wdi['Keymap' + layout].getReservedCtrlKeymap()
       this.charmap = wdi['Keymap' + layout].getCharmap()
+      this.charmapNew = wdi['Keymap' + layout].getCharmapNew()
     } catch (e) {
       this.keymap = wdi.KeymapES.getKeymap()
       this.ctrlKeymap = wdi.KeymapES.getCtrlKeymap()
       this.reservedCtrlKeymap = wdi.KeymapES.getReservedCtrlKeymap()
       this.charmap = wdi.KeymapES.getCharmap()
+      this.charmapNew = wdi.KeymapES.getCharmapNew()
     }
   },
 
@@ -175,7 +177,7 @@ wdi.Keymap = {
     if ('originalEvent' in e && 'code' in e.originalEvent) {
       code = e.originalEvent.code
       if (code != '' && code != 'Unidentified') {
-        console.log('Use KeyboardEvent.code = ' + code + ', ' + type)
+        // console.log('Use KeyboardEvent.code = ' + code + ', ' + type)
         result = []
         scanCodes = this.defaultCodes[code].slice()
         if (type != 'keydown' && type != 'keypress') {
@@ -217,6 +219,9 @@ wdi.Keymap = {
       additionalKeymap[76] = 0x26
       return this.getScanCodeFromKeyCode(e['keyCode'], type, this.keymap, additionalKeymap)
     } else {
+      if (type === 'char') {
+        return this.getScanCodesFromChar(e.char)
+      }
       return []
     }
   },
@@ -307,6 +312,12 @@ wdi.Keymap = {
 
   getScanCodesFromCharCode: function (charCode) {
     var scanCode = this.charmap[String.fromCharCode(charCode)]
+    if (scanCode === undefined) scanCode = []
+    return scanCode
+  },
+
+  getScanCodesFromChar: function (char) {
+    var scanCode = this.charmapNew[char]
     if (scanCode === undefined) scanCode = []
     return scanCode
   },
