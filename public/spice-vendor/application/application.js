@@ -43,6 +43,7 @@ Application = $.spcExtend(wdi.DomainObject, {
   busConnection: null,
   busProcess: null,
   timeLapseDetector: null,
+  sendtextDialogShow: null,
 
   init: function (c) {
     wdi.GlobalPool.init()
@@ -63,6 +64,7 @@ Application = $.spcExtend(wdi.DomainObject, {
       busConnection: this.busConnection
     })
     this.timeLapseDetector = c.timeLapseDetector || new wdi.TimeLapseDetector()
+    this.sendtextDialogShow = false
     this.setup()
   },
 
@@ -378,6 +380,10 @@ Application = $.spcExtend(wdi.DomainObject, {
     }
   },
 
+  updateSendtextShow: function (val) {
+    this.sendtextDialogShow = val
+  },
+
   enableKeyboard: function () {
     this.clientGui.enableKeyboard()
   },
@@ -430,11 +436,36 @@ Application = $.spcExtend(wdi.DomainObject, {
       ], 'keyup')
     }
   },
+  sendChar: function (char, index) {
+    setTimeout(() => {
+      this.inputProcess.send([
+        'sendText',
+        [
+          {
+            generated: true,
+            type: 'sendText',
+            charCode: '',
+            char: char
+          }
+        ]
+      ], 'sendText')
+    }, 100 * index)
+  },
+  sendCharList: function (keys) {
+    // console.log('keys', keys)
+    for (let i = 0; i < keys.length; i++) {
+      this.sendChar(keys[i], i)
+    }
+  },
 
   sendShortcut: function (shortcut) {
     if (shortcut == wdi.keyShortcutsHandled.CTRLV) {
       this.sendKeyList([17, 86])
     }
+  },
+
+  sendtext: function (text) {
+    this.sendCharList(text.split(''))
   },
 
   sendKeystroke: function (keystroke) {

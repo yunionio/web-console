@@ -217,6 +217,9 @@ wdi.Keymap = {
       additionalKeymap[76] = 0x26
       return this.getScanCodeFromKeyCode(e['keyCode'], type, this.keymap, additionalKeymap)
     } else {
+      if (type === 'char') {
+        return this.getScanCodesFromChar(e.char)
+      }
       return []
     }
   },
@@ -307,6 +310,12 @@ wdi.Keymap = {
 
   getScanCodesFromCharCode: function (charCode) {
     var scanCode = this.charmap[String.fromCharCode(charCode)]
+    if (scanCode === undefined) scanCode = []
+    return scanCode
+  },
+
+  getScanCodesFromChar: function (char) {
+    var scanCode = this.charmap[char]
     if (scanCode === undefined) scanCode = []
     return scanCode
   },

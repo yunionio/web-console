@@ -103,6 +103,8 @@ wdi.InputProcess = $.spcExtend(wdi.EventObject.prototype, {
           console.log('INPUTS_KEY_DOWN: detected Meta')
         }
       }
+      // console.log('data', data)
+      // console.log('scancodes', scanCodes)
       for (i = 0; i < scanCodes.length; i++) {
         console.log('INPUTS_KEY_DOWN: ' + scanCodes[i])
         this.pendingAltKey = false
@@ -168,6 +170,43 @@ wdi.InputProcess = $.spcExtend(wdi.EventObject.prototype, {
         })
       })
       this.spiceConnection.send(packet)
+    } else if (type == 'sendText') {
+      scanCodes = wdi.Keymap.getScanCodes(data[1][0], this.altGrCombo, 'char')
+      if (scanCodes.length == 1 && !data[1][0].generated) {
+        if (scanCodes[0][0] == 56) {
+          if (this.pendingCtrlKey) {
+            console.log('INPUTS_KEY_DOWN: enabling altGrCombo')
+            this.pendingCtrlKey = false
+            this.altGrCombo = true
+          } else {
+            console.log('INPUTS_KEY_DOWN: ommitting Alt key')
+            this.pendingAltKey = true
+          }
+          return
+        } else if (scanCodes[0][0] == 224 && scanCodes[0][1] == 29) {
+          if (this.pendingAltKey) {
+            console.log('INPUTS_KEY_DOWN: enabling altGrCombo')
+            this.pendingAltKey = false
+            this.altGrCombo = true
+          } else {
+            console.log('INPUTS_KEY_DOWN: ommitting Ctrl key')
+            this.pendingCtrlKey = true
+          }
+          return
+        } else if (scanCodes[0][0] == 0x15B) {
+          console.log('INPUTS_KEY_DOWN: detected Meta')
+        }
+      }
+      for (i = 0; i < scanCodes.length; i++) {
+        this.pendingAltKey = false
+        this.pendingCtrlKey = false
+        packet = new wdi.SpiceMessage({
+          messageType: wdi.SpiceVars.SPICE_MSGC_INPUTS_KEY_DOWN,
+          channel: wdi.SpiceVars.SPICE_CHANNEL_INPUTS,
+          args: new wdi.SpiceScanCode(scanCodes[i])
+        })
+        this.spiceConnection.send(packet)
+      }
     }
   }
 })

@@ -254,3 +254,66 @@ body
     border: none;
 }
 
+#dialog-sendtext {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+    z-index: 1000;
+    display: none;
+    background-color: rgba(0,0,0,0.65);
+}
+.dialog-sendtext-show {
+    display: block !important;
+}
+.sendtext-box {
+    width: 520px;
+    position: relative;
+    top: 100px;
+    margin: 0 auto;
+    background: #fff;
+}
+.sendtext-header {
+    padding: 16px 24px;
+    color: rgba(0,0,0,0.65);
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 22px;
+    word-wrap: break-word;
+    border-bottom: 1px solid #e8e8e8;
+}
+.sendtext-content {
+    padding: 24px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+.sendtext-tip {
+    font-size: 12px;
+    color: #fa8c16;
+    background: #fff7e6;
+    border: #ffd591 1px solid;
+    padding: 0 7px;
+    line-height: 20px;
+    margin-bottom: 5px;
+}
+.sendtext-tip:hover {
+    opacity: 0.85;
+}
+.sendtext-label {
+    margin-bottom: 8px;
+}
+.sendtext-area {
+    width: 100%;
+}
+.sendtext-footer {
+    padding: 10px 16px;
+    text-align: right;
+    border-top: 1px solid #e8e8e8;
+}
+.sendtext-box button + button {
+    margin-left: 8px;
+}
+

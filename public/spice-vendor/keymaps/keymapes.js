@@ -149,6 +149,7 @@ wdi.KeymapES = (function () {
   charmapES['-'] = [[0x35, 0, 0, 0], [0xB5, 0, 0, 0]]
   charmapES['_'] = [[0x2A, 0, 0, 0], [0x35, 0, 0, 0], [0xB5, 0, 0, 0], [0xAA, 0, 0, 0]]
   charmapES[' '] = [[0x39, 0, 0, 0], [0xb9, 0, 0, 0]]
+  charmapES['\n'] = [[0x1C, 0, 0, 0], [0x9C, 0, 0, 0]]
 
   // keyboard keys without character associated.
   // all the js events associated to these keys should have a keyChar associated
