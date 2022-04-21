@@ -213,6 +213,7 @@ must display the words "Powered by eyeos" and retain the original copyright noti
             <div class="action-group2">
                 <button onclick="sendKeystroke(this)" class="ant-btn custom-button">F8</button>
                 <button onclick="sendKeystroke(this)" class="ant-btn custom-button">Ctrl+Alt+Del</button>
+                <button onclick="showSendtextDialog()" class="ant-btn ant-btn-primary">发送文字</button>
             </div>
         </div>
 
@@ -253,6 +254,25 @@ must display the words "Powered by eyeos" and retain the original copyright noti
         <div id="dialog-end" class="overlay-dialog">
             <div id="dialog_end_text" class="overlay-text-end">
                 Su sesión de VDI ha finalizado. Por favor, cierre esta ventana.
+            </div>
+        </div>
+
+        <!-- 发送文字弹框 -->
+        <div id="dialog-sendtext" class="show">
+            <div class="sendtext-box">
+                <div class="sendtext-header">
+                    <div class="sendtext-title">发送文字</div>
+                </div>
+                <div class="sendtext-content">
+                    <div class="sendtext-tip">提示：发送文字前，请将服务器内输入法切换为英文状态。</div>
+                    <div class="sendtext-label">内容：</div>
+                    <textarea id="sendtext-area" value="" class="sendtext-area" cols="30" rows="5"></textarea>
+                </div>
+                <div class="sendtext-footer">
+                    <button class="ant-btn ant-btn-primary" onclick="sendtext()">确定</button>
+                    <button class="ant-btn custom-button" onclick="hideSendtextDialog()">取消</button>
+                </div>
+
             </div>
         </div>
 
@@ -302,6 +322,7 @@ must display the words "Powered by eyeos" and retain the original copyright noti
                 document.getElementById("extwin").style.height = extheight;
             }
 			setInactivityTimer();
+
         </script>
     </body>
 </html>
