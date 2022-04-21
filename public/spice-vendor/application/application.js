@@ -449,7 +449,7 @@ Application = $.spcExtend(wdi.DomainObject, {
           }
         ]
       ], 'sendText')
-    }, 100 * index)
+    }, 50 * index)
   },
   sendCharList: function (keys) {
     // console.log('keys', keys)

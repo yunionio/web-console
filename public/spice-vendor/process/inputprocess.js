@@ -103,10 +103,12 @@ wdi.InputProcess = $.spcExtend(wdi.EventObject.prototype, {
           console.log('INPUTS_KEY_DOWN: detected Meta')
         }
       }
-      // console.log('data', data)
-      // console.log('scancodes', scanCodes)
+      // if (data[0] === 'keydown') {
+      //   console.log(data[0])
+      //   console.log(`%c${scanCodes[0][0].toString(16)}`, 'color:red')
+      // }
       for (i = 0; i < scanCodes.length; i++) {
-        console.log('INPUTS_KEY_DOWN: ' + scanCodes[i])
+        // console.log('INPUTS_KEY_DOWN: ' + scanCodes[i])
         this.pendingAltKey = false
         this.pendingCtrlKey = false
         packet = new wdi.SpiceMessage({
@@ -118,6 +120,8 @@ wdi.InputProcess = $.spcExtend(wdi.EventObject.prototype, {
       }
     } else if (type == 'keyup') {
       scanCodes = wdi.Keymap.getScanCodes(data[1][0], this.altGrCombo, type)
+      // console.log(data[0])
+      // console.log(`%c${scanCodes[0][0].toString(16)}`, 'color:red')
       if (scanCodes.length == 1 && scanCodes[0][0] == 184) {
         if (this.pendingAltKey) {
           console.log('INPUTS_KEY_UP: sending pending Alt key')
@@ -149,7 +153,7 @@ wdi.InputProcess = $.spcExtend(wdi.EventObject.prototype, {
         }
       }
       for (i = 0; i < scanCodes.length; i++) {
-        console.log('INPUTS_KEY_UP: ' + scanCodes[i])
+        // console.log('INPUTS_KEY_UP: ' + scanCodes[i])
         this.pendingAltKey = false
         this.pendingCtrlKey = false
         packet = new wdi.SpiceMessage({

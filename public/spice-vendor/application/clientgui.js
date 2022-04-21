@@ -648,7 +648,7 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
 
   handleKey: function (e) {
     if (!app.sendtextDialogShow) {
-      console.log('Type: ' + e.type + ' keyCode: ' + e.keyCode + ' charCode: ' + e.charCode)
+      // console.log('Type: ' + e.type + ' keyCode: ' + e.keyCode + ' charCode: ' + e.charCode)
       document.getElementById('inputmanager').focus()
       e.data[0].generateEvent.call(e.data[0], e.type, [e])
 
