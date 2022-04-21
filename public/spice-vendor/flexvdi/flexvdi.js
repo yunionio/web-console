@@ -146,6 +146,23 @@ function sendKeystroke (e) {
   document.getElementById('inputmanager').focus()
 }
 
+function sendtext (e) {
+  const text = $('#sendtext-area').val()
+  app.sendtext(text)
+  hideSendtextDialog()
+}
+
+function showSendtextDialog () {
+  $('#dialog-sendtext').addClass('dialog-sendtext-show')
+  app.updateSendtextShow(true)
+}
+
+function hideSendtextDialog () {
+  $('#sendtext-area').val('')
+  $('#dialog-sendtext').removeClass('dialog-sendtext-show')
+  app.updateSendtextShow(false)
+}
+
 function showKeystrokesMenu () {
   $('#keystrokes-menu').toggleClass('show')
 }
