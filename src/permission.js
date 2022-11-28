@@ -7,7 +7,7 @@ import { LOGIN_URL } from '@constants/base'
 
 function isLogin (to) {
   let flag = false
-  if (store.getters.userInfo.session) {
+  if (store.getters.userInfo.session || to.path === '/no-vnc') {
     // if (to.query.data) {
     //   try {
     //     let data = Base64.decode(to.query.data)
