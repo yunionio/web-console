@@ -7,8 +7,6 @@ import { LOGIN_URL } from '@constants/base'
 
 function isLogin (to) {
   let flag = false
-  console.log(to, to.path)
-  console.log(to.path.includes('/no-vnc'))
   if (store.getters.userInfo.session || to.path.includes('/no-vnc')) {
     // if (to.query.data) {
     //   try {
