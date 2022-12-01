@@ -8,17 +8,6 @@ import { LOGIN_URL } from '@constants/base'
 function isLogin (to) {
   let flag = false
   if (store.getters.userInfo.session || to.path.includes('/no-vnc')) {
-    // if (to.query.data) {
-    //   try {
-    //     let data = Base64.decode(to.query.data)
-    //     data = qs.parse(data)
-    //     if (data.api_server === location.origin) {
-    //       flag = true
-    //     }
-    //   } catch (error) {
-    //     flag = false
-    //   }
-    // }
     flag = true
   }
   return flag
