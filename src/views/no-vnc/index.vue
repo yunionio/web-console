@@ -118,6 +118,10 @@ export default {
       }
       this.sendText(pastedText)
     })
+    document.addEventListener('keydown', this.watchKeydown)
+  },
+  destroyed () {
+    document.removeEventListener('keydown', this.watchKeydown)
   },
   methods: {
     doSendText (text) {
@@ -267,6 +271,12 @@ export default {
     changeTitle: function (title) {
       if (!title) return
       document.title = title
+    },
+    watchKeydown (e) {
+      // 快捷键 windows + 0
+      if (e.metaKey && (e.keyCode === 48 || e.keyCode === 96)) {
+        this.sendText()
+      }
     }
   }
 }
