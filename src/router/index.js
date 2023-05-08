@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Index from '@views/index'
 import NoVNC from '@views/no-vnc'
 import TTY from '@views/tty'
+import WS from '@views/ws'
 import Spice from '@views/spice'
 import WMKS from '@views/wmks'
 
@@ -32,6 +33,14 @@ export const constantRouterMap = [
       title: 'TTY'
     },
     component: TTY
+  },
+  {
+    path: '/ws',
+    name: 'ws',
+    meta: {
+      title: 'WS'
+    },
+    component: WS
   },
   {
     path: '/spice',
