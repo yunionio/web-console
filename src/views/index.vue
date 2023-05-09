@@ -10,7 +10,8 @@ const PATH = {
   vnc: '/no-vnc',
   spice: '/spice',
   wmks: '/wmks',
-  tty: '/tty'
+  tty: '/tty',
+  ws: '/ws'
 }
 
 export default {
