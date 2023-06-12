@@ -14,6 +14,11 @@ import { Terminal } from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import 'xterm/src/xterm.css'
 
+const hadPort = value => {
+  const reg = /^.+:\d+$/
+  return reg.test(value)
+}
+
 const debug = require('debug')('app:ssh')
 
 export default {
@@ -25,6 +30,8 @@ export default {
         type: 'info',
         message: this.$t('connection.ing')
       },
+      host: '',
+      port: '',
       connectParams: {},
       socket: {}
     }
@@ -51,7 +58,8 @@ export default {
   methods: {
     async initTerminal () {
       Terminal.applyAddon(fit)
-      this.socket = new WebSocket('wss://office.yunion.io/connect/?access_token=' + this.connectParams.access_token + '&EIO=3&transport=websocket')
+      const url = `wss://${this.host}:${this.port}/connect/?access_token=${this.connectParams.access_token}&EIO=3&transport=websocket`
+      this.socket = new WebSocket(url)
       const term = new Terminal({
         cols: 80,
         rows: 24,
@@ -145,6 +153,17 @@ export default {
         }
       }
       this.connectParams = query
+      if (query.api_server.includes('//')) {
+        this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
+      } else {
+        this.host = query.api_server
+      }
+      if (hadPort(this.host)) {
+        this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
+        this.host = this.host.slice(0, this.host.indexOf(':'))
+      } else {
+        this.port = query.api_server.indexOf('https') === 0 ? 443 : 80
+      }
       this.$nextTick(() => {
         this.initTerminal()
       })
