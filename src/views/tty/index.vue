@@ -3,7 +3,7 @@
     <div class="header p-2 text-center" :class="socketTips.type">
       {{ instanceName }}{{ socketTips.message }}
     </div>
-    <div  class="xterm flex-fill" ref="xterm"></div>
+    <div id="xterm-wrapper" class="xterm flex-fill" ref="xterm"></div>
   </div>
 </template>
 
