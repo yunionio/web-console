@@ -52,6 +52,7 @@ import qs from 'qs'
 import RFB from '@novnc/novnc/core/rfb'
 import KeyTable from '@novnc/novnc/core/input/keysym'
 import { charmap, shiftCharmap } from './src/VncChartMap'
+import { addWaterMark } from '../../utils/watermark'
 
 const hadPort = value => {
   const reg = /^.+:\d+$/
@@ -78,7 +79,8 @@ export default {
       deleteEvent: {
         key: 'Delete',
         keyPath: ['Delete']
-      }
+      },
+      connectParams: {}
     }
   },
   computed: {
@@ -220,6 +222,7 @@ export default {
           ...query
         }
       }
+      this.connectParams = query
       if (query.api_server.includes('//')) {
         this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
       } else {
@@ -251,6 +254,7 @@ export default {
       this.socketTips.message = this.$t('connection.success')
       this.socketTips.type = 'success'
       this.changeTitle(this.$route.query.ips)
+      this.initWaterMark()
     },
     disconnectedFromServer (e) {
       this.socketTips.message = this.$t('connection.fail')
@@ -276,6 +280,36 @@ export default {
       // 快捷键 windows + 0
       if (e.metaKey && (e.keyCode === 48 || e.keyCode === 96)) {
         this.sendText()
+      }
+    },
+    initWaterMark () {
+      if (this.connectParams.waterMark) {
+        const target = document.getElementById('noVNC_canvas')
+        const canvas = document.getElementsByTagName('canvas')
+        let ratioW = 1024
+        let ratioH = 768
+        if (canvas[0]) {
+          ratioW = canvas[0].width
+          ratioH = canvas[0].height
+        }
+        const rect = target.getBoundingClientRect()
+        const { width, height } = rect
+        let left = 0
+        if (width / height > ratioW / ratioH) {
+          left = (width - (ratioW * height / ratioH)) / 2
+        }
+        addWaterMark({
+          targetDom: target,
+          text: this.connectParams.waterMark,
+          wrapperStyle: {
+            position: 'absolute',
+            top: 0,
+            left: left + 'px',
+            right: 0,
+            bottom: 0,
+            'aspect-ratio': `auto ${ratioW} / ${ratioH}`
+          }
+        })
       }
     }
   }
@@ -326,6 +360,7 @@ export default {
     overflow: hidden;
   }
   #noVNC_canvas {
+    position: relative;
     background-color: rgb(40, 40, 40);
     color: #fff;
     max-width: 1920px;
@@ -333,6 +368,10 @@ export default {
     width: 100%;
     height: 100%;
     margin: 0 auto;
+    overflow: hidden;
+    canvas {
+      aspect-ratio: 1024 / 768!important;
+    }
   }
 }
 </style>

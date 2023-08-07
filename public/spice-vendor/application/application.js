@@ -188,6 +188,46 @@ Application = $.spcExtend(wdi.DomainObject, {
     }
     return name
   },
+  getWaterMark: function () {
+    const paramMap = new URLSearchParams(location.search)
+    let name = ''
+    if (paramMap.has('waterMark') && paramMap.get('waterMark')) {
+      name += paramMap.get('waterMark')
+    }
+    return name
+  },
+  initWaterMark: async function () {
+    setTimeout(() => {
+      const water = document.getElementById('watermark')
+      if (water) return
+      const waterMark = this.getWaterMark()
+      const target = document.getElementById('eventLayerWrapper')
+      if (waterMark && window.parent.addWaterMark && target) {
+        const canvas = document.getElementsByTagName('eventLayer')
+        let ratioW = 1024
+        let ratioH = 768
+        if (canvas[0]) {
+          ratioW = canvas[0].width
+          ratioH = canvas[0].height
+        }
+        const rect = target.getBoundingClientRect()
+        const { width } = rect
+        const left = (width - ratioW) / 2
+        window.parent.addWaterMark({
+          targetDom: target,
+          text: waterMark,
+          wrapperStyle: {
+            position: 'absolute',
+            top: 0,
+            left: left + 'px',
+            width: ratioW + 'px',
+            height: ratioH + 'px',
+            'aspect-ratio': `auto ${ratioW} / ${ratioH}`
+          }
+        })
+      }
+    }, 1000)
+  },
   onChannelConnected: function (params) {
     $('#header-tips').text(this.getInstanceName() + '连接成功')
     $('#login').removeClass('error')
@@ -195,8 +235,8 @@ Application = $.spcExtend(wdi.DomainObject, {
     if (channel === wdi.SpiceVars.SPICE_CHANNEL_INPUTS) {
       this.clientGui.releaseAllKeys()
     }
+    this.initWaterMark()
   },
-
   onNetworkDriveResponse: function (params) {
     this.executeExternalCallback('networkDriveResponse', params)
   },

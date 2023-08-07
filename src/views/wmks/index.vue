@@ -48,6 +48,7 @@
 <script>
 import { Base64 } from 'js-base64'
 import qs from 'qs'
+import { addWaterMark } from '../../utils/watermark'
 
 const debug = require('debug')('app:wmks')
 
@@ -74,7 +75,8 @@ export default {
       deleteEvent: {
         key: 'Delete',
         keyPath: ['Delete']
-      }
+      },
+      connectParams: {}
     }
   },
   computed: {
@@ -147,6 +149,7 @@ export default {
           ...query
         }
       }
+      this.connectParams = query
       this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
       if (hadPort(this.host)) {
         this.port = this.host.slice(this.host.indexOf(':') + 1) // 去掉:
@@ -214,6 +217,7 @@ export default {
       this.socketTips.message = this.$t('connection.success')
       this.socketTips.type = 'success'
       this.changeTitle(this.$route.query.ips)
+      this.initWaterMark()
     },
     errorConnectedFromServer () {
       debug(this.$t('connection.fail'))
@@ -241,6 +245,29 @@ export default {
     changeTitle: function (title) {
       if (!title) return
       document.title = title
+    },
+    initWaterMark () {
+      if (this.connectParams.waterMark) {
+        const target = document.getElementById('wmks-canvas')
+        const canvas = document.getElementById('mainCanvas')
+        let ratioW = 1024
+        let ratioH = 768
+        if (canvas) {
+          ratioW = canvas.width
+          ratioH = canvas.height
+        }
+        addWaterMark({
+          targetDom: target,
+          text: this.connectParams.waterMark,
+          wrapperStyle: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: ratioW + 'px',
+            height: ratioH + 'px'
+          }
+        })
+      }
     }
   }
 }
