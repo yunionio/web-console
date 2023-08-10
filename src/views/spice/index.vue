@@ -7,6 +7,7 @@
 <script>
 import { Base64 } from 'js-base64'
 import qs from 'qs'
+import { addWaterMark } from '../../utils/watermark'
 
 export default {
   computed: {
@@ -33,6 +34,7 @@ export default {
       }
       return query
     }
+    window.addWaterMark = addWaterMark
   },
   mounted () {
     this.initNode()
@@ -40,9 +42,9 @@ export default {
   methods: {
     getSpecilUrl () {
       let url = `${process.env.BASE_URL}/spice-vendor/index.html`
-      const { ips, instanceName } = this.$route.query
+      const { ips, instanceName, waterMark } = this.$route.query
       if (ips && instanceName) {
-        url += `?ips=${ips}&instanceName=${instanceName}`
+        url += `?ips=${ips}&instanceName=${instanceName}&waterMark=${waterMark}`
       }
       return url
     },

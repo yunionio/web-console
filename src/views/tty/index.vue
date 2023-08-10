@@ -3,7 +3,7 @@
     <div class="header p-2 text-center" :class="socketTips.type">
       {{ instanceName }}{{ socketTips.message }}
     </div>
-    <div class="xterm flex-fill" ref="xterm"></div>
+    <div id="xterm-wrapper" class="xterm flex-fill" ref="xterm"></div>
   </div>
 </template>
 
@@ -14,6 +14,7 @@ import { Terminal } from 'xterm'
 import * as fit from 'xterm/lib/addons/fit/fit'
 import 'xterm/src/xterm.css'
 import io from 'socket.io-client'
+import { addWaterMark } from '../../utils/watermark'
 
 const debug = require('debug')('app:ssh')
 
@@ -106,6 +107,7 @@ export default {
         this.socketTips.type = 'success'
         this.socketTips.message = this.$t('connection.success')
         this.changeTitle(this.$route.query.ips)
+        this.initWaterMark()
       })
       this.socket.on('connecting', () => {
         debug('connecting')
@@ -166,6 +168,17 @@ export default {
     changeTitle: function (title) {
       if (!title) return
       document.title = title
+    },
+    initWaterMark () {
+      if (this.connectParams.waterMark) {
+        addWaterMark({
+          targetDom: document.getElementById('xterm-wrapper'),
+          text: this.connectParams.waterMark,
+          wrapperStyle: {
+            top: '40px'
+          }
+        })
+      }
     }
   }
 }
