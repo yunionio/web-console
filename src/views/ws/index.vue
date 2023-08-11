@@ -11,8 +11,8 @@
 import { Base64 } from 'js-base64'
 import qs from 'qs'
 import { Terminal } from 'xterm'
-import * as fit from 'xterm/lib/addons/fit/fit'
-import 'xterm/src/xterm.css'
+import { FitAddon } from 'xterm-addon-fit'
+import 'xterm/css/xterm.css'
 
 const debug = require('debug')('app:ssh')
 
@@ -57,7 +57,6 @@ export default {
   },
   methods: {
     async initTerminal () {
-      Terminal.applyAddon(fit)
       const url = `wss://${this.host}:${this.port}/connect/?access_token=${this.connectParams.access_token}&EIO=3&transport=websocket`
       this.socket = new WebSocket(url)
       const term = new Terminal({
@@ -65,6 +64,8 @@ export default {
         rows: 24,
         ScrollBar: true
       })
+      const fitAddon = new FitAddon()
+      term.loadAddon(fitAddon)
       const terminalDom = this.$refs.xterm
       term.open(terminalDom)
       term.focus()
@@ -104,9 +105,9 @@ export default {
       }
       this._registerSocketEvents(term)
       window.addEventListener('resize', () => {
-        term.fit()
+        fitAddon.fit()
       })
-      term.fit()
+      fitAddon.fit()
     },
     _registerSocketEvents (term) {
       this.socket.onopen = () => {
