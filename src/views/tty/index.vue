@@ -73,9 +73,9 @@ export default {
         this.socket.emit('resize', [size.cols, size.rows])
       })
       term.onData(data => this.socket.emit('input', data))
-      term.onKey((val, domEvent) => {
-        domEvent.preventDefault()
-      })
+      // term.onKey((val, domEvent) => {
+      //   domEvent.preventDefault()
+      // })
       term.onTitleChange((val) => {
         if (val) {
           document.title = val

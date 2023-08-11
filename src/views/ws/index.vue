@@ -88,9 +88,9 @@ export default {
           }
         }))
       })
-      term.onKey(({ key, domEvent }) => {
-        domEvent.preventDefault()
-      })
+      // term.onKey(({ key, domEvent }) => {
+      //   domEvent.preventDefault()
+      // })
       term.onTitleChange((val) => {
         if (val) {
           document.title = val
