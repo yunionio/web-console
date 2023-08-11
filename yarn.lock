@@ -11140,6 +11140,11 @@ xtend@^4.0.0, xtend@~4.0.1:
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.2.tgz#bb72779f5fa465186b1f438f674fa347fdb5db54"
   integrity sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==
 
+xterm-addon-fit@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/xterm-addon-fit/-/xterm-addon-fit-0.7.0.tgz#b8ade6d96e63b47443862088f6670b49fb752c6a"
+  integrity sha512-tQgHGoHqRTgeROPnvmtEJywLKoC/V9eNs4bLLz7iyJr1aW/QFzRwfd3MGiJ6odJd9xEfxcW36/xRU47JkD5NKQ==
+
 xterm@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/xterm/-/xterm-5.2.1.tgz#b3fea7bdb55b9be1d4b31f4cd1091f26ac42afb8"
