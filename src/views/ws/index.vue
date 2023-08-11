@@ -69,7 +69,7 @@ export default {
       const terminalDom = this.$refs.xterm
       term.open(terminalDom)
       term.focus()
-      term.on('resize', size => {
+      term.onResize(size => {
         if (this.socket.readyState !== 1 && this.socket.readyState !== 2) return
         this.socket.send(JSON.stringify({
           type: 'resize',
@@ -79,7 +79,7 @@ export default {
           }
         }))
       })
-      term.on('data', data => {
+      term.onData(data => {
         this.socket.send(JSON.stringify({
           type: 'input',
           data: {
@@ -87,10 +87,10 @@ export default {
           }
         }))
       })
-      term.on('keypress', (val, e) => {
-        e.preventDefault()
-      })
-      term.on('title', (val) => {
+      // term.onKey((val, domEvent) => {
+      //   domEvent.preventDefault()
+      // })
+      term.onTitleChange((val) => {
         if (val) {
           document.title = val
         }
