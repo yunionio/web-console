@@ -68,14 +68,14 @@ export default {
       const terminalDom = this.$refs.xterm
       term.open(terminalDom)
       term.focus()
-      term.on('resize', size => {
+      term.onResize(size => {
         this.socket.emit('resize', [size.cols, size.rows])
       })
-      term.on('data', data => this.socket.emit('input', data))
-      term.on('keypress', (val, e) => {
-        e.preventDefault()
-      })
-      term.on('title', (val) => {
+      term.onData(data => this.socket.emit('input', data))
+      // term.onKey((val, domEvent) => {
+      //   domEvent.preventDefault()
+      // })
+      term.onTitleChange((val) => {
         if (val) {
           document.title = val
         }
