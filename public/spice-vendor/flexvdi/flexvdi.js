@@ -157,6 +157,13 @@ function showSendtextDialog () {
   app.updateSendtextShow(true)
 }
 
+async function sendClipBoard () {
+  if (navigator.clipboard) {
+    const text = await navigator.clipboard.readText()
+    app.sendtext(text)
+  }
+}
+
 function hideSendtextDialog () {
   $('#sendtext-area').val('')
   $('#dialog-sendtext').removeClass('dialog-sendtext-show')
