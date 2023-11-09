@@ -281,7 +281,7 @@ function start () {
     useWorkers: useWorkers,
     seamlessDesktopIntegration: false,
     externalClipboardHandling: false,
-    disableClipboard: true,
+    disableClipboard: false,
     layer: document.getElementById('screen'),
     vmInfoToken: getURLParameter('vmInfoToken'),
     canvasMargin: {

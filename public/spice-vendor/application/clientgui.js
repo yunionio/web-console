@@ -72,12 +72,12 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
     this.contexts = {}
     this.superInit()
     this.magnifier = window.$('<canvas/>').attr({
-      'width': 150,
-      'height': 150
+      width: 150,
+      height: 150
     }).css({
-      'position': 'absolute',
-      'left': '0px',
-      'top': '0px'
+      position: 'absolute',
+      left: '0px',
+      top: '0px'
     })
     this.stuckKeysHandler = c.stuckKeysHandler || new wdi.StuckKeysHandler()
     this.stuckKeysHandler.addListener('inputStuck', this._sendInput.bind(this), this)
@@ -126,25 +126,25 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
   },
 
   deleteSubCanvas: function (window) {
-    var obj = this.subCanvas[window['hwnd']]
-    this.subCanvas[window['hwnd']] = null
+    var obj = this.subCanvas[window.hwnd]
+    this.subCanvas[window.hwnd] = null
     return obj
   },
 
   moveSubCanvas: function (window) {
-    var obj = this.subCanvas[window['hwnd']]
-    obj['info'] = window
+    var obj = this.subCanvas[window.hwnd]
+    obj.info = window
     this._fillSubCanvasFromWindow(window)
     return obj
   },
 
   resizeSubCanvas: function (window) {
-    var obj = this.subCanvas[window['hwnd']]
-    $([obj['canvas'], obj['eventLayer']]).attr({
-      'width': window['width'],
-      'height': window['height']
+    var obj = this.subCanvas[window.hwnd]
+    $([obj.canvas, obj.eventLayer]).attr({
+      width: window.width,
+      height: window.height
     })
-    obj['info'] = window
+    obj.info = window
     this._fillSubCanvasFromWindow(window)
     return obj
   },
@@ -163,23 +163,23 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
   },
 
   createNewSubCanvas: function (window) {
-    var evtlayer = this.createEventLayer(window['hwnd'] + '_event', window['width'], window['height'])
-    this.subCanvas[window['hwnd']] = {
-      'canvas': $('<canvas/>').attr({
-        width: window['width'],
-        height: window['height']
+    var evtlayer = this.createEventLayer(window.hwnd + '_event', window.width, window.height)
+    this.subCanvas[window.hwnd] = {
+      canvas: $('<canvas/>').attr({
+        width: window.width,
+        height: window.height
       }).css({
-        display: window['iconic'] ? 'none' : 'block'
+        display: window.iconic ? 'none' : 'block'
       })[0],
-      'eventLayer': evtlayer,
-      'info': window,
-      'position': 0
+      eventLayer: evtlayer,
+      info: window,
+      position: 0
     }
     // we have the main area drawn?
     if (this.canvas[this.mainCanvas]) {
       this._fillSubCanvasFromWindow(window)
     }
-    return [this.subCanvas[window['hwnd']]]
+    return [this.subCanvas[window.hwnd]]
   },
 
   fillSubCanvas: function (filterPosition) {
@@ -187,12 +187,12 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
     var info = null
     for (var i in this.subCanvas) {
       if (this.subCanvas[i] != null && this.subCanvas[i] !== undefined && this.subCanvas.hasOwnProperty(i)) {
-        info = this.subCanvas[i]['info']
+        info = this.subCanvas[i].info
         if (filterPosition != null || filterPosition != undefined) {
-          var top = parseInt(info['top'], 10)
-          var left = parseInt(info['left'], 10)
-          var width = parseInt(info['width'], 10)
-          var height = parseInt(info['height'], 10)
+          var top = parseInt(info.top, 10)
+          var left = parseInt(info.left, 10)
+          var width = parseInt(info.width, 10)
+          var height = parseInt(info.height, 10)
           var position = {
             top: top,
             left: left,
@@ -214,16 +214,16 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
       return
     }
     var destCtx = null
-    if (info['iconic'] === 0) {
-      var destCanvas = subCanvas['canvas']
+    if (info.iconic === 0) {
+      var destCanvas = subCanvas.canvas
       destCtx = destCanvas.getContext('2d')
 
       var x = 0
       var y = 0
       var width = +info.width
       var height = +info.height
-      var left = +info['left']
-      var top = +info['top']
+      var left = +info.left
+      var top = +info.top
 
       if (left < 0) {
         width = width + left
@@ -314,9 +314,9 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
     // this goes here?
     if (this.firstTime && this.clipboardEnabled) {
       var self = this
-      $(document).bind('paste', function (event) {
-        self.fire('paste', event.originalEvent.clipboardData.getData('text/plain'))
-      })
+      // $(document).bind('paste', function (event) {
+      //   self.fire('paste', event.originalEvent.clipboardData.getData('text/plain'))
+      // })
       this.firstTime = false
     }
 
@@ -338,9 +338,9 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
     var self = this
 
     var documentDOM = window.$(window.document)
-    documentDOM['keydown']([self], this.handleKey)
-    documentDOM['keypress']([self], this.handleKey)
-    documentDOM['keyup']([self], this.handleKey)
+    documentDOM.keydown([self], this.handleKey)
+    documentDOM.keypress([self], this.handleKey)
+    documentDOM.keyup([self], this.handleKey)
     this.inputManager.enable()
   },
 
@@ -361,7 +361,7 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
       height: height
     })
 
-    if (window['bowser']['firefox']) {
+    if (window.bowser.firefox) {
       eventLayer.attr('contentEditable', true)
     }
 
@@ -434,8 +434,8 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
         var posY = myY - 160
 
         self.magnifier.css({
-          'left': posX,
-          'top': posY
+          left: posX,
+          top: posY
         })
 
         // fill magnifier
@@ -504,7 +504,7 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
     })
 
     // if (!Modernizr.touch) {
-    eventLayer['mouseup'](function (event) {
+    eventLayer.mouseup(function (event) {
       var button = event.button
 
       self.generateEvent.call(self, 'mouseup', button)
@@ -512,7 +512,7 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
       event.preventDefault()
     })
 
-    eventLayer['mousedown'](function (event) {
+    eventLayer.mousedown(function (event) {
       var button = event.button
 
       self.generateEvent.call(self, 'mousedown', button)
@@ -525,7 +525,7 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
       event.preventDefault()
     })
 
-    eventLayer['mousemove'](function (event) {
+    eventLayer.mousemove(function (event) {
       var x = event.pageX
       var y = event.pageY
       var offset = $(this).offset()
@@ -608,7 +608,7 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
       }
     } else {
       if (event.indexOf('key') > -1) { // it's a keyEvent
-        this.stuckKeysHandler.checkSpecialKey(event, params[0]['keyCode'])
+        this.stuckKeysHandler.checkSpecialKey(event, params[0].keyCode)
         var val = this.inputManager.getValue()
         if (val) {
           params = this.inputManager.manageChar(val, params)
@@ -627,7 +627,7 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
     if (mode == wdi.SpiceMouseModeTypes.SPICE_MOUSE_MODE_SERVER) {
       this.triedCapturingPointer = false
       $.nok({
-        message: tr['msg_click_to_capture']
+        message: tr.msg_click_to_capture
       })
     }
     this.updateMousePointer()
@@ -665,7 +665,12 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
     // show to the user
     // TODO: create a new dialog with buttons to copy the data directly
     // from the textbox
-    prompt('New clipboard data available, press ctrl+c to copy it', data)
+    // prompt('New clipboard data available, press ctrl+c to copy it', data)
+    // console.log('data', data)
+    // 写入剪贴板
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(data)
+    }
   },
 
   initSound: function () {
