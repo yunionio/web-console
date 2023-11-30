@@ -47,8 +47,7 @@ export default {
       lastEvent: null,
       connectionState: states.IDLE,
       errorMessage: '',
-      arguments: {},
-      query: {}
+      arguments: {}
     }
   },
   watch: {
@@ -152,7 +151,7 @@ export default {
       }, 100)
     },
     startGuacamole () {
-      const url = `wss://${this.host}:${this.port}/connect?access_token=${this.connectParams.access_token}`
+      const url = `wss://${this.host}:${this.port}/connect`
       const tunnel = new Guacamole.WebSocketTunnel(url)
 
       if (this.client) {
@@ -267,8 +266,10 @@ export default {
         }
         e.returnValue = false
       })
-
-      const param = serialize(this.query)
+      const query = {
+        access_token: this.connectParams.access_token
+      }
+      const param = serialize(query)
       this.client.connect(param)
       window.onunload = () => this.client.disconnect()
 
