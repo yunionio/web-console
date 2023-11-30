@@ -11,7 +11,8 @@ const PATH = {
   spice: '/spice',
   wmks: '/wmks',
   tty: '/tty',
-  ws: '/ws'
+  ws: '/ws',
+  rdp: '/rdp'
 }
 
 export default {
