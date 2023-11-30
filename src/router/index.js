@@ -6,6 +6,7 @@ import TTY from '@views/tty'
 import WS from '@views/ws'
 import Spice from '@views/spice'
 import WMKS from '@views/wmks'
+import Rdp from '@views/rdp'
 
 Vue.use(Router)
 
@@ -57,6 +58,14 @@ export const constantRouterMap = [
       title: 'WMKS'
     },
     component: WMKS
+  },
+  {
+    path: '/rdp',
+    name: 'rdp',
+    meta: {
+      title: 'RDP'
+    },
+    component: Rdp
   }
 ]
 
