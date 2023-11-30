@@ -193,18 +193,26 @@ export default {
       }
 
       this.client.onstatechange = clientState => {
+        const key = 'message'
         switch (clientState) {
           case 0:
             this.connectionState = states.IDLE
+            message.destroy(key)
+            message.loading({ content: '正在初始化中...', duration: 0, key: key })
             break
           case 1:
-            // connecting ignored for some reason?
+            message.destroy(key)
+            message.loading({ content: '正在努力连接中...', duration: 0, key: key })
             break
           case 2:
             this.connectionState = states.WAITING
+            message.destroy(key)
+            message.loading({ content: '正在等待服务器响应...', duration: 0, key: key })
             break
           case 3:
             this.connectionState = states.CONNECTED
+            message.destroy(key)
+            message.success({ content: '连接成功', duration: 3, key: key })
             window.addEventListener('resize', this.resize)
             this.$refs.viewport.addEventListener('mouseenter', this.resize)
 
@@ -212,8 +220,10 @@ export default {
 
             // eslint-disable-next-line no-fallthrough
           case 4:
+            break
           case 5:
             // disconnected, disconnecting
+            message.info({ content: '连接已关闭', duration: 3, key: key })
             break
         }
       }
