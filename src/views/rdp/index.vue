@@ -152,7 +152,7 @@ export default {
       }, 100)
     },
     startGuacamole () {
-      const url = `wss://${this.host}:${this.port}/connect/?access_token=${this.connectParams.access_token}`
+      const url = `wss://${this.host}:${this.port}/connect?access_token=${this.connectParams.access_token}`
       const tunnel = new Guacamole.WebSocketTunnel(url)
 
       if (this.client) {
