@@ -89,7 +89,7 @@ export default {
       })
     },
     doGuacdConnect () {
-      this._setScreenSize()
+      // this._setScreenSize()
       this.startGuacamole()
     },
     send (cmd) {
@@ -298,7 +298,7 @@ export default {
       setTimeout(() => {
         this.resize()
         displayElm.focus()
-      }, 1000) // $nextTick wasn't enough
+      }, 2000) // $nextTick wasn't enough
     },
     installKeyboard () {
       this.keyboard.onkeydown = keysym => {
@@ -318,27 +318,12 @@ export default {
 
 <style lang="scss" scoped>
 .viewport {
-  width: 100vw;
-  height: 100vh;
-}
-.content {
+  width: 100%;
   height: 100%;
-  background-color: #000;
-  color: #fff;
 }
-.header {
-  color: #fff;
-  &.info {
-    background-color: #909399;
-    color: #000;
-  }
-  &.success {
-    background-color: #67C23A;
-    color: #fff;
-  }
-  &.error {
-    background-color: #F56C6C;
-    color: #fff;
-  }
+.display {
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
 }
 </style>
