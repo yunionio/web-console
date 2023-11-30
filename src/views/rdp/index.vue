@@ -207,7 +207,7 @@ export default {
           case 3:
             this.connectionState = states.CONNECTED
             window.addEventListener('resize', this.resize)
-            this.$refs.viewport.addEventListener('mouseenter', this.resize)
+            this.$refs.display.addEventListener('mouseenter', this.resize)
 
             clipboard.setRemoteClipboard(this.client)
 
