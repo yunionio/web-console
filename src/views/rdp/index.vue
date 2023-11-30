@@ -1,6 +1,7 @@
 <template>
-  <div class="content d-flex flex-column">
-    <div class="flex-fill" ref="display"></div>
+  <div ref="viewport" class="viewport">
+    <!-- tabindex allows for div to be focused -->
+    <div ref="display" class="display" tabindex="0" />
   </div>
 </template>
 
@@ -207,7 +208,7 @@ export default {
           case 3:
             this.connectionState = states.CONNECTED
             window.addEventListener('resize', this.resize)
-            this.$refs.display.addEventListener('mouseenter', this.resize)
+            this.$refs.viewport.addEventListener('mouseenter', this.resize)
 
             clipboard.setRemoteClipboard(this.client)
 
@@ -316,6 +317,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.viewport {
+  width: 100vw;
+  height: 100vh;
+}
 .content {
   height: 100%;
   background-color: #000;
