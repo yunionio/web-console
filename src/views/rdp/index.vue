@@ -135,21 +135,19 @@ export default {
         // resize is being called on the hidden window
         return
       }
-
       const pixelDensity = window.devicePixelRatio || 1
       const width = elm.clientWidth * pixelDensity
       const height = elm.clientHeight * pixelDensity
-      if (this.display.getWidth() !== width || this.display.getHeight() !== height) {
-        this.client.sendSize(width, height)
-      }
+
+      this.client.sendSize(width, height)
       // setting timeout so display has time to get the correct size
-      setTimeout(() => {
-        const scale = Math.min(
-          elm.clientWidth / Math.max(this.display.getWidth(), 1),
-          elm.clientHeight / Math.max(this.display.getHeight(), 1)
-        )
-        this.display.scale(scale)
-      }, 100)
+      // setTimeout(() => {
+      //   const scale = Math.min(
+      //     elm.clientWidth / Math.max(this.display.getWidth(), 1),
+      //     elm.clientHeight / Math.max(this.display.getHeight(), 1)
+      //   )
+      //   this.display.scale(scale)
+      // }, 100)
     },
     startGuacamole () {
       const url = `wss://${this.host}:${this.port}/connect/`
