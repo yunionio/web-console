@@ -151,7 +151,7 @@ export default {
       }, 100)
     },
     startGuacamole () {
-      const url = `wss://${this.host}:${this.port}/connect`
+      const url = `wss://${this.host}:${this.port}/connect/`
       const tunnel = new Guacamole.WebSocketTunnel(url)
 
       if (this.client) {
