@@ -1,7 +1,17 @@
 <template>
-  <div ref="viewport" class="viewport">
-    <!-- tabindex allows for div to be focused -->
-    <div ref="display" class="display" tabindex="0" />
+  <div class="rdp-container">
+    <div>
+      <div class="header p-2 text-center" :class="socketTips.type">
+        {{ instanceName }}{{ socketTips.message }}
+        <a-button @click="doClickHandle()" class="ctrl-alt-delete-btn">Ctrl-Alt-Delete</a-button>
+      </div>
+    </div>
+    <div id="display-wrapper" class="rdp-wrapper">
+      <div ref="viewport" class="viewport">
+        <!-- tabindex allows for div to be focused -->
+        <div ref="display" class="display" tabindex="0" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -13,7 +23,8 @@ import Guacamole from 'guacamole-common-js'
 import GuacMouse from './libs/GuacMouse'
 import states from './libs/states'
 import clipboard from './libs/clipboard'
-import { message } from 'ant-design-vue'
+import { addWaterMark } from '../../utils/watermark'
+import { debounce } from '../../utils/base'
 
 Guacamole.Mouse = GuacMouse.mouse
 
@@ -48,7 +59,24 @@ export default {
       lastEvent: null,
       connectionState: states.IDLE,
       errorMessage: '',
-      arguments: {}
+      arguments: {},
+      socketTips: {
+        type: 'info',
+        message: this.$t('connection.ing')
+      }
+    }
+  },
+  computed: {
+    instanceName () {
+      let name = ''
+      const { instanceName, ips } = this.$route.query
+      if (instanceName) {
+        name += instanceName
+      }
+      if (ips) {
+        name += ` (${ips}) `
+      }
+      return name
     }
   },
   watch: {
@@ -71,7 +99,6 @@ export default {
           ...query
         }
       }
-      console.log(query)
       this.connectParams = query
       if (query.api_server.includes('//')) {
         this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
@@ -89,7 +116,6 @@ export default {
       })
     },
     doGuacdConnect () {
-      // this._setScreenSize()
       this.startGuacamole()
     },
     send (cmd) {
@@ -117,41 +143,27 @@ export default {
       })
       this.client.sendMouseState(scaledMouseState)
     },
-    _setScreenSize () {
-      const elm = this.$refs.viewport
-      if (!elm || !elm.offsetWidth) {
-        // resize is being called on the hidden window
-        return
-      }
-      const pixelDensity = window.devicePixelRatio || 1
-      const width = elm.clientWidth * pixelDensity
-      const height = elm.clientHeight * pixelDensity
-      this.query.screen_height = height
-      this.query.screen_width = width
-    },
     resize () {
       const elm = this.$refs.viewport
       if (!elm || !elm.offsetWidth) {
         // resize is being called on the hidden window
         return
       }
-      const pixelDensity = window.devicePixelRatio || 1
-      const width = elm.clientWidth * pixelDensity
-      const height = elm.clientHeight * pixelDensity
+
+      const width = window.innerWidth
+      const height = window.innerHeight - 37
+      const scale = height / this.display.getHeight()
 
       this.client.sendSize(width, height)
-      // setting timeout so display has time to get the correct size
-      // setTimeout(() => {
-      //   const scale = Math.min(
-      //     elm.clientWidth / Math.max(this.display.getWidth(), 1),
-      //     elm.clientHeight / Math.max(this.display.getHeight(), 1)
-      //   )
-      //   this.display.scale(scale)
-      // }, 100)
+      this.display.scale(scale)
     },
     startGuacamole () {
       const url = `wss://${this.host}:${this.port}/connect/`
       const tunnel = new Guacamole.WebSocketTunnel(url)
+
+      const resize = debounce(() => {
+        this.resize()
+      }, 1000)
 
       if (this.client) {
         this.display.scale(0)
@@ -193,37 +205,41 @@ export default {
       }
 
       this.client.onstatechange = clientState => {
-        const key = 'message'
+        // const key = 'message'
         switch (clientState) {
           case 0:
             this.connectionState = states.IDLE
-            message.destroy(key)
-            message.loading({ content: '正在初始化中...', duration: 0, key: key })
+            // message.destroy(key)
+            // message.loading({ content: '正在初始化中...', duration: 0, key: key })
             break
           case 1:
-            message.destroy(key)
-            message.loading({ content: '正在努力连接中...', duration: 0, key: key })
+            // message.destroy(key)
+            // message.loading({ content: '正在努力连接中...', duration: 0, key: key })
             break
           case 2:
             this.connectionState = states.WAITING
-            message.destroy(key)
-            message.loading({ content: '正在等待服务器响应...', duration: 0, key: key })
+            // message.destroy(key)
+            // message.loading({ content: '正在等待服务器响应...', duration: 0, key: key })
             break
           case 3:
             this.connectionState = states.CONNECTED
-            message.destroy(key)
-            message.success({ content: '连接成功', duration: 3, key: key })
-            window.addEventListener('resize', this.resize)
-            this.$refs.viewport.addEventListener('mouseenter', this.resize)
+            // message.destroy(key)
+            // message.success({ content: '连接成功', duration: 3, key: key })
+            this.socketTips.type = 'success'
+            this.socketTips.message = this.$t('connection.success')
+            window.addEventListener('resize', resize)
+            this.$refs.viewport.addEventListener('mouseenter', resize)
 
             clipboard.setRemoteClipboard(this.client)
-
+            this.initWaterMark()
             // eslint-disable-next-line no-fallthrough
           case 4:
             break
           case 5:
             // disconnected, disconnecting
-            message.info({ content: '连接已关闭', duration: 3, key: key })
+            // message.info({ content: '连接已关闭', duration: 3, key: key })
+            this.socketTips.type = 'error'
+            this.socketTips.message = this.$t('connection.disconnect')
             break
         }
       }
@@ -231,7 +247,7 @@ export default {
       this.client.onerror = error => {
         this.client.disconnect()
         // eslint-disable-next-line no-console
-        message.error(`Client error ${JSON.stringify(error)}`)
+        // message.error(`Client error ${JSON.stringify(error)}`)
         this.errorMessage = error.message
         this.connectionState = states.CLIENT_ERROR
       }
@@ -275,6 +291,7 @@ export default {
         }
         e.returnValue = false
       })
+
       const query = {
         access_token: this.connectParams.access_token
       }
@@ -304,9 +321,9 @@ export default {
       this.installKeyboard()
       this.mouse.onmousedown = this.mouse.onmouseup = this.mouse.onmousemove = this.handleMouseState
       setTimeout(() => {
-        this.resize()
+        resize()
         displayElm.focus()
-      }, 2000) // $nextTick wasn't enough
+      }, 1500) // $nextTick wasn't enough
     },
     installKeyboard () {
       this.keyboard.onkeydown = keysym => {
@@ -319,19 +336,65 @@ export default {
     uninstallKeyboard () {
       this.keyboard.onkeydown = this.keyboard.onkeyup = () => {
       }
+    },
+    initWaterMark () {
+      if (this.connectParams.waterMark) {
+        addWaterMark({
+          targetDom: document.getElementById('display-wrapper'),
+          text: this.connectParams.waterMark,
+          wrapperStyle: {
+            top: '40px'
+          }
+        })
+      }
+    },
+    doClickHandle () {
+      this.client.sendKeyEvent(1, 0xFFE3) // Ctrl
+      this.client.sendKeyEvent(1, 0xFFE9) // Alt
+      this.client.sendKeyEvent(1, 0xFFFF) // Delete
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.rdp-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  // background-color: #000;
+  color: #fff;
+}
+.header {
+  color: #fff;
+  &.info {
+    background-color: #909399;
+    color: #000;
+  }
+  &.success {
+    background-color: #67C23A;
+    color: #fff;
+  }
+  &.error {
+    background-color: #F56C6C;
+    color: #fff;
+  }
+}
+.rdp-wrapper {
+  margin: 0 auto;
+}
 .viewport {
   width: 100%;
   height: 100%;
 }
 .display {
   overflow: hidden;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
+}
+.ctrl-alt-delete-btn {
+  position: absolute;
+  right: 10px;
+  top: 2px;
 }
 </style>
