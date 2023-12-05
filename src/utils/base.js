@@ -13,3 +13,17 @@ export function camel2Words (camel) {
   }
   return tmp.split('-')
 }
+
+export const debounce = function (fn, delay = 500) {
+  let timer = null
+
+  return function () {
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(() => {
+      fn.apply(this, arguments)
+      timer = null
+    }, delay)
+  }
+}
