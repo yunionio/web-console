@@ -150,12 +150,14 @@ export default {
         return
       }
 
-      const width = window.innerWidth
-      const height = window.innerHeight - 37
-      const scale = height / this.display.getHeight()
+      const width = window.innerWidth * window.devicePixelRatio
+      const height = (window.innerHeight - 37) * window.devicePixelRatio
+      const heightScale = height / this.display.getHeight()
+      const widthScale = width / this.display.getWidth()
+      const minScale = widthScale < heightScale ? widthScale : heightScale
 
       this.client.sendSize(width, height)
-      this.display.scale(scale)
+      this.display.scale(minScale)
     },
     startGuacamole () {
       const url = `wss://${this.host}:${this.port}/connect/`
@@ -163,7 +165,7 @@ export default {
 
       const resize = debounce(() => {
         this.resize()
-      }, 1000)
+      }, 500)
 
       if (this.client) {
         this.display.scale(0)
@@ -362,7 +364,7 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
-  // background-color: #000;
+  background: rgba(0, 0, 0, 0.75);
   color: #fff;
 }
 .header {
