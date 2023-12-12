@@ -150,8 +150,8 @@ export default {
         return
       }
 
-      const width = window.innerWidth * window.devicePixelRatio
-      const height = (window.innerHeight - 37) * window.devicePixelRatio
+      const width = window.innerWidth
+      const height = window.innerHeight - 37
       const heightScale = height / this.display.getHeight()
       const widthScale = width / this.display.getWidth()
       const minScale = widthScale < heightScale ? widthScale : heightScale
