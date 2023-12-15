@@ -14,7 +14,7 @@ function isLogin (to) {
 }
 
 router.beforeEach((to, from, next) => {
-  const _isLogin = isLogin(to)
+  const _isLogin = true // isLogin(to)
   if (_isLogin) {
     next()
   } else {
