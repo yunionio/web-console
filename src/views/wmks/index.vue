@@ -80,18 +80,12 @@ export default {
     }
   },
   computed: {
-    serverId () {
-      return this.$route.query.id
-    },
-    name () {
-      return this.$route.query.name
-    },
     isLinux () {
-      return this.$route.query.os_type === 'Linux'
+      return this.connectParams.os_type === 'Linux'
     },
     instanceName () {
       let name = ''
-      const { instanceName, ips } = this.$route.query
+      const { instance_name: instanceName, ips } = this.connectParams
       if (instanceName) {
         name += instanceName
       }
@@ -216,7 +210,7 @@ export default {
       debug(this.$t('connection.success'))
       this.socketTips.message = this.$t('connection.success')
       this.socketTips.type = 'success'
-      this.changeTitle(this.$route.query.ips)
+      this.changeTitle(this.connectParams.ips)
       this.initWaterMark()
     },
     errorConnectedFromServer () {
@@ -247,7 +241,7 @@ export default {
       document.title = title
     },
     initWaterMark () {
-      if (this.connectParams.waterMark) {
+      if (this.connectParams.water_mark) {
         const target = document.getElementById('wmks-canvas')
         const canvas = document.getElementById('mainCanvas')
         let ratioW = 1024
@@ -258,7 +252,7 @@ export default {
         }
         addWaterMark({
           targetDom: target,
-          text: this.connectParams.waterMark,
+          text: this.connectParams.water_mark,
           wrapperStyle: {
             position: 'absolute',
             top: 0,
