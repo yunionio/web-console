@@ -25,7 +25,7 @@ http.interceptors.request.use(
       ...config,
       headers: {
         ...config.headers,
-        Authorization: `Bearer ${store.getters.userInfo.session}`
+        // Authorization: `Bearer ${store.getters.userInfo.session}`
       }
     }
   },
