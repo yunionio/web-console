@@ -63,13 +63,14 @@ export default {
       socketTips: {
         type: 'info',
         message: this.$t('connection.ing')
-      }
+      },
+      connectParams: {}
     }
   },
   computed: {
     instanceName () {
       let name = ''
-      const { instanceName, ips } = this.$route.query
+      const { instance_name: instanceName, ips } = this.connectParams
       if (instanceName) {
         name += instanceName
       }
@@ -340,10 +341,10 @@ export default {
       }
     },
     initWaterMark () {
-      if (this.connectParams.waterMark) {
+      if (this.connectParams.water_mark) {
         addWaterMark({
           targetDom: document.getElementById('display-wrapper'),
-          text: this.connectParams.waterMark,
+          text: this.connectParams.water_mark,
           wrapperStyle: {
             top: '40px'
           }

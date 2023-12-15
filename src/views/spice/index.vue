@@ -10,10 +10,15 @@ import qs from 'qs'
 import { addWaterMark } from '../../utils/watermark'
 
 export default {
+  data () {
+    return {
+      connectParams: {}
+    }
+  },
   computed: {
     spiceUrl () {
       let url = `${process.env.BASE_URL}/spice-vendor/index.html`
-      const { ips, instanceName } = this.$route.query
+      const { ips, instanceName } = this.connectParams
       if (ips && instanceName) {
         url += `?ips=${ips}&instanceName=${instanceName}`
       }
@@ -34,6 +39,7 @@ export default {
       }
       return query
     }
+    this.connectParams = window.getQuery()
     window.addWaterMark = addWaterMark
   },
   mounted () {
@@ -42,14 +48,14 @@ export default {
   methods: {
     getSpecilUrl () {
       let url = `${process.env.BASE_URL}/spice-vendor/index.html`
-      const { ips, instanceName, waterMark } = this.$route.query
+      const { ips, instance_name: instanceName, water_mark: waterMark } = this.connectParams
       if (ips && instanceName) {
         url += `?ips=${ips}&instanceName=${instanceName}&waterMark=${waterMark}`
       }
       return url
     },
     initNode () {
-      const { ips } = this.$route.query
+      const { ips } = this.connectParams
       if (ips) {
         document.title = ips
       }

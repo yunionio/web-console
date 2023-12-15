@@ -40,7 +40,7 @@ export default {
   computed: {
     instanceName () {
       let name = ''
-      const { instanceName, ips } = this.$route.query
+      const { instance_name: instanceName, ips } = this.connectParams
       if (instanceName) {
         name += instanceName
       }
@@ -114,7 +114,7 @@ export default {
       this.socket.onopen = () => {
         this.socketTips.type = 'success'
         this.socketTips.message = this.$t('connection.success')
-        this.changeTitle(this.$route.query.ips)
+        this.changeTitle(this.connectParams.ips)
         this.socket.send(JSON.stringify({
           type: 'resize',
           data: {
@@ -176,10 +176,10 @@ export default {
       document.title = title
     },
     initWaterMark () {
-      if (this.connectParams.waterMark) {
+      if (this.connectParams.water_mark) {
         addWaterMark({
           targetDom: document.getElementById('xterm-wrapper'),
-          text: this.connectParams.waterMark,
+          text: this.connectParams.water_mark,
           wrapperStyle: {
             top: '40px'
           }
