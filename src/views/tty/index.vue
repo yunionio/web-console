@@ -77,7 +77,7 @@ export default {
       //   domEvent.preventDefault()
       // })
       term.onTitleChange((val) => {
-        if (val) {
+        if (val && document.title === 'Web Console') {
           document.title = val
         }
       })
