@@ -235,6 +235,7 @@ export default {
 
             clipboard.setRemoteClipboard(this.client)
             this.initWaterMark()
+            this.changeTitle(this.connectParams.ips)
             // eslint-disable-next-line no-fallthrough
           case 4:
             break
@@ -350,6 +351,10 @@ export default {
           }
         })
       }
+    },
+    changeTitle: function (title) {
+      if (!title) return
+      document.title = title
     },
     doClickHandle () {
       this.client.sendKeyEvent(1, 0xFFE3) // Ctrl
