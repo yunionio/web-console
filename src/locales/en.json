@@ -5,7 +5,8 @@
     "content": "Content",
     "placeholder": {
       "text": "Please enter text",
-      "password": "Please enter a password"
+      "password": "Please enter a password",
+      "file": "Please select the file to be uploaded"
     }
   },
   "connection": {
@@ -22,5 +23,25 @@
   "send_remote_command": "Send remote command",
   "send_text": "Send text",
   "common_text1": "Prompt: If the content sent is the login password, please click OK and enter the Enter key.",
-  "common_text2": "Ctrl-Alt-Delete will restart the server. Are you sure to restart?"
+  "common_text2": "Ctrl-Alt-Delete will restart the server. Are you sure to restart?",
+  "ws.file_upload": "File upload",
+  "ws.file_manager": "File Manager",
+  "ws.upload_file": "Upload file",
+  "ws.current_path": "Current path",
+  "ws.download": "Download",
+  "ws.upload_to": "Upload to",
+  "ws.choose_file": "Choose file",
+  "ws.file_upload_text": "You can drag multiple files here, or click to select files",
+  "ws.name": "name",
+  "ws.size": "size",
+  "ws.mod_time": "Modification time",
+  "ws.mode": "Permissions",
+  "ws.action": "Action",
+  "ws.copy.success": "Copy successfully",
+  "ws.copy.error": "Copy failed",
+  "ws.upload.success": "Upload successful",
+  "ws.upload.error": "Upload failed",
+  "ws.read": "read",
+  "ws.write": "write",
+  "ws.and": "and"
 }

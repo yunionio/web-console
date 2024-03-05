@@ -71,12 +71,12 @@ module.exports = {
    */
   devServer: Object.assign({
     // open: process.platform === 'darwin',
-    host: '0.0.0.0',
+    // host: '0.0.0.0',
     port: 4000,
-    public: '0.0.0.0:4000',
+    // public: '0.0.0.0:4000',
     proxy: {
       '/api': {
-        target: 'https://192.168.222.171:3000',
+        target: 'https://office.yunion.io/',
         ws: true,
         changeOrigin: true,
         proxyTimeout: PROXY_TIMEOUT,
