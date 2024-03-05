@@ -7,7 +7,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import { API_URL, HTTP_TIMEOUT, LOGIN_URL } from '@constants/base'
-import store from '@store'
+// import store from '@store'
 import { message } from 'ant-design-vue'
 import { getHttpErrorMessage } from './httpError'
 

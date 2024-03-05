@@ -5,7 +5,8 @@
     "content": "内容",
     "placeholder": {
       "text": "请输入文字",
-      "password": "请输入密码"
+      "password": "请输入密码",
+      "file": "请选择需要上传的文件"
     }
   },
   "connection": {
@@ -22,5 +23,25 @@
   "send_remote_command": "发送远程命令",
   "send_text": "发送文字",
   "common_text1": "提示：如果发送内容为登录密码，请点击确定后输入回车键。",
-  "common_text2": "Ctrl-Alt-Delete组合键将重启服务器，确定重启？"
+  "common_text2": "Ctrl-Alt-Delete组合键将重启服务器，确定重启？",
+  "ws.file_upload": "文件上传",
+  "ws.file_manager": "文件管理器",
+  "ws.upload_file": "上传文件",
+  "ws.current_path": "当前路径",
+  "ws.download": "下载",
+  "ws.upload_to": "上传至",
+  "ws.choose_file": "选择文件",
+  "ws.file_upload_text": "可将多个文件拖拽到此处，或点击选择文件",
+  "ws.name": "名称",
+  "ws.size": "大小",
+  "ws.mod_time": "修改时间",
+  "ws.mode": "权限",
+  "ws.action": "操作",
+  "ws.copy.success": "复制成功",
+  "ws.copy.error": "复制失败",
+  "ws.upload.success": "上传成功",
+  "ws.upload.error": "上传失败",
+  "ws.read": "读取",
+  "ws.write": "写入",
+  "ws.and": "和"
 }
