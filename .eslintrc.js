@@ -10,8 +10,8 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'vue/attribute-hyphenation': [2, 'always'],
-    'vue/html-closing-bracket-newline': ['error', { 'multiline': 'never' }],
+    'vue/attribute-hyphenation': 0,
+    'vue/html-closing-bracket-newline': 0,
     'vue/html-closing-bracket-spacing': ['error', { 'selfClosingTag': 'always' }],
     'vue/html-quotes': ['error', 'double'],
     'vue/mustache-interpolation-spacing': ['error', 'always'],
@@ -38,7 +38,9 @@ module.exports = {
         ['template', 'render'],
         'renderError'
       ]
-    }]
+    }],
+    'comma-dangle': 0,
+    'semi': 0
   },
   parserOptions: {
     parser: 'babel-eslint'
