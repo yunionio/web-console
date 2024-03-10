@@ -36,6 +36,7 @@
   "ws.size": "大小",
   "ws.mod_time": "修改时间",
   "ws.mode": "权限",
+  "ws.type": "类型",
   "ws.action": "操作",
   "ws.copy.success": "复制成功",
   "ws.copy.error": "复制失败",
@@ -43,5 +44,9 @@
   "ws.upload.error": "上传失败",
   "ws.read": "读取",
   "ws.write": "写入",
-  "ws.and": "和"
+  "ws.and": "和",
+  "ws.root_directory": "根目录",
+  "ws.link_file": "软链接",
+  "ws.file": "文件",
+  "ws.directory": "目录"
 }
