@@ -36,6 +36,7 @@
   "ws.size": "size",
   "ws.mod_time": "Modification time",
   "ws.mode": "Permissions",
+  "ws.type": "Type",
   "ws.action": "Action",
   "ws.copy.success": "Copy successfully",
   "ws.copy.error": "Copy failed",
@@ -43,5 +44,9 @@
   "ws.upload.error": "Upload failed",
   "ws.read": "read",
   "ws.write": "write",
-  "ws.and": "and"
+  "ws.and": "and",
+  "ws.root_directory": "Root directory",
+  "ws.link_file": "Soft link",
+  "ws.file": "File",
+  "ws.directory": "Directory"
 }
