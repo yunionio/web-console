@@ -32,8 +32,7 @@
         <ul class="breadcrumb-list d-flex">
           <li>
             <a href="javascript:;" @click="goBack('/')">
-              <span class="mr-1">/</span>
-              home
+              <span class="mr-1">{{ $t('ws.root_directory') }}</span>
             </a>
           </li>
           <li v-for="(item, idx) in breadcrumbNames" :key="idx">
@@ -57,7 +56,7 @@
         :scroll="{ y: clientHeight - 300 }"
       >
         <span class="name-wrapper" slot="name" slot-scope="text, record">
-          <template v-if="record.is_dir">
+          <template v-if="isViewFolderFiles(record)">
             <a-icon class="folder-open mr-1" type="folder-open" />
             <a href="javascript:;" @click="viewFolderFiles(record)">{{ text }}</a>
           </template>
@@ -69,9 +68,14 @@
         </span>
         <span slot="size" slot-scope="text">{{ text }}</span>
         <span slot="mode" slot-scope="text">{{ text }}</span>
+        <span slot="type" slot-scope="text, record">
+          <a-tag v-if="record.link_file" color="purple">{{ $t('ws.link_file') }}</a-tag>
+          <a-tag v-else-if="record.is_dir" color="pink">{{ $t('ws.directory') }}</a-tag>
+          <a-tag v-else color="blue">{{ $t('ws.file') }}</a-tag>
+        </span>
         <span slot="action" slot-scope="text, record">
           <a-button
-            :disabled="record.is_dir"
+            :disabled="getDownloadDisabled(record)"
             class="download-link"
             type="link"
             @click="doDownload(record)"
@@ -178,6 +182,12 @@ export default {
           dataIndex: 'mode',
           key: 'mode',
           scopedSlots: { customRender: 'mode' },
+        },
+        {
+          title: this.$t('ws.type'),
+          dataIndex: 'type',
+          key: 'type',
+          scopedSlots: { customRender: 'type' },
         },
         {
           title: this.$t('ws.action'),
@@ -410,10 +420,15 @@ export default {
         }
         const realData = res.data.map((item, idx) => {
           const modeArr = getModeArr(item.mode_num)
+          const getOrder = (item) => {
+            if (item.link_file) return 0
+            if (item.is_dir) return 1
+            return -1
+          }
 
           return {
             ...item,
-            order: item.is_dir ? idx : -(idx),
+            order: getOrder(item),
             mode: modeArr.join(` ${this.$t('ws.and')} `),
             size: sizestrWithUnit(item.size, 'B', 1024),
             mod_time: dayjs(item.mod_time).format('YYYY-MM-DD HH:mm:ss')
@@ -504,6 +519,18 @@ export default {
       } else {
         return true;
       }
+    },
+    getDownloadDisabled (record) {
+      if (record.link_file) {
+        return record.link_file.is_regular === false
+      }
+      return record.is_regular === false
+    },
+    isViewFolderFiles (record) {
+      if (record.link_file) {
+        return record.link_file.is_dir
+      }
+      return record.is_dir
     }
   }
 }
