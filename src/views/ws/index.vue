@@ -174,7 +174,6 @@ export default {
           title: this.$t('ws.name'),
           dataIndex: 'name',
           key: 'name',
-          width: 300,
           ellipsis: true,
           scopedSlots: { customRender: 'name' },
         },
@@ -182,34 +181,31 @@ export default {
           title: this.$t('ws.size'),
           dataIndex: 'size',
           key: 'size',
-          width: 100,
           scopedSlots: { customRender: 'size' },
-        },
-        {
-          title: this.$t('ws.mod_time'),
-          dataIndex: 'mod_time',
-          key: 'mod_time',
-          width: 160,
         },
         {
           title: this.$t('ws.mode'),
           dataIndex: 'mode',
           key: 'mode',
-          width: 140,
           scopedSlots: { customRender: 'mode' },
         },
         {
           title: this.$t('ws.type'),
           dataIndex: 'type',
           key: 'type',
-          width: 80,
           scopedSlots: { customRender: 'type' },
+        },
+        {
+          title: this.$t('ws.mod_time'),
+          dataIndex: 'mod_time',
+          key: 'mod_time',
+          width: 220
         },
         {
           title: this.$t('ws.action'),
           key: 'action',
           scopedSlots: { customRender: 'action' },
-          width: 80,
+          width: 160
         }
       ],
       dataSource: [],
