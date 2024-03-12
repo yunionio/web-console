@@ -42,13 +42,21 @@ http.interceptors.response.use(
   },
   (error) => {
     debug(error) // for debug
-    message.error(getHttpErrorMessage(error))
+
     if (error.response) {
       const status = error.response.status
       if (status === 401 || status === 403) {
         window.location.href = `${LOGIN_URL}?rf=${window.location.href}`
       }
+      if (status === 500) {
+        if (error.response.data.code === 500) {
+          if (error.response.data.details === 'create file: permission denied') {
+            return Promise.reject(error)
+          }
+        }
+      }
     }
+    message.error(getHttpErrorMessage(error))
     return Promise.reject(error)
   }
 )

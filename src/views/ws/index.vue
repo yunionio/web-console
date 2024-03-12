@@ -403,6 +403,15 @@ export default {
       this.uploadFileModal = true
     },
     doDownload (record) {
+      const getFileName = (res) => {
+        const content = res.headers['content-disposition']
+        if (content) {
+          let name = content.match(/filename\*=(.*)/)
+          name = name && decodeURIComponent(name[1].substring(7))
+          return name
+        }
+        return Date.now()
+      }
       this.$http.get(`/v1/webconsole/sftp/${this.sessionId}/download`, {
         params: {
           path: record.path
@@ -413,7 +422,7 @@ export default {
         const URL = window.URL || window.webkitURL || window.moxURL
         aLink.href = URL.createObjectURL(res.data)
         document.body.appendChild(aLink)
-        aLink.download = decodeURIComponent(res.headers['content-disposition'].split(';')[1].split('filename=')[1])
+        aLink.download = getFileName(res)
         aLink.click()
         document.body.removeChild(aLink)
         URL.revokeObjectURL(aLink.href)
@@ -517,6 +526,10 @@ export default {
             this.uploadFileModal = false
             if (!isSomeRejected) {
               this.$message.success(this.$t('ws.upload.success'))
+            } else {
+              const response = values.find(item => item?.reason?.response?.data?.details)
+              const errorMsg = response.reason?.response?.data?.details
+              this.$message.error(errorMsg)
             }
             this.doReload()
           })
