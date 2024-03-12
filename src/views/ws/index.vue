@@ -15,8 +15,10 @@
       :title="$t('ws.file_manager')"
       placement="right"
       :visible="visible"
-      width="90%"
       :headerStyle="headerStyle"
+      :drawerStyle="drawerStyle"
+      :maskClosable="false"
+      width="100%"
       wrapClassName="drawer-wrap-class"
       @close="onClose"
     >
@@ -48,30 +50,31 @@
         </ul>
       </div>
       <a-table
-        bordered
         :columns="columns"
         :data-source="dataSource"
         rowKey="path"
+        size="small"
         :pagination="{ hideOnSinglePage: true, defaultPageSize: 1024 }"
-        :scroll="{ y: clientHeight - 300 }"
+        :scroll="{ y: clientHeight - 260 }"
+        :loading="loading"
       >
         <span class="name-wrapper" slot="name" slot-scope="text, record">
           <template v-if="isViewFolderFiles(record)">
             <a-icon class="folder-open mr-1" type="folder-open" />
-            <a href="javascript:;" @click="viewFolderFiles(record)">{{ text }}</a>
+            <a href="javascript:;" :title="text" @click="viewFolderFiles(record)">{{ text }}</a>
           </template>
           <template v-else>
             <a-icon class="mr-1" type="file" />
-            {{ text }}
+            <span :title="text">{{ text }}</span>
           </template>
           <a-icon class="copy-icon ml-1" type="copy" @click="copyText(text)" />
         </span>
         <span slot="size" slot-scope="text">{{ text }}</span>
         <span slot="mode" slot-scope="text">{{ text }}</span>
         <span slot="type" slot-scope="text, record">
-          <a-tag v-if="record.link_file" color="purple">{{ $t('ws.link_file') }}</a-tag>
-          <a-tag v-else-if="record.is_dir" color="pink">{{ $t('ws.directory') }}</a-tag>
-          <a-tag v-else color="blue">{{ $t('ws.file') }}</a-tag>
+          <span v-if="record.link_file" color="purple">{{ $t('ws.link_file') }}</span>
+          <span v-else-if="record.is_dir" color="pink">{{ $t('ws.directory') }}</span>
+          <span v-else color="blue">{{ $t('ws.file') }}</span>
         </span>
         <span slot="action" slot-scope="text, record">
           <a-button
@@ -82,13 +85,18 @@
           >{{ $t('ws.download') }}</a-button>
         </span>
       </a-table>
-      <a-modal v-model="uploadFileModal" :title="$t('ws.upload_file')">
+      <a-modal
+        v-model="uploadFileModal"
+        :title="$t('ws.upload_file')"
+        :width="800"
+        :maskClosable="false">
         <a-form-model
           ref="formRef"
           :model="formModel"
           :rules="formRules"
           :label-col="labelCol"
           :wrapper-col="wrapperCol"
+          labelAlign="left"
         >
           <a-form-model-item :label="$t('ws.upload_to')">{{ currentPath }}</a-form-model-item>
           <a-form-model-item :label="$t('ws.choose_file')" prop="files">
@@ -156,43 +164,52 @@ export default {
       headerStyle: {
         height: '48px'
       },
-      labelCol: { span: 4 },
-      wrapperCol: { span: 14 },
+      drawerStyle: {
+        marginRight: '365px'
+      },
+      labelCol: { span: 5 },
+      wrapperCol: { span: 19 },
       columns: [
         {
           title: this.$t('ws.name'),
           dataIndex: 'name',
           key: 'name',
-          width: 600,
+          width: 300,
+          ellipsis: true,
           scopedSlots: { customRender: 'name' },
         },
         {
           title: this.$t('ws.size'),
           dataIndex: 'size',
           key: 'size',
+          width: 100,
           scopedSlots: { customRender: 'size' },
         },
         {
           title: this.$t('ws.mod_time'),
           dataIndex: 'mod_time',
           key: 'mod_time',
+          width: 160,
         },
         {
           title: this.$t('ws.mode'),
           dataIndex: 'mode',
           key: 'mode',
+          width: 140,
           scopedSlots: { customRender: 'mode' },
         },
         {
           title: this.$t('ws.type'),
           dataIndex: 'type',
           key: 'type',
+          width: 80,
           scopedSlots: { customRender: 'type' },
         },
         {
           title: this.$t('ws.action'),
           key: 'action',
           scopedSlots: { customRender: 'action' },
+          width: 80,
         }
       ],
       dataSource: [],
@@ -494,10 +511,13 @@ export default {
               }
             })
           });
-          Promise.allSettled(promises).then(() => {
+          Promise.allSettled(promises).then((values) => {
+            const isSomeRejected = values.some(item => item.status === 'rejected')
             this.formModel.fileList = [];
             this.uploadFileModal = false
-            this.$message.success(this.$t('ws.upload.success'))
+            if (!isSomeRejected) {
+              this.$message.success(this.$t('ws.upload.success'))
+            }
             this.doReload()
           })
         }
@@ -588,6 +608,7 @@ export default {
 </style>
 <style lang="less">
 .drawer-wrap-class {
+  left: 365px;
   .ant-drawer-close {
     left: 0px;
     top: -15px;
@@ -609,6 +630,11 @@ export default {
       transform: rotate(315deg);
       z-index: -1;
     }
+  }
+}
+.ant-table {
+  .ant-table-header {
+    background: #f8f8f9 !important;
   }
 }
 </style>
