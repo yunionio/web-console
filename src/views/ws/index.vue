@@ -1,6 +1,6 @@
 <template>
   <div class="content d-flex flex-column">
-    <div class="header p-2 text-center d-flex" :class="socketTips.type">
+    <div class="header text-center d-flex" :class="socketTips.type">
       <div
         class="text flex-fill d-flex justify-content-center align-items-center"
       >{{ instanceName }}{{ socketTips.message }}</div>
