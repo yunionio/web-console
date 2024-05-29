@@ -198,11 +198,11 @@ export default {
     color: #000;
   }
   &.success {
-    background-color: #67C23A;
+    background-color: #67c23a;
     color: #fff;
   }
   &.error {
-    background-color: #F56C6C;
+    background-color: #f56c6c;
     color: #fff;
   }
 }
