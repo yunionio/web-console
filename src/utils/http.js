@@ -45,7 +45,7 @@ http.interceptors.response.use(
 
     if (error.response) {
       const status = error.response.status
-      if (status === 401 || status === 403) {
+      if (status === 401) {
         window.location.href = `${LOGIN_URL}?rf=${window.location.href}`
       }
       if (status === 500) {
