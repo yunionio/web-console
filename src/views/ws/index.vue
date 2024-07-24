@@ -1,9 +1,9 @@
 <template>
   <div class="content d-flex flex-column">
     <div class="header text-center d-flex" :class="socketTips.type">
-      <div
-        class="text flex-fill d-flex justify-content-center align-items-center"
-      >{{ instanceName }}{{ socketTips.message }}</div>
+      <div class="text flex-fill d-flex justify-content-center align-items-center" style="position: relative;">
+        <span class="secret-level" v-if="secretText">{{ secretText }}</span>{{ instanceName }}{{ socketTips.message }}
+      </div>
       <a-button
         type="primary"
         @click="uploadFileHandle"
@@ -234,6 +234,14 @@ export default {
     breadcrumbNames () {
       if (this.currentPath === '/') return []
       return this.currentPath.slice(1).split('/').filter(item => item !== '')
+    },
+    secretText () {
+      const { secret_level } = this.connectParams
+      if (secret_level) {
+        const str = 'secret_level.' + secret_level
+        return this.$te(str) ? this.$t(str) : null
+      }
+      return null
     }
   },
   created () {
@@ -576,14 +584,23 @@ export default {
   &.info {
     background-color: #909399;
     color: #000;
+    .secret-level {
+      color: red;
+    }
   }
   &.success {
     background-color: #67c23a;
     color: #fff;
+    .secret-level {
+      color: red;
+    }
   }
   &.error {
     background-color: #f56c6c;
     color: #fff;
+    .secret-level {
+      color: #6cf5dc;
+    }
   }
   .upload-file {
     float: right;
@@ -645,5 +662,9 @@ export default {
   .ant-table-header {
     background: #f8f8f9 !important;
   }
+}
+.secret-level {
+  position: absolute;
+  left: 10px;
 }
 </style>
