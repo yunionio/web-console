@@ -48,5 +48,10 @@
   "ws.root_directory": "根目录",
   "ws.link_file": "软链接",
   "ws.file": "文件",
-  "ws.directory": "目录"
+  "ws.directory": "目录",
+  "secret_level": {
+    "inside": "密级【内部】",
+    "secret": "密级【秘密】",
+    "confidential": "密级【机密】"
+  }
 }

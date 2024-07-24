@@ -1,7 +1,7 @@
 <template>
   <div class="content d-flex flex-column">
-    <div class="header p-2 text-center" :class="socketTips.type">
-      {{ instanceName }}{{ socketTips.message }}
+    <div class="header p-2 text-center" :class="socketTips.type" style="position: relative;">
+      <span class="secret-level" v-if="secretText">{{ secretText }}</span>{{ instanceName }}{{ socketTips.message }}
     </div>
     <div id="xterm-wrapper" class="xterm flex-fill" ref="xterm"></div>
   </div>
@@ -42,6 +42,14 @@ export default {
         name += ` (${ips}) `
       }
       return name
+    },
+    secretText () {
+      const { secret_level } = this.connectParams
+      if (secret_level) {
+        const str = 'secret_level.' + secret_level
+        return this.$te(str) ? this.$t(str) : null
+      }
+      return null
     }
   },
   created () {
@@ -196,14 +204,27 @@ export default {
   &.info {
     background-color: #909399;
     color: #000;
+    .secret-level {
+      color: red;
+    }
   }
   &.success {
     background-color: #67c23a;
     color: #fff;
+    .secret-level {
+      color: red;
+    }
   }
   &.error {
     background-color: #f56c6c;
     color: #fff;
+    .secret-level {
+      color: #6cf5dc;
+    }
   }
+}
+.secret-level {
+  position: absolute;
+  left: 10px;
 }
 </style>
