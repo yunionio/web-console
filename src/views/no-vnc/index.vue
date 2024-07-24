@@ -78,22 +78,17 @@ export default {
       deleteEvent: {
         key: 'Delete',
         keyPath: ['Delete']
-      }
+      },
+      connectParams: {}
     }
   },
   computed: {
-    serverId () {
-      return this.$route.query.id
-    },
-    name () {
-      return this.$route.query.name
-    },
     isLinux () {
-      return this.$route.query.os_type === 'Linux'
+      return this.connectParams.os_type === 'Linux'
     },
     instanceName () {
       let name = ''
-      const { instanceName, ips } = this.$route.query
+      const { instance_name: instanceName, ips } = this.connectParams
       if (instanceName) {
         name += instanceName
       }
@@ -220,6 +215,7 @@ export default {
           ...query
         }
       }
+      this.connectParams = query
       if (query.api_server.includes('//')) {
         this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
       } else {
@@ -250,7 +246,7 @@ export default {
     connectedToServer (e) {
       this.socketTips.message = this.$t('connection.success')
       this.socketTips.type = 'success'
-      this.changeTitle(this.$route.query.ips)
+      this.changeTitle(this.connectParams.ips)
     },
     disconnectedFromServer (e) {
       this.socketTips.message = this.$t('connection.fail')
