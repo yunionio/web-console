@@ -228,9 +228,22 @@ Application = $.spcExtend(wdi.DomainObject, {
       }
     }, 1000)
   },
+  getSecretLevel: function () {
+    const secret_level = {
+      "inside": "密级【内部】",
+      "secret": "密级【秘密】",
+      "confidential": "密级【机密】"
+    }
+    const paramMap = new URLSearchParams(location.search)
+    if (paramMap.has('secret_level') && paramMap.get('secret_level')) {
+      return secret_level[paramMap.get('secret_level')] || ''
+    }
+    return ''
+  },
   onChannelConnected: function (params) {
     $('#header-tips').text(this.getInstanceName() + '连接成功')
     $('#login').removeClass('error')
+    $('#secret-level').text(this.getSecretLevel())
     var channel = params
     if (channel === wdi.SpiceVars.SPICE_CHANNEL_INPUTS) {
       this.clientGui.releaseAllKeys()
@@ -244,6 +257,7 @@ Application = $.spcExtend(wdi.DomainObject, {
   onDisconnect: function (params) {
     $('#login').addClass('error')
     $('#header-tips').text(this.getInstanceName() + '连接失败')
+    $('#secret-level').text(this.getSecretLevel())
     var error = params
     this.executeExternalCallback('error', error)
   },
