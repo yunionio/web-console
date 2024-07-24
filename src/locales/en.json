@@ -22,5 +22,10 @@
   "send_remote_command": "Send remote command",
   "send_text": "Send text",
   "common_text1": "Prompt: If the content sent is the login password, please click OK and enter the Enter key.",
-  "common_text2": "Ctrl-Alt-Delete will restart the server. Are you sure to restart?"
+  "common_text2": "Ctrl-Alt-Delete will restart the server. Are you sure to restart?",
+  "secret_level": {
+    "inside": "Secret level【Inside】",
+    "secret": "Secret level【Secret】",
+    "confidential": "Secret level【Confidential】"
+  }
 }
