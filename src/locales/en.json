@@ -48,5 +48,10 @@
   "ws.root_directory": "Root directory",
   "ws.link_file": "Soft link",
   "ws.file": "File",
-  "ws.directory": "Directory"
+  "ws.directory": "Directory",
+  "secret_level": {
+    "inside": "Secret level【Inside】",
+    "secret": "Secret level【Secret】",
+    "confidential": "Secret level【Confidential】"
+  }
 }
