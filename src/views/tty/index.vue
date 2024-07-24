@@ -33,7 +33,7 @@ export default {
   computed: {
     instanceName () {
       let name = ''
-      const { instanceName, ips } = this.$route.query
+      const { instance_name: instanceName, ips } = this.connectParams
       if (instanceName) {
         name += instanceName
       }
@@ -106,7 +106,7 @@ export default {
         debug('connect')
         this.socketTips.type = 'success'
         this.socketTips.message = this.$t('connection.success')
-        this.changeTitle(this.$route.query.ips)
+        this.changeTitle(this.connectParams.ips)
       })
       this.socket.on('connecting', () => {
         debug('connecting')
