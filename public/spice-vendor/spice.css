@@ -107,9 +107,19 @@ body
     text-align: center;
     z-index: 1;
 }
+#login #secret-level {
+    position: absolute;
+    right: 0;
+    top: 4px;
+    color: red;
+    transform: translateX(120%);
+}
 
 #login.error {
     background-color: #f56c6c;
+}
+.error #secret-level {
+    color: #6cf5dc !important;
 }
 
 #login .action-group {
