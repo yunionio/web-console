@@ -22,5 +22,10 @@
   "send_remote_command": "发送远程命令",
   "send_text": "发送文字",
   "common_text1": "提示：如果发送内容为登录密码，请点击确定后输入回车键。",
-  "common_text2": "Ctrl-Alt-Delete组合键将重启服务器，确定重启？"
+  "common_text2": "Ctrl-Alt-Delete组合键将重启服务器，确定重启？",
+  "secret_level": {
+    "inside": "密级【内部】",
+    "secret": "密级【秘密】",
+    "confidential": "密级【机密】"
+  }
 }

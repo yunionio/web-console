@@ -13,7 +13,10 @@
             </template>
           </a-menu>
         </a-dropdown>
-        <div class="text flex-fill d-flex justify-content-center align-items-center" style="margin-right:8rem">{{ instanceName }}{{ socketTips.message }}</div>
+        <div class="text flex-fill d-flex justify-content-center align-items-center" style="margin-right:8rem;position:relative">
+          <span class="secret-level" v-if="secretText">{{ secretText }}</span>
+          {{ instanceName }}{{ socketTips.message }}
+        </div>
         <a-button @click="dropdownClick(deleteEvent)" class="mr-2 custom-button">Ctrl-Alt-Delete</a-button>
         <a-button type="primary" @click="sendText" class="custom-button">{{ $t('send_text') }}</a-button>
       </div>
@@ -96,6 +99,14 @@ export default {
         name += ` (${ips}) `
       }
       return name
+    },
+    secretText () {
+      const { secret_level } = this.connectParams
+      if (secret_level) {
+        const str = 'secret_level.' + secret_level
+        return this.$te(str) ? this.$t(str) : null
+      }
+      return null
     }
   },
   mounted () {
@@ -300,14 +311,23 @@ export default {
     &.info {
       background-color: #909399;
       color: #000;
+      .secret-level {
+        color: red;
+      }
     }
     &.success {
       background-color: #67C23A;
       color: #fff;
+      .secret-level {
+        color: red;
+      }
     }
     &.error {
       background-color: #F56C6C;
       color: #fff;
+      .secret-level {
+        color: #6cf5dc;
+      }
     }
   }
   .vnc-canvas-wrap {
@@ -330,5 +350,9 @@ export default {
     height: 100%;
     margin: 0 auto;
   }
+}
+.secret-level {
+  position: absolute;
+  left: 10px;
 }
 </style>
