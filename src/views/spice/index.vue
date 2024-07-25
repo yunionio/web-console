@@ -17,9 +17,10 @@ export default {
     },
     spiceUrl () {
       let url = `${process.env.BASE_URL}/spice-vendor/index.html`
-      const { ips, instanceName } = this.connectParams
-      if (ips && instanceName) {
-        url += `?ips=${ips}&instanceName=${instanceName}`
+      const { ips, instance_name: instanceName } = this.connectParams
+      const { ips: ips2, instanceName: instanceName2 } = this.$route.query
+      if ((ips || ips2) && (instanceName || instanceName2)) {
+        url += `?ips=${ips || ips2}&instanceName=${instanceName || instanceName2}`
       }
       return url
     }
@@ -47,15 +48,17 @@ export default {
     getSpecilUrl () {
       let url = `${process.env.BASE_URL}/spice-vendor/index.html`
       const { ips, instance_name: instanceName, secret_level } = this.connectParams
-      if (ips && instanceName) {
-        url += `?ips=${ips}&instanceName=${instanceName}&secret_level=${secret_level}`
+      const { ips: ips2, instanceName: instanceName2, secret_level: secret_level2 } = this.$route.query
+      if ((ips || ips2) && (instanceName || instanceName2)) {
+        url += `?ips=${ips || ips2}&instanceName=${instanceName || instanceName2}&secret_level=${secret_level || secret_level2}`
       }
       return url
     },
     initNode () {
       const { ips } = this.connectParams
-      if (ips) {
-        document.title = ips
+      const { ips: ips2 } = this.$route.query
+      if (ips || ips2) {
+        document.title = ips || ips2
       }
       const iframe = document.createElement('iframe')
       iframe.src = this.getSpecilUrl()
