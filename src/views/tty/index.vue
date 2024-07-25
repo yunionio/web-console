@@ -34,18 +34,20 @@ export default {
     instanceName () {
       let name = ''
       const { instance_name: instanceName, ips } = this.connectParams
-      if (instanceName) {
-        name += instanceName
+      const { instanceName: instanceName2, ips: ips2 } = this.$route.query
+      if (instanceName || instanceName2) {
+        name += (instanceName || instanceName2)
       }
-      if (ips) {
-        name += ` (${ips}) `
+      if (ips || ips2) {
+        name += ` (${ips || ips2}) `
       }
       return name
     },
     secretText () {
       const { secret_level } = this.connectParams
-      if (secret_level) {
-        const str = 'secret_level.' + secret_level
+      const { secret_level: secret_level2 } = this.$route.query
+      if (secret_level || secret_level2) {
+        const str = 'secret_level.' + (secret_level || secret_level2)
         return this.$te(str) ? this.$t(str) : null
       }
       return null
@@ -59,11 +61,11 @@ export default {
   },
   methods: {
     initTerminal () {
-      this.socket = io(this.connectParams.api_server, {
+      this.socket = io(this.connectParams.api_server || this.$route.query.api_server, {
         transports: ['websocket'],
         path: '/connect',
         query: {
-          access_token: this.connectParams.access_token
+          access_token: this.connectParams.access_token || this.$route.query.access_token
         }
       })
       const term = new Terminal({
@@ -114,7 +116,7 @@ export default {
         debug('connect')
         this.socketTips.type = 'success'
         this.socketTips.message = this.$t('connection.success')
-        this.changeTitle(this.connectParams.ips)
+        this.changeTitle(this.connectParams.ips || this.$route.query.ips)
       })
       this.socket.on('connecting', () => {
         debug('connecting')
