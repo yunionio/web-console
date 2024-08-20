@@ -3,8 +3,7 @@ build:
 	yarn run build
 
 REGISTRY ?= "registry.cn-beijing.aliyuncs.com/yunionio"
-VERSION ?= $(shell git describe --exact-match 2> /dev/null || \
-                git describe --match=$(git rev-parse --short=8 HEAD) --always --dirty --abbrev=8)
+VERSION ?= "v3.12-20240920.1"
 
 image: build
 	docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t $(REGISTRY)/web-console-fe:$(VERSION) . --push
