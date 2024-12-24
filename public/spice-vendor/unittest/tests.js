@@ -33,7 +33,7 @@ suite('tests suite', function () {
         Canvas = require('canvas'),
         Image = Canvas.Image,
         BigInteger = require('../lib/biginteger').BigInteger,
-        window.$ = require('../lib/jquery-2.0.3'),
+        window.$ = require('../lib/jquery-3.7.1'),
         window.bowser = require('../lib/bowser'),
         require('../lib/virtualjoystick'),
         require('../lib/utils'),
