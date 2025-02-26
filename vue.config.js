@@ -24,6 +24,8 @@ function fsExistsSync (path) {
 }
 
 const devServerCoustomConfig = fsExistsSync(resolve('./dev.server.config.js')) ? require('./dev.server.config.js') : {}
+// const isProd = process.env.NODE_ENV === 'production'
+const isProd = true
 
 module.exports = {
   publicPath: '/web-console/',
@@ -43,6 +45,11 @@ module.exports = {
         })
         return args
       })
+    config
+      // https://webpack.js.org/configuration/devtool/#development
+      .when(!isProd,
+        config => config.devtool('cheap-source-map'),
+      )
   },
   configureWebpack: (config) => {
     const aliasSrcDirConfig = {}
@@ -62,7 +69,7 @@ module.exports = {
       }
     })
   },
-  productionSourceMap: true,
+  productionSourceMap: !isProd,
   parallel: require('os').cpus().length > 1,
   /**
    * 考虑到每个人的配置习惯不同，如有自定义 devServer 配置的需求请在根目录下创建 dev.server.config.js 文件
