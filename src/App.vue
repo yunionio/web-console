@@ -30,6 +30,7 @@ export default {
     }
   },
   mounted () {
+    console.log('Log version 20250226 1120')
     window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
   },
   methods: {
