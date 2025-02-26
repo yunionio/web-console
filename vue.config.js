@@ -45,11 +45,6 @@ module.exports = {
         })
         return args
       })
-    config
-      // https://webpack.js.org/configuration/devtool/#development
-      .when(!isProd,
-        config => config.devtool('cheap-source-map'),
-      )
   },
   configureWebpack: (config) => {
     const aliasSrcDirConfig = {}
@@ -68,6 +63,7 @@ module.exports = {
         }
       }
     })
+    config.devtool = 'source-map'
   },
   productionSourceMap: !isProd,
   parallel: require('os').cpus().length > 1,
