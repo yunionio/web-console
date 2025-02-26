@@ -61,6 +61,7 @@ module.exports = {
         }
       }
     })
+    config.devtool = 'source-map'
   },
   productionSourceMap: true,
   parallel: require('os').cpus().length > 1,
