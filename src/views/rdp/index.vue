@@ -252,6 +252,7 @@ export default {
             // message.info({ content: '连接已关闭', duration: 3, key: key })
             this.socketTips.type = 'error'
             this.socketTips.message = this.$t('connection.disconnect')
+            window.onbeforeunload = null
             break
         }
       }
