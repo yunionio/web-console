@@ -330,12 +330,14 @@ export default {
         debug('disconnect')
         this.socketTips.type = 'error'
         this.socketTips.message = this.$t('connection.disconnect')
+        window.onbeforeunload = null
         this._socketClose(false)
       }
       this.socket.onerror = () => {
         debug('error')
         this.socketTips.type = 'error'
         this.socketTips.message = this.$t('connection.abnormal')
+        window.onbeforeunload = null
       }
     },
     _socketClose (sendClose) {
