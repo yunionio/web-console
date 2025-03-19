@@ -233,11 +233,13 @@ export default {
       debug(this.$t('connection.init_fail'))
       this.socketTips.message = this.$t('connection.init_fail')
       this.socketTips.type = 'error'
+      window.onbeforeunload = null
     },
     disconnectedFromServer () {
       debug(this.$t('connection.disconnect'))
       this.socketTips.message = this.$t('connection.disconnect')
       this.socketTips.type = 'error'
+      window.onbeforeunload = null
     },
     resolutionChanged () {
       debug(this.$t('connection.success'))
