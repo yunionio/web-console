@@ -127,22 +127,26 @@ export default {
         debug('disconnect')
         this.socketTips.type = 'error'
         this.socketTips.message = this.$t('connection.disconnect')
+        window.onbeforeunload = null
         this._socketClose()
       })
       this.socket.on('connect_error', () => {
         debug('connect_error')
         this.socketTips.type = 'error'
         this.socketTips.message = this.$t('connection.fail')
+        window.onbeforeunload = null
       })
       this.socket.on('error', () => {
         debug('error')
         this.socketTips.type = 'error'
         this.socketTips.message = this.$t('connection.abnormal')
+        window.onbeforeunload = null
       })
       this.socket.on('reconnect_error', () => {
         debug('reconnect_error')
         this.socketTips.type = 'error'
         this.socketTips.message = this.$t('connection.reconnection_fail')
+        window.onbeforeunload = null
       })
       this.socket.on('reconnect', () => {
         debug('success')

@@ -218,6 +218,7 @@ Application = $.spcExtend(wdi.DomainObject, {
     $('#login').addClass('error')
     $('#header-tips').text(this.getInstanceName() + '连接失败')
     $('#secret-level').text(this.getSecretLevel())
+    window.onbeforeunload = null
     var error = params
     this.executeExternalCallback('error', error)
   },
