@@ -30,7 +30,8 @@ export default {
     }
   },
   mounted () {
-    window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
+    // window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
+    window.onbeforeunload = this.beforeunloadHandler
   },
   methods: {
     beforeunloadHandler (e) {

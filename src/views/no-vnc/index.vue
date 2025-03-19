@@ -264,6 +264,7 @@ export default {
     disconnectedFromServer (e) {
       this.socketTips.message = this.$t('connection.fail')
       this.socketTips.type = 'error'
+      window.onbeforeunload = null
     },
     credentialsAreRequired (e) {
       this.socketTips.message = this.$t('common.placeholder.password')
