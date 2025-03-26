@@ -30,10 +30,33 @@ export default {
     }
   },
   mounted () {
+    this.checkPageAccess()
     // window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
     window.onbeforeunload = this.beforeunloadHandler
   },
   methods: {
+    checkPageAccess () {
+      // 检查页面来源
+      const referrer = document.referrer
+      if (!referrer) {
+        this.$router.push('/error')
+        return
+      }
+
+      const currentDomain = window.location.hostname
+      const referrerUrl = new URL(referrer)
+      const referrerDomain = referrerUrl.hostname
+      // 检查域名是否相同
+      if (currentDomain !== referrerDomain) {
+        this.$router.push('/error')
+      }
+
+      // 检查 query 中 data 是否为base64编码
+      const query = this.$route.query
+      if (query.api_server) {
+        this.$router.push('/error')
+      }
+    },
     beforeunloadHandler (e) {
       e = e || window.event
       if (e) {
