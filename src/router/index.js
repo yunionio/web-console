@@ -7,6 +7,7 @@ import WS from '@views/ws'
 import Spice from '@views/spice'
 import WMKS from '@views/wmks'
 import Rdp from '@views/rdp'
+import Error from '@views/error'
 
 Vue.use(Router)
 
@@ -66,6 +67,14 @@ export const constantRouterMap = [
       title: 'RDP'
     },
     component: Rdp
+  },
+  {
+    path: '/error',
+    name: 'error',
+    meta: {
+      title: 'Error'
+    },
+    component: Error
   }
 ]
 
@@ -76,5 +85,10 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: constantRouterMap.concat(adminRouterMap)
 })
+
+const VueRouterPush = Router.prototype.push
+Router.prototype.push = function push (to) {
+  return VueRouterPush.call(this, to).catch(err => err)
+}
 
 export default router
