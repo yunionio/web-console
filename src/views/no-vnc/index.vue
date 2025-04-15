@@ -50,12 +50,11 @@
 </template>
 
 <script>
-import { Base64 } from 'js-base64'
-import qs from 'qs'
 import RFB from '@novnc/novnc/core/rfb'
 import KeyTable from '@novnc/novnc/core/input/keysym'
 import { charmap, shiftCharmap } from './src/VncChartMap'
 import { addWaterMark } from '../../utils/watermark'
+import { getConnectParams } from '@utils/auth'
 
 const hadPort = value => {
   const reg = /^.+:\d+$/
@@ -220,13 +219,7 @@ export default {
     },
     connectVNC () {
       const oTarget = document.getElementById('noVNC_canvas')
-      let query = this.$route.query
-      if (query.data) {
-        query = {
-          ...qs.parse(Base64.decode(query.data)),
-          ...query
-        }
-      }
+      const query = getConnectParams(this)
       this.connectParams = query
       if (query.api_server.includes('//')) {
         this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线

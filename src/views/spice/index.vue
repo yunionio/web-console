@@ -5,9 +5,8 @@
 </template>
 
 <script>
-import { Base64 } from 'js-base64'
-import qs from 'qs'
 import { addWaterMark } from '../../utils/watermark'
+import { getConnectParams } from '@utils/auth'
 
 export default {
   data () {
@@ -30,13 +29,7 @@ export default {
   },
   created () {
     window.getQuery = () => {
-      let query = this.$route.query
-      if (query.data) {
-        query = {
-          ...qs.parse(Base64.decode(query.data)),
-          ...query
-        }
-      }
+      const query = getConnectParams(this)
       return query
     }
     this.connectParams = window.getQuery()

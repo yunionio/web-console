@@ -13,6 +13,7 @@
 <script>
 import zhCN from 'ant-design-vue/lib/locale-provider/zh_CN'
 import DefaultLayout from '@views/layout/Default'
+import { getConnectParams } from '@utils/auth'
 
 export default {
   name: 'App',
@@ -38,23 +39,32 @@ export default {
     checkPageAccess () {
       // 检查页面来源
       const referrer = document.referrer
+      // 直接打开
       if (!referrer) {
         this.$router.push('/error')
         return
       }
 
       const currentDomain = window.location.hostname
+      const parseQuery = getConnectParams(this)
+      const { referer_whitelist = '' } = parseQuery
+      const whiteList = referer_whitelist ? referer_whitelist.split(',') : []
+      const contains = whiteList.some(referrer => {
+        const referrerUrl = new URL(referrer)
+        const referrerDomain = referrerUrl.hostname
+        return currentDomain === referrerDomain
+      })
+      // 配置了但是没有匹配
+      if (referer_whitelist && !contains) {
+        this.$router.push('/error')
+        return
+      }
+      // 没配置 检查是否同源
       const referrerUrl = new URL(referrer)
       const referrerDomain = referrerUrl.hostname
-      // 检查域名是否相同
       if (currentDomain !== referrerDomain) {
         this.$router.push('/error')
-      }
-
-      // 检查 query 中 data 是否为base64编码
-      const query = this.$route.query
-      if (query.api_server) {
-        this.$router.push('/error')
+        return
       }
     },
     beforeunloadHandler (e) {

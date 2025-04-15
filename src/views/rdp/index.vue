@@ -17,14 +17,13 @@
 
 <!-- eslint-disable camelcase -->
 <script>
-import { Base64 } from 'js-base64'
-import qs from 'qs'
 import Guacamole from 'guacamole-common-js'
 import GuacMouse from './libs/GuacMouse'
 import states from './libs/states'
 import clipboard from './libs/clipboard'
 import { addWaterMark } from '../../utils/watermark'
 import { debounce } from '../../utils/base'
+import { getConnectParams } from '@utils/auth'
 
 Guacamole.Mouse = GuacMouse.mouse
 
@@ -101,13 +100,7 @@ export default {
   },
   methods: {
     getWebConsoleInfo () {
-      let query = this.$route.query
-      if (query.data) {
-        query = {
-          ...qs.parse(Base64.decode(query.data)),
-          ...query
-        }
-      }
+      const query = getConnectParams(this)
       this.connectParams = query
       if (query.api_server.includes('//')) {
         this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
