@@ -1,6 +1,8 @@
 import Cookies from 'js-cookie'
 import { Base64 } from 'js-base64'
+import qs from 'qs'
 import { AUTH_COOKIE_NAME } from '@constants/base'
+import { aesDecrypt } from './crypto'
 
 function _decodeToken (authCookie) {
   let ret = Base64.decode(authCookie)
@@ -46,4 +48,19 @@ export function authed () {
 
 export function feLogout () {
   removeAllCookie()
+}
+
+export function getConnectParams (vm) {
+  const parseQuery = vm.$route.query
+  if (parseQuery.data) {
+    try {
+      const params = qs.parse(Base64.decode(parseQuery.data))
+      if (params.api_server) {
+        return { ...params, ...parseQuery }
+      }
+    } catch (err) { }
+    const params = aesDecrypt(parseQuery.data)
+    return { ...qs.parse(params), ...parseQuery }
+  }
+  return parseQuery
 }

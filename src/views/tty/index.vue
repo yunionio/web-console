@@ -8,13 +8,12 @@
 </template>
 
 <script>
-import { Base64 } from 'js-base64'
-import qs from 'qs'
 import { Terminal } from 'xterm'
 import { FitAddon } from 'xterm-addon-fit'
 import 'xterm/css/xterm.css'
 import io from 'socket.io-client'
 import { addWaterMark } from '../../utils/watermark'
+import { getConnectParams } from '@utils/auth'
 
 const debug = require('debug')('app:ssh')
 
@@ -166,13 +165,7 @@ export default {
       }
     },
     getWebConsoleInfo () {
-      let query = this.$route.query
-      if (query.data) {
-        query = {
-          ...qs.parse(Base64.decode(query.data)),
-          ...query
-        }
-      }
+      const query = getConnectParams(this)
       this.connectParams = query
       this.$nextTick(() => {
         this.initTerminal()

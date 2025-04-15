@@ -3,8 +3,7 @@
 </template>
 
 <script>
-import { Base64 } from 'js-base64'
-import qs from 'qs'
+import { getConnectParams } from '@utils/auth'
 
 const PATH = {
   vnc: '/no-vnc',
@@ -18,13 +17,7 @@ const PATH = {
 export default {
   name: 'Index',
   created () {
-    let query = this.$route.query
-    if (query.data) {
-      query = {
-        ...qs.parse(Base64.decode(query.data)),
-        ...query
-      }
-    }
+    const query = getConnectParams(this)
     const path = PATH[query.protocol] || '/tty'
     this.$router.push({
       path,
