@@ -49,9 +49,8 @@
 </template>
 
 <script>
-import { Base64 } from 'js-base64'
-import qs from 'qs'
 import { addWaterMark } from '../../utils/watermark'
+import { getConnectParams } from '@utils/auth'
 
 const debug = require('debug')('app:wmks')
 
@@ -147,13 +146,7 @@ export default {
       }
     },
     connectVNC () {
-      let query = this.$route.query
-      if (query.data) {
-        query = {
-          ...qs.parse(Base64.decode(query.data)),
-          ...query
-        }
-      }
+      const query = getConnectParams(this)
       this.connectParams = query
       this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
       if (hadPort(this.host)) {
