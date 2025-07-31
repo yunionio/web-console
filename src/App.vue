@@ -55,16 +55,19 @@ export default {
         return currentDomain === referrerDomain
       })
       // 配置了但是没有匹配
-      if (referer_whitelist && !contains) {
-        this.$router.push('/error')
-        return
-      }
-      // 没配置 检查是否同源
-      const referrerUrl = new URL(referrer)
-      const referrerDomain = referrerUrl.hostname
-      if (currentDomain !== referrerDomain) {
-        this.$router.push('/error')
-        return
+      if (referer_whitelist) {
+        if (!contains) {
+          this.$router.push('/error')
+          return
+        }
+      } else {
+        // 没配置 检查是否同源
+        const referrerUrl = new URL(referrer)
+        const referrerDomain = referrerUrl.hostname
+        if (currentDomain !== referrerDomain) {
+          this.$router.push('/error')
+          return
+        }
       }
     },
     beforeunloadHandler (e) {
