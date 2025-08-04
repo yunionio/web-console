@@ -52,6 +52,7 @@ export function feLogout () {
 
 export function getConnectParams (vm) {
   const parseQuery = vm.$route.query
+  console.log('parseQuery', parseQuery)
   if (parseQuery.data) {
     try {
       const params = qs.parse(Base64.decode(parseQuery.data))
@@ -59,8 +60,11 @@ export function getConnectParams (vm) {
         return { ...params, ...parseQuery }
       }
     } catch (err) { }
+    console.log('尝试解密', parseQuery.data)
     const params = aesDecrypt(parseQuery.data)
+    console.log('解密结果', { ...qs.parse(params), ...parseQuery })
     return { ...qs.parse(params), ...parseQuery }
   }
+  console.log('parseQuery2', parseQuery)
   return parseQuery
 }
