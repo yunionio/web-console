@@ -31,7 +31,7 @@ export default {
     }
   },
   mounted () {
-    this.checkPageAccess()
+    // this.checkPageAccess()
     // window.addEventListener('beforeunload', e => this.beforeunloadHandler(e))
     window.onbeforeunload = this.beforeunloadHandler
   },
