@@ -9,7 +9,7 @@ module.exports = {
   ],
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'error',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'vue/attribute-hyphenation': 0,
     'vue/html-closing-bracket-newline': 0,
     'vue/html-closing-bracket-spacing': ['error', { 'selfClosingTag': 'always' }],

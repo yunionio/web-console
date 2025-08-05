@@ -236,19 +236,15 @@ export default {
       if (query.api_server.includes('https:')) {
         scheme = 'wss'
       }
-      console.log('oTarget', oTarget)
-      console.log('connect url', `${scheme}://${this.host}:${this.port}/websockify/?access_token=${query.access_token}`)
       const sPassword = query.password
       this.cRfb = new RFB(oTarget, `${scheme}://${this.host}:${this.port}/websockify/?access_token=${query.access_token}`, {
         share: true,
         credentials: { password: sPassword }
       })
-      console.log('开始连接')
       this.cRfb.addEventListener('connect', this.connectedToServer)
       this.cRfb.addEventListener('disconnect', this.disconnectedFromServer)
       this.cRfb.addEventListener('credentialsrequired', this.credentialsAreRequired)
       this.cRfb.addEventListener('desktopname', this.updateDesktopName)
-      this.cRfb.addEventListener('error', this.handleError)
       this.cRfb.scaleViewport = true
       this.cRfb.viewOnly = false // 是否应该阻止任何事件，(例如按键或鼠标移动)发送到服务器。默认情况下禁用。
     },
@@ -260,12 +256,6 @@ export default {
     },
     disconnectedFromServer (e) {
       this.socketTips.message = this.$t('connection.fail')
-      this.socketTips.type = 'error'
-      window.onbeforeunload = null
-    },
-    handleError (e) {
-      console.error('RFB Error:', e)
-      this.socketTips.message = '连接错误: ' + (e.detail?.message || '未知错误')
       this.socketTips.type = 'error'
       window.onbeforeunload = null
     },
