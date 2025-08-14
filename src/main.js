@@ -37,4 +37,7 @@ async function start () {
   app.$mount('#app')
 }
 
+window.buildInfo = process.env.BUILD_TIME
+window.env = process.env
+
 start()
