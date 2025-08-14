@@ -37,6 +37,13 @@ export default {
   },
   methods: {
     checkPageAccess () {
+      const parseQuery = getConnectParams(this)
+      const { referer_whitelist = '' } = parseQuery
+      // 跳过检查
+      if (referer_whitelist === 'skip_check') {
+        console.log('skip_check')
+        return
+      }
       // 检查页面来源
       const referrer = document.referrer
       // 直接打开
@@ -46,8 +53,6 @@ export default {
       }
 
       const currentDomain = window.location.hostname
-      const parseQuery = getConnectParams(this)
-      const { referer_whitelist = '' } = parseQuery
       const whiteList = referer_whitelist ? referer_whitelist.split(',') : []
       const contains = whiteList.some(referrer => {
         const referrerUrl = new URL(referrer)
@@ -58,7 +63,6 @@ export default {
       if (referer_whitelist) {
         if (!contains) {
           this.$router.push('/error')
-          return
         }
       } else {
         // 没配置 检查是否同源
@@ -66,7 +70,6 @@ export default {
         const referrerDomain = referrerUrl.hostname
         if (currentDomain !== referrerDomain) {
           this.$router.push('/error')
-          return
         }
       }
     },
