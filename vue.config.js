@@ -23,6 +23,9 @@ function fsExistsSync (path) {
   return true
 }
 
+const nowDate = new Date()
+const buildDate = `${nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + nowDate.getDate() + ' ' + nowDate.getHours() + ':' + nowDate.getMinutes()}`
+
 const devServerCoustomConfig = fsExistsSync(resolve('./dev.server.config.js')) ? require('./dev.server.config.js') : {}
 // const isProd = process.env.NODE_ENV === 'production'
 const isProd = true
@@ -42,7 +45,7 @@ module.exports = {
       .plugin('define')
       .tap((args) => {
         args[0]['process.env'] = Object.assign(args[0]['process.env'], {
-          BUILD_TIME: JSON.stringify(`${+new Date()}`)
+          BUILD_TIME: JSON.stringify(buildDate)
         })
         return args
       })
