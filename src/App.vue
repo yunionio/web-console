@@ -36,6 +36,15 @@ export default {
     window.onbeforeunload = this.beforeunloadHandler
   },
   methods: {
+    getReferrerUrl (referrer) {
+      try {
+        const ret = new URL(referrer)
+        return ret
+      } catch (e) {
+        console.log('Referrer is not a valid URL', referrer)
+        return {}
+      }
+    },
     checkPageAccess () {
       const parseQuery = getConnectParams(this)
       const { referer_whitelist = '' } = parseQuery
@@ -55,7 +64,7 @@ export default {
       const currentDomain = window.location.hostname
       const whiteList = referer_whitelist ? referer_whitelist.split(',') : []
       const contains = whiteList.some(referrer => {
-        const referrerUrl = new URL(referrer)
+        const referrerUrl = this.getReferrerUrl(referrer)
         const referrerDomain = referrerUrl.hostname
         return currentDomain === referrerDomain
       })
@@ -63,13 +72,15 @@ export default {
       if (referer_whitelist) {
         if (!contains) {
           this.$router.push('/error')
+          return
         }
       } else {
         // 没配置 检查是否同源
-        const referrerUrl = new URL(referrer)
+        const referrerUrl = this.getReferrerUrl(referrer)
         const referrerDomain = referrerUrl.hostname
         if (currentDomain !== referrerDomain) {
           this.$router.push('/error')
+          return
         }
       }
     },
