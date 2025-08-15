@@ -47,6 +47,7 @@ export default {
     },
     checkPageAccess () {
       const parseQuery = getConnectParams(this)
+      window.queryParams = parseQuery
       const { referer_whitelist = '' } = parseQuery
       // 跳过检查
       if (referer_whitelist === 'skip_check') {
@@ -55,18 +56,18 @@ export default {
       }
       // 检查页面来源
       const referrer = document.referrer
-      // 直接打开
+      // 禁止复制链接直接打开
       if (!referrer) {
         this.$router.push('/error')
         return
       }
-
-      const currentDomain = window.location.hostname
+      const referrerUrl = this.getReferrerUrl(referrer)
+      const referrerDomain = referrerUrl.hostname
       const whiteList = referer_whitelist ? referer_whitelist.split(',') : []
-      const contains = whiteList.some(referrer => {
-        const referrerUrl = this.getReferrerUrl(referrer)
-        const referrerDomain = referrerUrl.hostname
-        return currentDomain === referrerDomain
+      const contains = whiteList.some(whiteItem => {
+        const url = this.getReferrerUrl(whiteItem)
+        const domain = url.hostname
+        return domain === referrerDomain
       })
       // 配置了但是没有匹配
       if (referer_whitelist) {
@@ -76,6 +77,7 @@ export default {
         }
       } else {
         // 没配置 检查是否同源
+        const currentDomain = window.location.hostname
         const referrerUrl = this.getReferrerUrl(referrer)
         const referrerDomain = referrerUrl.hostname
         if (currentDomain !== referrerDomain) {
