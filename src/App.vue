@@ -50,7 +50,7 @@ export default {
       window.queryParams = parseQuery
       const { referer_whitelist = '' } = parseQuery
       // 跳过检查
-      if (referer_whitelist === 'skip_check') {
+      if (!referer_whitelist || referer_whitelist === 'skip_check') {
         console.log('skip_check')
         return
       }
