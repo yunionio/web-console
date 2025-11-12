@@ -3,7 +3,8 @@ build:
 	yarn run build
 
 REGISTRY ?= "registry.cn-beijing.aliyuncs.com/yunionio"
-VERSION ?= "v3.12-20240920.1"
+VERSION ?= "v4.0.0-20251112.0"
+platform ?= linux/amd64,linux/arm64,linux/riscv64
 
 image: build
-	docker buildx build --platform linux/amd64,linux/arm64 -f Dockerfile -t $(REGISTRY)/web-console-fe:$(VERSION) . --push
+	docker buildx build --platform $(platform) -f Dockerfile -t $(REGISTRY)/web-console-fe:$(VERSION) . --push
