@@ -6,6 +6,7 @@ SRC_DIR=$CUR_DIR
 popd > /dev/null
 
 docker run --rm \
+    --platform ${DOCKER_PLATFORM:-linux/amd64} \
     -v $SRC_DIR:/app \
     registry.cn-beijing.aliyuncs.com/swordqiu/node:20-alpine-git-python-2 \
     /bin/sh -c "set -ex;
