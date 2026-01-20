@@ -235,9 +235,9 @@ export default {
       return this.currentPath.slice(1).split('/').filter(item => item !== '')
     },
     secretText () {
-      const { secret_level } = this.connectParams
-      if (secret_level) {
-        const str = 'secret_level.' + secret_level
+      const { secret_level: secretLevel } = this.connectParams
+      if (secretLevel) {
+        const str = 'secret_level.' + secretLevel
         return this.$te(str) ? this.$t(str) : null
       }
       return null
