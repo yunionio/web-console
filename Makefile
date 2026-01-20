@@ -2,6 +2,9 @@ build:
 	yarn install
 	yarn run build
 
+docker-build:
+	./scripts/docker-build.sh
+
 REGISTRY ?= "registry.cn-beijing.aliyuncs.com/yunionio"
 VERSION ?= "v4.0.0-20251112.0"
 platform ?= linux/amd64,linux/arm64,linux/riscv64
