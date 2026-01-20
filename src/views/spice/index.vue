@@ -41,9 +41,9 @@ export default {
   methods: {
     getSpecilUrl () {
       let url = `${process.env.BASE_URL}/spice-vendor/index.html`
-      const { ips, instance_name: instanceName, water_mark: waterMark, secret_level } = this.connectParams
+      const { ips, instance_name: instanceName, water_mark: waterMark, secret_level: secretLevel } = this.connectParams
       if (ips && instanceName) {
-        url += `?ips=${ips}&instanceName=${instanceName}&waterMark=${waterMark}&secret_level=${secret_level}`
+        url += `?ips=${ips}&instanceName=${instanceName}&waterMark=${waterMark}&secret_level=${secretLevel}`
       }
       return url
     },

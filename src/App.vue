@@ -48,9 +48,9 @@ export default {
     checkPageAccess () {
       const parseQuery = getConnectParams(this)
       window.queryParams = parseQuery
-      const { referer_whitelist = '' } = parseQuery
+      const { referer_whitelist: refererWhitelist = '' } = parseQuery
       // 跳过检查
-      if (!referer_whitelist || referer_whitelist === 'skip_check') {
+      if (!refererWhitelist || refererWhitelist === 'skip_check') {
         console.log('skip_check')
         return
       }
@@ -63,17 +63,16 @@ export default {
       }
       const referrerUrl = this.getReferrerUrl(referrer)
       const referrerDomain = referrerUrl.hostname
-      const whiteList = referer_whitelist ? referer_whitelist.split(',') : []
+      const whiteList = refererWhitelist ? refererWhitelist.split(',') : []
       const contains = whiteList.some(whiteItem => {
         const url = this.getReferrerUrl(whiteItem)
         const domain = url.hostname
         return domain === referrerDomain
       })
       // 配置了但是没有匹配
-      if (referer_whitelist) {
+      if (refererWhitelist) {
         if (!contains) {
           this.$router.push('/error')
-          return
         }
       } else {
         // 没配置 检查是否同源
@@ -82,7 +81,6 @@ export default {
         const referrerDomain = referrerUrl.hostname
         if (currentDomain !== referrerDomain) {
           this.$router.push('/error')
-          return
         }
       }
     },
