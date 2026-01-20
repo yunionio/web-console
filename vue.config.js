@@ -69,6 +69,9 @@ module.exports = {
           '@@': resolve('.'),
           '~~': resolve('.'),
           ...aliasSrcDirConfig
+        },
+        fallback: {
+          querystring: require.resolve('querystring-es3')
         }
       }
     })
@@ -104,7 +107,8 @@ module.exports = {
     loaderOptions: {
       less: {
         lessOptions: {
-          javascriptEnabled: true
+          javascriptEnabled: true,
+          math: 'always'
         }
       }
     }
