@@ -4,7 +4,14 @@ import Guacamole from 'guacamole-common-js'
 const clipboard = {}
 
 clipboard.install = (client) => {
-  clipboard.getLocalClipboard().then(data => clipboard.cache = data)
+  // 延迟初始化剪贴板，确保文档已聚焦
+  if (document.hasFocus()) {
+    clipboard.getLocalClipboard().then(data => {
+      clipboard.cache = data
+    }).catch(() => {
+      // 忽略错误，不影响连接
+    })
+  }
 
   window.addEventListener('load', clipboard.update(client), true)
   window.addEventListener('copy', clipboard.update(client))
@@ -19,8 +26,12 @@ clipboard.install = (client) => {
 clipboard.update = client => {
   return () => {
     clipboard.getLocalClipboard().then(data => {
-      clipboard.cache = data
-      clipboard.setRemoteClipboard(client)
+      if (data) {
+        clipboard.cache = data
+        clipboard.setRemoteClipboard(client)
+      }
+    }).catch(() => {
+      // 忽略错误，不影响连接
     })
   }
 }
@@ -49,18 +60,45 @@ clipboard.setRemoteClipboard = (client) => {
 
 clipboard.getLocalClipboard = async () => {
   if (navigator.clipboard && navigator.clipboard.readText) {
-    const text = await navigator.clipboard.readText()
-    return {
-      type: 'text/plain',
-      data: text
+    try {
+      // 检查文档是否处于焦点状态
+      if (!document.hasFocus()) {
+        // 文档未聚焦，返回 null
+        return null
+      }
+      const text = await navigator.clipboard.readText()
+      return {
+        type: 'text/plain',
+        data: text
+      }
+    } catch (error) {
+      // 捕获 NotAllowedError 或其他错误
+      if (error.name === 'NotAllowedError') {
+        // 文档未聚焦，静默失败
+        return null
+      }
+      // 其他错误也静默处理
+      return null
     }
   }
+  return null
 }
 
 clipboard.setLocalClipboard = async (data) => {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     if (data.type === 'text/plain') {
-      await navigator.clipboard.writeText(data.data)
+      try {
+        // 检查文档是否处于焦点状态
+        if (!document.hasFocus()) {
+          return
+        }
+        await navigator.clipboard.writeText(data.data)
+      } catch (error) {
+        // 捕获 NotAllowedError 或其他错误，静默处理
+        if (error.name !== 'NotAllowedError') {
+          console.warn('Failed to write to clipboard:', error)
+        }
+      }
     }
   }
 }

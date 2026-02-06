@@ -152,10 +152,24 @@ export default {
         return
       }
 
+      if (!this.display) {
+        return
+      }
+
+      const displayWidth = this.display.getWidth()
+      const displayHeight = this.display.getHeight()
+
+      // 确保显示元素有有效的尺寸
+      if (!displayWidth || !displayHeight || displayWidth === 0 || displayHeight === 0) {
+        // 如果显示元素还没有尺寸，延迟重试
+        setTimeout(() => this.resize(), 100)
+        return
+      }
+
       const width = window.innerWidth
       const height = window.innerHeight - 37
-      const heightScale = height / this.display.getHeight()
-      const widthScale = width / this.display.getWidth()
+      const heightScale = height / displayHeight
+      const widthScale = width / displayWidth
       const minScale = widthScale < heightScale ? widthScale : heightScale
 
       this.client.sendSize(width, height)
@@ -289,7 +303,16 @@ export default {
       this.client.onclipboard = clipboard.onClipboard
       this.display = this.client.getDisplay()
       const displayElm = this.$refs.display
-      displayElm.appendChild(this.display.getElement())
+      const displayElement = this.display.getElement()
+
+      // 确保显示元素有正确的尺寸
+      if (displayElement) {
+        displayElm.appendChild(displayElement)
+        // 设置显示元素的初始尺寸
+        displayElement.style.width = '100%'
+        displayElement.style.height = '100%'
+      }
+
       displayElm.addEventListener('contextmenu', e => {
         e.stopPropagation()
         if (e.preventDefault) {
@@ -401,15 +424,24 @@ export default {
 }
 .rdp-wrapper {
   margin: 0 auto;
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 .viewport {
   width: 100%;
   height: 100%;
+  position: relative;
 }
 .display {
   overflow: hidden;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+.display.focus {
+  outline: none;
 }
 .ctrl-alt-delete-btn {
   position: absolute;
