@@ -298,12 +298,34 @@ export default {
         }
       })
       this.socket.onmessage = (ev) => {
-        const blob = ev.data
-        const reader = new FileReader()
-        reader.onload = function () {
-          term.write(this.result)
+        const payload = ev.data
+        // WebSocket 可能返回 text/string、Blob，或 ArrayBuffer（取决于服务端发送与 binaryType）。
+        // 这里按类型兼容，避免把非 Blob 传给 FileReader。
+        if (typeof payload === 'string') {
+          term.write(payload)
+          return
         }
-        reader.readAsText(blob)
+        if (payload instanceof Blob) {
+          const reader = new FileReader()
+          reader.onload = function () {
+            term.write(this.result)
+          }
+          reader.readAsText(payload)
+          return
+        }
+        // ArrayBuffer / Uint8Array
+        if (payload && (payload instanceof ArrayBuffer || ArrayBuffer.isView(payload))) {
+          try {
+            const buf = payload instanceof ArrayBuffer ? payload : payload.buffer
+            const text = new TextDecoder('utf-8').decode(buf)
+            term.write(text)
+          } catch (e) {
+            // 解码失败时退化为字符串写入
+            term.write(String(payload))
+          }
+          return
+        }
+        term.write(String(payload))
       }
       this._registerSocketEvents(term)
       window.addEventListener('resize', () => {
