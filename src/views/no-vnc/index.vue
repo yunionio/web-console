@@ -102,10 +102,10 @@ export default {
       return name
     },
     secretText () {
-      const { secret_level } = this.connectParams
-      const { secret_level: secret_level2 } = this.$route.query
-      if (secret_level || secret_level2) {
-        const str = 'secret_level.' + (secret_level || secret_level2)
+      const { secret_level: secretLevel } = this.connectParams
+      const { secret_level: secretLevel2 } = this.$route.query
+      if (secretLevel || secretLevel2) {
+        const str = 'secret_level.' + (secretLevel || secretLevel2)
         return this.$te(str) ? this.$t(str) : null
       }
       return null
