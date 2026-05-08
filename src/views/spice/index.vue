@@ -47,10 +47,10 @@ export default {
   methods: {
     getSpecilUrl () {
       let url = `${process.env.BASE_URL}/spice-vendor/index.html`
-      const { ips, instance_name: instanceName, secret_level } = this.connectParams
-      const { ips: ips2, instanceName: instanceName2, secret_level: secret_level2 } = this.$route.query
+      const { ips, instance_name: instanceName, secret_level: secretLevel } = this.connectParams
+      const { ips: ips2, instanceName: instanceName2, secret_level: secretLevel2 } = this.$route.query
       if ((ips || ips2) && (instanceName || instanceName2)) {
-        url += `?ips=${ips || ips2}&instanceName=${instanceName || instanceName2}&secret_level=${secret_level || secret_level2}`
+        url += `?ips=${ips || ips2}&instanceName=${instanceName || instanceName2}&secret_level=${secretLevel || secretLevel2}`
       }
       return url
     },
