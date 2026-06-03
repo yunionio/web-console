@@ -65,7 +65,7 @@ var translations = {
     menubarbutton_alt: '显示菜单',
     fullscreen: '全屏',
     fullscreen_alt: '正常窗口',
-    keystroke: '发送远程命令',
+    keystroke: '发送按键',
     showclientid: '显示ID',
     dialog_fs_text: '应用程序请求以全屏模式访问您的虚拟桌面。',
     cancel: '取消',
