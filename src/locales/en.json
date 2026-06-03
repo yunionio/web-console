@@ -19,8 +19,16 @@
     "reconnection_ing": "Trying to reconnect",
     "init_fail": "Initialization failed"
   },
-  "send_remote_command": "Send remote command",
+  "send_remote_command": "Send keystroke",
   "send_text": "Send text",
+  "keystrokes": {
+    "common_keys": "Common keys",
+    "custom_keys": "Custom keystroke",
+    "modifier_keys": "Modifier keys",
+    "function_keys": "Function keys",
+    "send_combo": "Send keystroke",
+    "select_function_key": "Please select a function key"
+  },
   "common_text1": "Prompt: If the content sent is the login password, please click OK and enter the Enter key.",
   "common_text2": "Ctrl-Alt-Delete will restart the server. Are you sure to restart?",
   "secret_level": {
