@@ -143,20 +143,33 @@ function notFullScreen () {
 }
 function sendKeystroke (e) {
   app.sendKeystroke($(e).text())
+  $('#keystrokes-menu').removeClass('show')
   document.getElementById('inputmanager').focus()
 }
 
-function showCustomKeyDialog () {
-  $('#dialog-customkey').addClass('dialog-sendtext-show')
+function sendKeystrokeCombo (modifier, key) {
+  var keystroke
+  if (modifier === 'Ctrl+Alt') {
+    keystroke = key === 'Del' ? 'Ctrl+Alt+Del' : 'Ctrl+Alt+F' + key
+  } else if (modifier === 'Ctrl+Shift') {
+    keystroke = key === 'Esc' ? 'Ctrl+Shift+Esc' : 'Ctrl+Shift+F' + key
+  } else if (modifier === 'Win') {
+    keystroke = 'Win+' + key
+  }
+  if (keystroke) {
+    app.sendKeystroke(keystroke)
+    $('#keystrokes-menu').removeClass('show')
+    document.getElementById('inputmanager').focus()
+  }
 }
 
-function hideCustomKeyDialog () {
-  $('#dialog-customkey').removeClass('dialog-sendtext-show')
+function resetCustomKeyForm () {
   document.getElementById('customkey-ctrl').checked = false
   document.getElementById('customkey-alt').checked = false
   document.getElementById('customkey-shift').checked = false
   document.getElementById('customkey-win').checked = false
-  document.getElementById('customkey-select').value = ''
+  const checkedFunc = document.querySelector('input[name="customkey-func"]:checked')
+  if (checkedFunc) checkedFunc.checked = false
 }
 
 function sendCustomKey () {
@@ -164,7 +177,8 @@ function sendCustomKey () {
   const alt = document.getElementById('customkey-alt').checked
   const shift = document.getElementById('customkey-shift').checked
   const win = document.getElementById('customkey-win').checked
-  const funcKey = document.getElementById('customkey-select').value
+  const funcKeyEl = document.querySelector('input[name="customkey-func"]:checked')
+  const funcKey = funcKeyEl ? funcKeyEl.value : ''
 
   if (!funcKey) {
     alert('请选择一个功能键')
@@ -179,7 +193,8 @@ function sendCustomKey () {
   keyList.push(parseInt(funcKey))
 
   app.sendKeyList(keyList)
-  hideCustomKeyDialog()
+  resetCustomKeyForm()
+  $('#keystrokes-menu').removeClass('show')
   document.getElementById('inputmanager').focus()
 }
 
@@ -207,11 +222,12 @@ function hideSendtextDialog () {
   app.updateSendtextShow(false)
 }
 
-function showKeystrokesMenu () {
+function showKeystrokesMenu (event) {
+  event.stopPropagation()
   $('#keystrokes-menu').toggleClass('show')
 }
 window.addEventListener('click', function (event) {
-  if (!event.target.matches('.dropbtn')) {
+  if (!event.target.closest('.dropdown')) {
     $('.dropdown-content').removeClass('show')
   }
 }, false)
