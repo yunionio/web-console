@@ -205,13 +205,77 @@ must display the words "Powered by eyeos" and retain the original copyright noti
                         <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F10</li>
                         <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F11</li>
                         <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F12</li>
+                        <li class="ant-dropdown-menu-item" onclick="showCustomKeyDialog()">自定义组合键</li>
                     </ul>
                 </div>
                 <button id="showclientid" onclick="showClientID();">Mostrar Id</button>
                 <button id="close" onclick="showCloseDialog();" style="display: none;">&nbsp</button>
                 <!-- 密级划分 -->
-                <div id="secret-level"></div>
+    </div>
+            <div id="secret-level"></div>
+        </div>
+
+        <!-- 自定义组合键弹框 -->
+        <div id="dialog-customkey">
+            <div class="sendtext-box" style="width: 400px;">
+                <div class="sendtext-header">
+                    <div class="sendtext-title">自定义组合键</div>
+                </div>
+                <div class="sendtext-content">
+                    <div style="margin-bottom: 15px;">
+                        <div style="color: #666; margin-bottom: 8px;">修饰键：</div>
+                        <label style="margin-right: 15px; color: #333;">
+                            <input type="checkbox" id="customkey-ctrl" value="17"> Ctrl
+                        </label>
+                        <label style="margin-right: 15px; color: #333;">
+                            <input type="checkbox" id="customkey-alt" value="18"> Alt
+                        </label>
+                        <label style="margin-right: 15px; color: #333;">
+                            <input type="checkbox" id="customkey-shift" value="16"> Shift
+                        </label>
+                        <label style="margin-right: 15px; color: #333;">
+                            <input type="checkbox" id="customkey-win" value="91"> Win
+                        </label>
+                    </div>
+                    <div>
+                        <div style="color: #666; margin-bottom: 8px;">功能键：</div>
+                        <select id="customkey-select" style="width: 100%; padding: 5px; font-size: 14px;">
+                            <option value="">请选择按键</option>
+                            <option value="112">F1</option>
+                            <option value="113">F2</option>
+                            <option value="114">F3</option>
+                            <option value="115">F4</option>
+                            <option value="116">F5</option>
+                            <option value="117">F6</option>
+                            <option value="118">F7</option>
+                            <option value="119">F8</option>
+                            <option value="120">F9</option>
+                            <option value="121">F10</option>
+                            <option value="122">F11</option>
+                            <option value="123">F12</option>
+                            <option value="9">Tab</option>
+                            <option value="13">Enter</option>
+                            <option value="32">Space</option>
+                            <option value="46">Delete</option>
+                            <option value="8">Backspace</option>
+                            <option value="45">Insert</option>
+                            <option value="36">Home</option>
+                            <option value="35">End</option>
+                            <option value="33">PageUp</option>
+                            <option value="34">PageDown</option>
+                            <option value="37">Left</option>
+                            <option value="38">Up</option>
+                            <option value="39">Right</option>
+                            <option value="40">Down</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="sendtext-footer">
+                    <button class="ant-btn ant-btn-primary" onclick="sendCustomKey()">发送组合键</button>
+                    <button class="ant-btn" onclick="hideCustomKeyDialog()">取消</button>
+                </div>
             </div>
+        </div>
             <div class="action-group2">
                 <button onclick="sendKeystroke(this)" class="ant-btn custom-button">F8</button>
                 <button onclick="sendKeystroke(this)" class="ant-btn custom-button">Ctrl+Alt+Del</button>
