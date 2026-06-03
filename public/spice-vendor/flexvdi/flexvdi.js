@@ -143,53 +143,58 @@ function notFullScreen () {
 }
 function sendKeystroke (e) {
   app.sendKeystroke($(e).text())
+  $('#keystrokes-menu').removeClass('show')
   document.getElementById('inputmanager').focus()
 }
 
-function showCustomKeyDialog () {
-  $('#keystrokes-menu').removeClass('show')
-  $('#dialog-customkey').addClass('dialog-sendtext-show')
-  app.updateSendtextShow(true)
+function sendKeystrokeCombo (modifier, key) {
+  var keystroke
+  if (modifier === 'Ctrl+Alt') {
+    keystroke = key === 'Del' ? 'Ctrl+Alt+Del' : 'Ctrl+Alt+F' + key
+  } else if (modifier === 'Ctrl+Shift') {
+    keystroke = key === 'Esc' ? 'Ctrl+Shift+Esc' : 'Ctrl+Shift+F' + key
+  } else if (modifier === 'Win') {
+    keystroke = 'Win+' + key
+  }
+  if (keystroke) {
+    app.sendKeystroke(keystroke)
+    $('#keystrokes-menu').removeClass('show')
+    document.getElementById('inputmanager').focus()
+  }
 }
 
-function hideCustomKeyDialog () {
-  $('#dialog-customkey').removeClass('dialog-sendtext-show')
+function resetCustomKeyForm () {
   document.getElementById('customkey-ctrl').checked = false
   document.getElementById('customkey-alt').checked = false
   document.getElementById('customkey-shift').checked = false
   document.getElementById('customkey-win').checked = false
-  document.getElementById('customkey-select').value = ''
-  app.updateSendtextShow(false)
+  const checkedFunc = document.querySelector('input[name="customkey-func"]:checked')
+  if (checkedFunc) checkedFunc.checked = false
 }
 
 function sendCustomKey () {
-  var keys = []
-  
-  if (document.getElementById('customkey-ctrl').checked) {
-    keys.push(17)
-  }
-  if (document.getElementById('customkey-alt').checked) {
-    keys.push(18)
-  }
-  if (document.getElementById('customkey-shift').checked) {
-    keys.push(16)
-  }
-  if (document.getElementById('customkey-win').checked) {
-    keys.push(91)
-  }
-  
-  var selectedKey = document.getElementById('customkey-select').value
-  if (selectedKey) {
-    keys.push(parseInt(selectedKey))
-  }
-  
-  if (keys.length === 0) {
-    alert('请至少选择一个按键')
+  const ctrl = document.getElementById('customkey-ctrl').checked
+  const alt = document.getElementById('customkey-alt').checked
+  const shift = document.getElementById('customkey-shift').checked
+  const win = document.getElementById('customkey-win').checked
+  const funcKeyEl = document.querySelector('input[name="customkey-func"]:checked')
+  const funcKey = funcKeyEl ? funcKeyEl.value : ''
+
+  if (!funcKey) {
+    alert('请选择一个功能键')
     return
   }
-  
-  app.sendKeyList(keys)
-  hideCustomKeyDialog()
+
+  const keyList = []
+  if (ctrl) keyList.push(17)
+  if (alt) keyList.push(18)
+  if (shift) keyList.push(16)
+  if (win) keyList.push(91)
+  keyList.push(parseInt(funcKey))
+
+  app.sendKeyList(keyList)
+  resetCustomKeyForm()
+  $('#keystrokes-menu').removeClass('show')
   document.getElementById('inputmanager').focus()
 }
 
@@ -210,11 +215,12 @@ function hideSendtextDialog () {
   app.updateSendtextShow(false)
 }
 
-function showKeystrokesMenu () {
+function showKeystrokesMenu (event) {
+  event.stopPropagation()
   $('#keystrokes-menu').toggleClass('show')
 }
 window.addEventListener('click', function (event) {
-  if (!event.target.matches('.dropbtn')) {
+  if (!event.target.closest('.dropdown')) {
     $('.dropdown-content').removeClass('show')
   }
 }, false)

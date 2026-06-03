@@ -187,26 +187,133 @@ must display the words "Powered by eyeos" and retain the original copyright noti
                 <button id="menubarbutton" onclick="toggleMenuBar();" style="display: none;">Ocultar Menu</button>
                 <button id="fullscreen" onclick="toggleFullScreen(document.body);" style="display: none;">Pantalla Completa</button>
                 <div class="dropdown">
-                    <button id="keystroke" onclick="showKeystrokesMenu()" class="dropbtn ant-btn ant-btn-primary ant-dropdown-trigger">Combinación de teclas</button>
-                    <ul id="keystrokes-menu" class="ant-dropdown-menu dropdown-content">
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Alt+Tab</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Win+L</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Win+Right</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Win+Left</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F1</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F2</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F3</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F4</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F5</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F6</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F7</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F8</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F9</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F10</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F11</li>
-                        <li class="ant-dropdown-menu-item" onclick="sendKeystroke(this)">Ctrl+Alt+F12</li>
-                        <li class="ant-dropdown-menu-item" style="border-top: 1px solid #e8e8e8; margin-top: 4px; padding-top: 4px;" onclick="showCustomKeyDialog()">自定义组合键</li>
-                    </ul>
+                    <button id="keystroke" onclick="showKeystrokesMenu(event)" class="dropbtn ant-btn ant-btn-primary ant-dropdown-trigger">Combinación de teclas</button>
+                    <div id="keystrokes-menu" class="dropdown-content keystrokes-panel">
+                        <div class="keystrokes-panel-inner">
+                            <div class="keystrokes-col keystrokes-col-common">
+                                <div class="keystrokes-col-title">常规按键</div>
+                                <div class="keystrokes-common-body">
+                                    <div class="keystroke-group">
+                                        <div class="keystroke-group-mod">Win</div>
+                                        <div class="keystroke-group-keys keystroke-group-keys--letters">
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Win', 'D')">D</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Win', 'E')">E</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Win', 'L')">L</button>
+                                            <button type="button" class="keystroke-num"
+                                                onclick="sendKeystrokeCombo('Win', 'Tab')">Tab</button>
+                                        </div>
+                                    </div>
+                                    <div class="keystroke-group">
+                                        <div class="keystroke-group-mod keystroke-group-mod--stack">
+                                            <span>Ctrl+Alt</span>
+                                        </div>
+                                        <div class="keystroke-group-keys">
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 1)">F1</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 2)">F2</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 3)">F3</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 4)">F4</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 5)">F5</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 6)">F6</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 7)">F7</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 8)">F8</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 9)">F9</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 10)">F10</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 11)">F11</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Alt', 12)">F12</button>
+                                        </div>
+                                    </div>
+                                    <div class="keystroke-group">
+                                        <div class="keystroke-group-mod keystroke-group-mod--stack">
+                                            <span>Ctrl+Shift</span>
+                                        </div>
+                                        <div class="keystroke-group-keys">
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 1)">F1</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 2)">F2</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 3)">F3</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 4)">F4</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 5)">F5</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 6)">F6</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 7)">F7</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 8)">F8</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 9)">F9</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 10)">F10</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 11)">F11</button>
+                                            <button type="button" class="keystroke-num" onclick="sendKeystrokeCombo('Ctrl+Shift', 12)">F12</button>
+                                        </div>
+                                    </div>
+                                    <div class="keystrokes-quick-row">
+                                        <button type="button" class="keystroke-chip" onclick="sendKeystroke(this)">Alt+Tab</button>
+                                        <button type="button" class="keystroke-chip" onclick="sendKeystroke(this)">Ctrl+Win+Left</button>
+                                        <button type="button" class="keystroke-chip" onclick="sendKeystroke(this)">Ctrl+Win+Right</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="keystrokes-col keystrokes-col-custom">
+                                <div class="keystrokes-col-title">自定义组合键</div>
+                                <div class="keystrokes-custom-body">
+                                    <div class="keystroke-group">
+                                        <div class="keystroke-group-mod">修饰键</div>
+                                        <div class="keystroke-group-keys keystroke-group-keys--modifiers">
+                                            <label class="customkey-chip"><input type="checkbox" id="customkey-ctrl" value="17"><span>Ctrl</span></label>
+                                            <label class="customkey-chip"><input type="checkbox" id="customkey-alt" value="18"><span>Alt</span></label>
+                                            <label class="customkey-chip"><input type="checkbox" id="customkey-shift" value="16"><span>Shift</span></label>
+                                            <label class="customkey-chip"><input type="checkbox" id="customkey-win" value="91"><span>Win</span></label>
+                                        </div>
+                                    </div>
+                                    <div class="keystroke-group keystroke-group--align-top">
+                                        <div class="keystroke-group-mod">功能键</div>
+                                        <div class="customkey-func-panel">
+                                            <div class="customkey-func-section">
+                                                <div class="customkey-func-radios customkey-func-radios--fkeys">
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="112"><span>F1</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="113"><span>F2</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="114"><span>F3</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="115"><span>F4</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="116"><span>F5</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="117"><span>F6</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="118"><span>F7</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="119"><span>F8</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="120"><span>F9</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="121"><span>F10</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="122"><span>F11</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="123"><span>F12</span></label>
+                                                </div>
+                                            </div>
+                                            <div class="customkey-func-section">
+                                                <div class="customkey-func-radios">
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="9"><span>Tab</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="13"><span>Enter</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="32"><span>Space</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="46"><span>Delete</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="8"><span>Backspace</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="45"><span>Insert</span></label>
+                                                </div>
+                                            </div>
+                                            <div class="customkey-func-section">
+                                                <div class="customkey-func-radios">
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="36"><span>Home</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="35"><span>End</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="33"><span>PageUp</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="34"><span>PageDown</span></label>
+                                                </div>
+                                            </div>
+                                            <div class="customkey-func-section">
+                                                <div class="customkey-func-radios">
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="37"><span>Left</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="38"><span>Up</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="39"><span>Right</span></label>
+                                                    <label class="customkey-radio"><input type="radio" name="customkey-func" value="40"><span>Down</span></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="keystrokes-custom-footer">
+                                        <button class="ant-btn ant-btn-primary ant-btn-sm" onclick="sendCustomKey()">发送组合键</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <button id="showclientid" onclick="showClientID();">Mostrar Id</button>
                 <button id="close" onclick="showCloseDialog();" style="display: none;">&nbsp</button>
@@ -274,68 +381,6 @@ must display the words "Powered by eyeos" and retain the original copyright noti
                 <div class="sendtext-footer">
                     <button class="ant-btn ant-btn-primary" onclick="sendtext()">确定</button>
                     <button class="ant-btn custom-button" onclick="hideSendtextDialog()">取消</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 自定义组合键弹框 -->
-        <div id="dialog-customkey">
-            <div class="sendtext-box" style="width: 400px;">
-                <div class="sendtext-header">
-                    <div class="sendtext-title">自定义组合键</div>
-                </div>
-                <div class="sendtext-content">
-                    <div style="margin-bottom: 15px;">
-                        <div style="color: #666; margin-bottom: 8px;">修饰键：</div>
-                        <label style="margin-right: 15px; color: #333;">
-                            <input type="checkbox" id="customkey-ctrl" value="17"> Ctrl
-                        </label>
-                        <label style="margin-right: 15px; color: #333;">
-                            <input type="checkbox" id="customkey-alt" value="18"> Alt
-                        </label>
-                        <label style="margin-right: 15px; color: #333;">
-                            <input type="checkbox" id="customkey-shift" value="16"> Shift
-                        </label>
-                        <label style="margin-right: 15px; color: #333;">
-                            <input type="checkbox" id="customkey-win" value="91"> Win
-                        </label>
-                    </div>
-                    <div>
-                        <div style="color: #666; margin-bottom: 8px;">功能键：</div>
-                        <select id="customkey-select" style="width: 100%; padding: 5px; font-size: 14px;">
-                            <option value="">请选择按键</option>
-                            <option value="112">F1</option>
-                            <option value="113">F2</option>
-                            <option value="114">F3</option>
-                            <option value="115">F4</option>
-                            <option value="116">F5</option>
-                            <option value="117">F6</option>
-                            <option value="118">F7</option>
-                            <option value="119">F8</option>
-                            <option value="120">F9</option>
-                            <option value="121">F10</option>
-                            <option value="122">F11</option>
-                            <option value="123">F12</option>
-                            <option value="9">Tab</option>
-                            <option value="13">Enter</option>
-                            <option value="32">Space</option>
-                            <option value="46">Delete</option>
-                            <option value="8">Backspace</option>
-                            <option value="45">Insert</option>
-                            <option value="36">Home</option>
-                            <option value="35">End</option>
-                            <option value="33">PageUp</option>
-                            <option value="34">PageDown</option>
-                            <option value="37">Left</option>
-                            <option value="38">Up</option>
-                            <option value="39">Right</option>
-                            <option value="40">Down</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="sendtext-footer">
-                    <button class="ant-btn ant-btn-primary" onclick="sendCustomKey()">发送组合键</button>
-                    <button class="ant-btn custom-button" onclick="hideCustomKeyDialog()">取消</button>
                 </div>
             </div>
         </div>
