@@ -19,8 +19,16 @@
     "reconnection_ing": "正在尝试重连",
     "init_fail": "初始化失败"
   },
-  "send_remote_command": "发送远程命令",
+  "send_remote_command": "发送按键",
   "send_text": "发送文字",
+  "keystrokes": {
+    "common_keys": "常规按键",
+    "custom_keys": "自定义组合键",
+    "modifier_keys": "修饰键",
+    "function_keys": "功能键",
+    "send_combo": "发送组合键",
+    "select_function_key": "请选择一个功能键"
+  },
   "common_text1": "提示：如果发送内容为登录密码，请点击确定后输入回车键。",
   "common_text2": "Ctrl-Alt-Delete组合键将重启服务器，确定重启？",
   "secret_level": {
