@@ -146,6 +146,53 @@ function sendKeystroke (e) {
   document.getElementById('inputmanager').focus()
 }
 
+function showCustomKeyDialog () {
+  $('#keystrokes-menu').removeClass('show')
+  $('#dialog-customkey').addClass('dialog-sendtext-show')
+  app.updateSendtextShow(true)
+}
+
+function hideCustomKeyDialog () {
+  $('#dialog-customkey').removeClass('dialog-sendtext-show')
+  document.getElementById('customkey-ctrl').checked = false
+  document.getElementById('customkey-alt').checked = false
+  document.getElementById('customkey-shift').checked = false
+  document.getElementById('customkey-win').checked = false
+  document.getElementById('customkey-select').value = ''
+  app.updateSendtextShow(false)
+}
+
+function sendCustomKey () {
+  var keys = []
+  
+  if (document.getElementById('customkey-ctrl').checked) {
+    keys.push(17)
+  }
+  if (document.getElementById('customkey-alt').checked) {
+    keys.push(18)
+  }
+  if (document.getElementById('customkey-shift').checked) {
+    keys.push(16)
+  }
+  if (document.getElementById('customkey-win').checked) {
+    keys.push(91)
+  }
+  
+  var selectedKey = document.getElementById('customkey-select').value
+  if (selectedKey) {
+    keys.push(parseInt(selectedKey))
+  }
+  
+  if (keys.length === 0) {
+    alert('请至少选择一个按键')
+    return
+  }
+  
+  app.sendKeyList(keys)
+  hideCustomKeyDialog()
+  document.getElementById('inputmanager').focus()
+}
+
 function sendtext (e) {
   const text = $('#sendtext-area').val()
   app.sendtext(text)
