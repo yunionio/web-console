@@ -146,6 +146,43 @@ function sendKeystroke (e) {
   document.getElementById('inputmanager').focus()
 }
 
+function showCustomKeyDialog () {
+  $('#dialog-customkey').addClass('dialog-sendtext-show')
+}
+
+function hideCustomKeyDialog () {
+  $('#dialog-customkey').removeClass('dialog-sendtext-show')
+  document.getElementById('customkey-ctrl').checked = false
+  document.getElementById('customkey-alt').checked = false
+  document.getElementById('customkey-shift').checked = false
+  document.getElementById('customkey-win').checked = false
+  document.getElementById('customkey-select').value = ''
+}
+
+function sendCustomKey () {
+  const ctrl = document.getElementById('customkey-ctrl').checked
+  const alt = document.getElementById('customkey-alt').checked
+  const shift = document.getElementById('customkey-shift').checked
+  const win = document.getElementById('customkey-win').checked
+  const funcKey = document.getElementById('customkey-select').value
+
+  if (!funcKey) {
+    alert('请选择一个功能键')
+    return
+  }
+
+  const keyList = []
+  if (ctrl) keyList.push(17)
+  if (alt) keyList.push(18)
+  if (shift) keyList.push(16)
+  if (win) keyList.push(91)
+  keyList.push(parseInt(funcKey))
+
+  app.sendKeyList(keyList)
+  hideCustomKeyDialog()
+  document.getElementById('inputmanager').focus()
+}
+
 function sendtext (e) {
   const text = $('#sendtext-area').val()
   app.sendtext(text)
