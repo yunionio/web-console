@@ -264,7 +264,8 @@ body
     border: none;
 }
 
-#dialog-sendtext {
+#dialog-sendtext,
+#dialog-customkey {
     position: fixed;
     left: 0;
     top: 0;
@@ -326,4 +327,3 @@ body
 .sendtext-box button + button {
     margin-left: 8px;
 }
-
