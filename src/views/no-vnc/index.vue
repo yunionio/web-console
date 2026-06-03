@@ -11,6 +11,8 @@
               <a-menu-item :key="item">Ctrl-Alt-{{ item }}</a-menu-item>
               <a-menu-divider v-if="item === 'F1'" :key="idx" />
             </template>
+            <a-menu-divider />
+            <a-menu-item key="custom">自定义组合键</a-menu-item>
           </a-menu>
         </a-dropdown>
         <div class="text flex-fill d-flex justify-content-center align-items-center" style="margin-right:8rem;position:relative">
@@ -45,6 +47,57 @@
           </a-textarea>
         </a-form-item>
       </a-form>
+    </a-modal>
+    <a-modal
+      title="自定义组合键"
+      :visible="customKeyModalVisible"
+      @cancel="closeCustomKeyModal"
+      :closable="true"
+      :mask-closable="true">
+      <a-form layout="vertical">
+        <a-form-item label="修饰键">
+          <a-space>
+            <a-checkbox v-model="customKeyCtrl">Ctrl</a-checkbox>
+            <a-checkbox v-model="customKeyAlt">Alt</a-checkbox>
+            <a-checkbox v-model="customKeyShift">Shift</a-checkbox>
+            <a-checkbox v-model="customKeyWin">Win</a-checkbox>
+          </a-space>
+        </a-form-item>
+        <a-form-item label="功能键">
+          <a-select v-model="customKeyFunc" placeholder="请选择按键">
+            <a-select-option value="F1">F1</a-select-option>
+            <a-select-option value="F2">F2</a-select-option>
+            <a-select-option value="F3">F3</a-select-option>
+            <a-select-option value="F4">F4</a-select-option>
+            <a-select-option value="F5">F5</a-select-option>
+            <a-select-option value="F6">F6</a-select-option>
+            <a-select-option value="F7">F7</a-select-option>
+            <a-select-option value="F8">F8</a-select-option>
+            <a-select-option value="F9">F9</a-select-option>
+            <a-select-option value="F10">F10</a-select-option>
+            <a-select-option value="F11">F11</a-select-option>
+            <a-select-option value="F12">F12</a-select-option>
+            <a-select-option value="Tab">Tab</a-select-option>
+            <a-select-option value="Enter">Enter</a-select-option>
+            <a-select-option value="Space">Space</a-select-option>
+            <a-select-option value="Delete">Delete</a-select-option>
+            <a-select-option value="Backspace">Backspace</a-select-option>
+            <a-select-option value="Insert">Insert</a-select-option>
+            <a-select-option value="Home">Home</a-select-option>
+            <a-select-option value="End">End</a-select-option>
+            <a-select-option value="PageUp">PageUp</a-select-option>
+            <a-select-option value="PageDown">PageDown</a-select-option>
+            <a-select-option value="Left">Left</a-select-option>
+            <a-select-option value="Up">Up</a-select-option>
+            <a-select-option value="Right">Right</a-select-option>
+            <a-select-option value="Down">Down</a-select-option>
+          </a-select>
+        </a-form-item>
+      </a-form>
+      <template v-slot:footer>
+        <a-button key="back" @click="closeCustomKeyModal">取消</a-button>
+        <a-button key="submit" type="primary" @click="sendCustomKey">发送组合键</a-button>
+      </template>
     </a-modal>
   </div>
 </template>
@@ -82,7 +135,13 @@ export default {
         key: 'Delete',
         keyPath: ['Delete']
       },
-      connectParams: {}
+      connectParams: {},
+      customKeyModalVisible: false,
+      customKeyCtrl: false,
+      customKeyAlt: false,
+      customKeyShift: false,
+      customKeyWin: false,
+      customKeyFunc: ''
     }
   },
   computed: {
@@ -209,6 +268,8 @@ export default {
         } else {
           this.cRfb.sendCtrlAltDel()
         }
+      } else if (e.key === 'custom') {
+        this.customKeyModalVisible = true
       } else {
         const n = +e.key.slice(1)
         this.cRfb.sendKey(KeyTable.XK_Alt_L, 'AltLeft', true)
@@ -216,6 +277,79 @@ export default {
         this.cRfb.sendKey(KeyTable['XK_F' + n], null, false)
         this.cRfb.sendKey(KeyTable.XK_Alt_L, 'AltLeft', false)
       }
+    },
+    closeCustomKeyModal () {
+      this.customKeyModalVisible = false
+      this.customKeyCtrl = false
+      this.customKeyAlt = false
+      this.customKeyShift = false
+      this.customKeyWin = false
+      this.customKeyFunc = ''
+    },
+    sendCustomKey () {
+      const keyMap = {
+        F1: 0xffbe,
+        F2: 0xffbf,
+        F3: 0xffc0,
+        F4: 0xffc1,
+        F5: 0xffc2,
+        F6: 0xffc3,
+        F7: 0xffc4,
+        F8: 0xffc5,
+        F9: 0xffc6,
+        F10: 0xffc7,
+        F11: 0xffc8,
+        F12: 0xffc9,
+        Tab: 0xff09,
+        Enter: 0xff0d,
+        Space: 0x0020,
+        Delete: 0xffff,
+        Backspace: 0xff08,
+        Insert: 0xff63,
+        Home: 0xff50,
+        End: 0xff57,
+        PageUp: 0xff55,
+        PageDown: 0xff56,
+        Left: 0xff51,
+        Up: 0xff52,
+        Right: 0xff53,
+        Down: 0xff54
+      }
+
+      const funcKeyCode = keyMap[this.customKeyFunc]
+
+      if (!funcKeyCode) {
+        this.$message.warning('请选择一个功能键')
+        return
+      }
+
+      const keysDown = []
+      const keysUp = []
+
+      if (this.customKeyCtrl) {
+        keysDown.push(KeyTable.XK_Control_L)
+        keysUp.push(KeyTable.XK_Control_L)
+      }
+      if (this.customKeyAlt) {
+        keysDown.push(KeyTable.XK_Alt_L)
+        keysUp.push(KeyTable.XK_Alt_L)
+      }
+      if (this.customKeyShift) {
+        keysDown.push(KeyTable.XK_Shift_L)
+        keysUp.push(KeyTable.XK_Shift_L)
+      }
+      if (this.customKeyWin) {
+        keysDown.push(KeyTable.XK_Super_L)
+        keysUp.push(KeyTable.XK_Super_L)
+      }
+      keysDown.push(funcKeyCode)
+      keysUp.push(funcKeyCode)
+
+      keysDown.forEach(k => this.cRfb.sendKey(k, null, true))
+      keysUp.reverse().forEach(k => this.cRfb.sendKey(k, null, false))
+
+      this.closeCustomKeyModal()
+      this.$message.success('组合键已发送')
     },
     connectVNC () {
       const oTarget = document.getElementById('noVNC_canvas')
