@@ -88,22 +88,28 @@ wdi.Agent = $.spcExtend(wdi.EventObject.prototype, {
   },
 
   setResolution: function (width, height) {
-    // TODO move this to a setting
+    // 上限 1600x900，宽高向下对齐到 16，降低花屏风险；
+    // 实际宽高由 getDisplaySize 按可见区域传入，窗口更大时不强制铺满
+    var align = function (n) {
+      return n - (n % 16)
+    }
+
     if (width < 800) {
       width = 800
     }
-
-    if (width > 1400) {
-      width = 1400
+    if (width > 1600) {
+      width = 1600
     }
 
     if (height < 600) {
       height = 600
     }
-
-    if (height > 1050) {
-      height = 1050
+    if (height > 900) {
+      height = 900
     }
+
+    width = align(width)
+    height = align(height)
 
     // adapt resolution, TODO: this needs to be refractored
     var packet = new wdi.SpiceMessage({
