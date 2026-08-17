@@ -8,9 +8,48 @@ function read_cookie (name) {
   }
   return null
 }
+
+/**
+ * 取 #screen 实际可见区域尺寸，避免用 window 高度导致：
+ * - 顶栏占用后底部被裁切
+ * - Mac 刘海屏 / visualViewport 与 layout 高度不一致
+ */
+function getDisplaySize () {
+  var width = window.innerWidth || $(window).width()
+  var height = window.innerHeight || $(window).height()
+  var screenEl = document.getElementById('screen')
+
+  if (screenEl) {
+    var rect = screenEl.getBoundingClientRect()
+    width = Math.max(1, Math.floor(rect.width))
+    height = Math.max(1, Math.floor(rect.height))
+
+    // Mac 等设备：按 visualViewport 与屏幕交叉区域再裁一次，防止底部超出可视区
+    if (window.visualViewport) {
+      var vv = window.visualViewport
+      var vvTop = vv.offsetTop || 0
+      var vvLeft = vv.offsetLeft || 0
+      var vvBottom = vvTop + vv.height
+      var vvRight = vvLeft + vv.width
+      var visibleTop = Math.max(rect.top, vvTop)
+      var visibleLeft = Math.max(rect.left, vvLeft)
+      var visibleBottom = Math.min(rect.bottom, vvBottom)
+      var visibleRight = Math.min(rect.right, vvRight)
+      var visibleW = Math.floor(visibleRight - visibleLeft)
+      var visibleH = Math.floor(visibleBottom - visibleTop)
+      if (visibleW > 0) width = visibleW
+      if (visibleH > 0) height = visibleH
+    }
+  }
+
+  return { width: width, height: height }
+}
+window.getDisplaySize = getDisplaySize
+
 function toggleMenuBar () {
-  var width = $(window).width()
-  var height = $(window).height()
+  var size = getDisplaySize()
+  var width = size.width
+  var height = size.height
 
   if (document.getElementById('login').className == '') {
     document.getElementById('login').className = 'hidden'
