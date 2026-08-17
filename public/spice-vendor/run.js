@@ -129,8 +129,9 @@ function start () {
         body.append(eventlayer)
       }
     } else if (action == 'ready') {
-      var width = $(window).width()
-      var height = $(window).height()
+      var size = getDisplaySize()
+      var width = size.width
+      var height = size.height
 
       // launch tests
       if (performanceTest) {
@@ -143,11 +144,6 @@ function start () {
             window.performanceTest.runner.startPerformanceTest()
           }
         }, 3000)
-      }
-
-      login = document.getElementById('login')
-      if (login != null && login.className == '') {
-        // height -= 40
       }
 
       app.sendCommand('setResolution', {
@@ -219,21 +215,18 @@ function start () {
     }
   }
 
-  $(window).resize(function () {
-    width = $(window).width()
-    height = $(window).height()
-
-    login = document.getElementById('login')
-    if (login != null) {
-      if (login.className == '') {
-        height -= 40
-      }
-    }
+  function applyDisplaySize () {
+    var size = getDisplaySize()
     app.sendCommand('setResolution', {
-      width: width,
-      height: height
+      width: size.width,
+      height: size.height
     })
-  })
+  }
+
+  $(window).resize(applyDisplaySize)
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', applyDisplaySize)
+  }
 
   var useWorkers = true
 

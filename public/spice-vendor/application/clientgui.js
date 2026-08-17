@@ -272,8 +272,7 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
     cnv.width = surface.width
     cnv.height = surface.height
     cnv.style.display = 'block'
-    cnv.style.margin = 'auto'
-    cnv.style['margin-top'] = this.canvasMarginY + 'px'
+    cnv.style.margin = '0'
     cnv.style.zIndex = '0'
 
     this.canvas[surface.surface_id] = cnv
@@ -287,17 +286,23 @@ wdi.ClientGui = $.spcExtend(wdi.EventObject.prototype, {
 
       var evLayer = $(this.eventLayer).css({
         display: 'block',
-        margin: 'auto',
-        'margin-top': this.canvasMarginY + 'px'
+        margin: '0'
       })[0]
 
+      // 顶部对齐、水平居中：窗口更大时仅左右和下方留黑边
       var evLayerWrapper = $('<div id="eventLayerWrapper"></div>').css({
         position: 'absolute',
         top: '0',
-			    width: '100%',
-			    height: '100%',
-			    zIndex: '0'
+        left: '0',
+        width: '100%',
+        height: '100%',
+        zIndex: '0',
+        display: 'flex',
+        'align-items': 'flex-start',
+        'justify-content': 'center',
+        'pointer-events': 'none'
       })[0]
+      $(evLayer).css({ 'pointer-events': 'auto' })
       evLayerWrapper.appendChild(evLayer)
 
       if (this.layer) {
