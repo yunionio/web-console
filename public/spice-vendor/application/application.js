@@ -190,11 +190,11 @@ Application = $.spcExtend(wdi.DomainObject, {
   },
   getWaterMark: function () {
     const paramMap = new URLSearchParams(location.search)
-    let name = ''
-    if (paramMap.has('waterMark') && paramMap.get('waterMark')) {
-      name += paramMap.get('waterMark')
+    const value = (paramMap.get('waterMark') || '').trim()
+    if (!value || value === 'undefined' || value === 'null') {
+      return ''
     }
-    return name
+    return value
   },
   initWaterMark: async function () {
     setTimeout(() => {
