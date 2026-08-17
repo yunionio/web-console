@@ -1,12 +1,19 @@
-
 function cssHelper (el, prototype) {
   for (const i in prototype) {
     el.style[i] = prototype[i]
   }
 }
+
+function normalizeWaterMarkText (text) {
+  if (text == null) return ''
+  const value = String(text).trim()
+  if (!value || value === 'undefined' || value === 'null') return ''
+  return value
+}
+
 function createItem (text) {
   const item = document.createElement('div')
-  item.innerHTML = text
+  item.textContent = text
   cssHelper(item, {
     position: 'absolute',
     top: '100px',
@@ -26,9 +33,12 @@ function createItem (text) {
 }
 
 export const addWaterMark = ({ text, wrapperStyle, targetDom }) => {
+  const content = normalizeWaterMarkText(text)
+  if (!content || !targetDom) return
+
   const watermark1 = document.getElementById('watermark')
   // 在创建新的水印节点之前，先判断有没有，有的话删掉
-  if (watermark1) document.body.removeChild(watermark1)
+  if (watermark1) watermark1.remove()
   const waterWrapper = document.createElement('div')
   waterWrapper.id = 'watermark'
   cssHelper(waterWrapper, {
@@ -61,7 +71,7 @@ export const addWaterMark = ({ text, wrapperStyle, targetDom }) => {
       flex: `0 0 ${waterWidth}px`,
       overflow: 'hidden'
     }))
-    wrap.appendChild(createItem(text))
+    wrap.appendChild(createItem(content))
     waterWrapper.appendChild(wrap)
   }
   targetDom.appendChild(waterWrapper)
@@ -70,6 +80,6 @@ export const addWaterMark = ({ text, wrapperStyle, targetDom }) => {
 export const removeWaterMark = () => {
   var watermark = document.getElementById('watermark')
   if (watermark) {
-    document.body.removeChild(watermark)
+    watermark.remove()
   }
 }
