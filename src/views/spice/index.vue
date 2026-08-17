@@ -43,7 +43,17 @@ export default {
       let url = `${process.env.BASE_URL}/spice-vendor/index.html`
       const { ips, instance_name: instanceName, water_mark: waterMark, secret_level: secretLevel } = this.connectParams
       if (ips && instanceName) {
-        url += `?ips=${ips}&instanceName=${instanceName}&waterMark=${waterMark}&secret_level=${secretLevel}`
+        const params = new URLSearchParams({ ips, instanceName })
+        const validParam = (v) => {
+          if (v == null) return ''
+          const s = String(v).trim()
+          return (!s || s === 'undefined' || s === 'null') ? '' : s
+        }
+        const mark = validParam(waterMark)
+        const level = validParam(secretLevel)
+        if (mark) params.set('waterMark', mark)
+        if (level) params.set('secret_level', level)
+        url += `?${params.toString()}`
       }
       return url
     },
