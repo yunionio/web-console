@@ -27,13 +27,16 @@ export const adapters = {
       return http.get(`/v1/webconsole/sftp/${sessionId}/download`, {
         params: { path },
         responseType: 'blob',
+        timeout: 1000 * 60 * 10,
       })
     },
-    upload (http, { sessionId, path, formData }) {
+    upload (http, { sessionId, path, formData, onUploadProgress }) {
       return http.post(`/v1/webconsole/sftp/${sessionId}/upload?path=${path}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 1000 * 60 * 10,
+        onUploadProgress,
       })
     },
   },
@@ -47,13 +50,16 @@ export const adapters = {
       return http.get(`/v1/webconsole/container/${normalizeContainerName(name)}/download`, {
         params: { path },
         responseType: 'blob',
+        timeout: 1000 * 60 * 10,
       })
     },
-    upload (http, { name, path, formData }) {
+    upload (http, { name, path, formData, onUploadProgress }) {
       return http.post(`/v1/webconsole/container/${normalizeContainerName(name)}/upload?path=${path}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
+        timeout: 1000 * 60 * 10,
+        onUploadProgress,
       })
     },
   },
