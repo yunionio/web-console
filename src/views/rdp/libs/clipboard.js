@@ -95,9 +95,6 @@ clipboard.setLocalClipboard = async (data) => {
         await navigator.clipboard.writeText(data.data)
       } catch (error) {
         // 捕获 NotAllowedError 或其他错误，静默处理
-        if (error.name !== 'NotAllowedError') {
-          console.warn('Failed to write to clipboard:', error)
-        }
       }
     }
   }
