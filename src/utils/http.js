@@ -43,6 +43,11 @@ http.interceptors.response.use(
   (error) => {
     debug(error) // for debug
 
+    // Upload cancel / Abort — do not toast "cancelled"
+    if (axios.isCancel(error)) {
+      return Promise.reject(error)
+    }
+
     if (error.response) {
       const status = error.response.status
       if (status === 401) {
