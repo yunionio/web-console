@@ -88,18 +88,21 @@
       >
         <a-form-model-item :label="$t('ws.upload_to')">{{ currentPath }}</a-form-model-item>
         <a-form-model-item :label="$t('ws.choose_file')" prop="files">
-          <a-upload-dragger
-            name="file"
-            :multiple="true"
-            :file-list="formModel.fileList"
-            :remove="handleRemove"
-            :before-upload="beforeUpload"
-          >
-            <p class="ant-upload-drag-icon">
-              <a-icon type="inbox" />
-            </p>
-            <p class="ant-upload-text">{{ $t('ws.file_upload_text') }}</p>
-          </a-upload-dragger>
+          <div ref="uploadWrap" class="file-upload-wrap">
+            <a-upload-dragger
+              name="file"
+              :multiple="true"
+              :file-list="formModel.fileList"
+              :disabled="fileUploadLoading"
+              :remove="handleRemove"
+              :before-upload="beforeUpload"
+            >
+              <p class="ant-upload-drag-icon">
+                <a-icon type="inbox" />
+              </p>
+              <p class="ant-upload-text">{{ $t('ws.file_upload_text') }}</p>
+            </a-upload-dragger>
+          </div>
         </a-form-model-item>
       </a-form-model>
       <template slot="footer">
@@ -332,14 +335,56 @@ export default {
       }
     },
     handleRemove (file) {
+      if (this.fileUploadLoading) return false
       const index = this.formModel.fileList.indexOf(file)
       const newFileList = this.formModel.fileList.slice()
       newFileList.splice(index, 1)
       this.formModel.fileList = newFileList
     },
     beforeUpload (file) {
-      this.formModel.fileList = [...this.formModel.fileList, file]
+      this.formModel.fileList = [
+        ...this.formModel.fileList,
+        {
+          uid: file.uid,
+          name: file.name,
+          status: 'ready',
+          percent: 0,
+          originFileObj: file,
+        },
+      ]
       return false
+    },
+    updateFileProgress (uid, patch) {
+      this.formModel.fileList = this.formModel.fileList.map(item => {
+        if (item.uid !== uid) return item
+        return { ...item, ...patch }
+      })
+      this.syncUploadPercentTips()
+    },
+    syncUploadPercentTips () {
+      this.$nextTick(() => {
+        const wrap = this.$refs.uploadWrap
+        if (!wrap) return
+        const items = wrap.querySelectorAll('.ant-upload-list-item')
+        this.formModel.fileList.forEach((file, index) => {
+          const el = items[index]
+          if (!el) return
+          let tip = el.querySelector('.upload-percent-tip')
+          if (!tip) {
+            tip = document.createElement('span')
+            tip.className = 'upload-percent-tip'
+            el.appendChild(tip)
+          }
+          if (file.status === 'uploading' || file.status === 'done') {
+            tip.textContent = `${file.percent != null ? file.percent : 0}%`
+            tip.style.display = ''
+            tip.style.color = file.status === 'done' ? '#52c41a' : '#1890ff'
+          } else {
+            tip.textContent = ''
+            tip.style.display = 'none'
+          }
+        })
+      })
     },
     viewFolderFiles (record) {
       this.currentPath = record.path
@@ -360,20 +405,33 @@ export default {
           const { fileList } = this.formModel
           this.fileUploadLoading = true
           const promises = fileList.map(file => {
+            const rawFile = file.originFileObj || file
             const formData = new FormData()
-            formData.append('file', file)
+            formData.append('file', rawFile)
+            this.updateFileProgress(file.uid, { status: 'uploading', percent: 0 })
             return this.adapterApi.upload(this.$http, {
               ...this.adapterContext,
               path: this.currentPath,
               formData,
+              onUploadProgress: (event) => {
+                if (!event.total) return
+                const percent = Math.min(99, Math.round((event.loaded * 100) / event.total))
+                this.updateFileProgress(file.uid, { status: 'uploading', percent })
+              },
+            }).then((res) => {
+              this.updateFileProgress(file.uid, { status: 'done', percent: 100 })
+              return res
+            }).catch((err) => {
+              this.updateFileProgress(file.uid, { status: 'error' })
+              return Promise.reject(err)
             })
           })
           Promise.allSettled(promises).then((values) => {
             const isSomeRejected = values.some(item => item.status === 'rejected')
-            this.formModel.fileList = []
-            this.uploadFileModal = false
             this.fileUploadLoading = false
             if (!isSomeRejected) {
+              this.formModel.fileList = []
+              this.uploadFileModal = false
               this.$message.success(this.$t('ws.upload.success'))
             } else {
               const response = values.find(item => item?.reason?.response?.data?.details)
@@ -471,6 +529,25 @@ export default {
 .ant-table {
   .ant-table-header {
     background: #f8f8f9 !important;
+  }
+}
+.file-upload-wrap {
+  .ant-upload-list-item {
+    position: relative;
+    padding-right: 48px;
+  }
+  // 上传中会隐藏删除按钮，百分比贴右侧；有删除按钮时稍让开
+  .ant-upload-list-item-uploading .upload-percent-tip {
+    right: 4px;
+  }
+  .upload-percent-tip {
+    position: absolute;
+    right: 22px;
+    top: 6px;
+    color: #1890ff;
+    font-size: 12px;
+    line-height: 22px;
+    pointer-events: none;
   }
 }
 </style>
