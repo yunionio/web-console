@@ -1,9 +1,24 @@
 <template>
   <div class="content d-flex flex-column">
-    <div class="header p-2 text-center" :class="socketTips.type" style="position: relative;">
-      <span class="secret-level" v-if="secretText">{{ secretText }}</span>{{ instanceName }}{{ socketTips.message }}
+    <div class="header text-center d-flex" :class="socketTips.type">
+      <div class="text flex-fill d-flex justify-content-center align-items-center" style="position: relative;">
+        <span class="secret-level" v-if="secretText">{{ secretText }}</span>{{ instanceName }}{{ socketTips.message }}
+      </div>
+      <a-button
+        v-if="showFileUpload"
+        type="primary"
+        @click="uploadFileHandle"
+        class="custom-button upload-file"
+      >{{ $t('ws.file_upload') }}</a-button>
     </div>
     <div id="xterm-wrapper" class="xterm flex-fill" ref="xterm"></div>
+    <file-transfer
+      v-if="showFileUpload"
+      :visible.sync="fileTransferVisible"
+      adapter="container"
+      :instance-name="ftpInstanceName"
+      @close="fileTransferVisible = false"
+    />
   </div>
 </template>
 
@@ -14,11 +29,15 @@ import 'xterm/css/xterm.css'
 import io from 'socket.io-client'
 import { addWaterMark } from '../../utils/watermark'
 import { getConnectParams } from '@utils/auth'
+import FileTransfer from '@components/FileTransfer'
 
 const debug = require('debug')('app:ssh')
 
 export default {
   name: 'TTYWebConsole',
+  components: {
+    FileTransfer,
+  },
   data () {
     return {
       loading: false,
@@ -27,7 +46,8 @@ export default {
         message: this.$t('connection.ing')
       },
       connectParams: {},
-      socket: {}
+      socket: {},
+      fileTransferVisible: false,
     }
   },
   computed: {
@@ -49,7 +69,13 @@ export default {
         return this.$te(str) ? this.$t(str) : null
       }
       return null
-    }
+    },
+    showFileUpload () {
+      return this.connectParams.resource === 'containers'
+    },
+    ftpInstanceName () {
+      return this.connectParams.instance_name || ''
+    },
   },
   created () {
     this.getWebConsoleInfo()
@@ -80,9 +106,6 @@ export default {
         this.socket.emit('resize', [size.cols, size.rows])
       })
       term.onData(data => this.socket.emit('input', data))
-      // term.onKey((val, domEvent) => {
-      //   domEvent.preventDefault()
-      // })
       term.onTitleChange((val) => {
         if (val && document.title === 'Web Console') {
           document.title = val
@@ -185,7 +208,14 @@ export default {
           }
         })
       }
-    }
+    },
+    uploadFileHandle () {
+      if (!this.ftpInstanceName) {
+        this.$message.error(this.$t('ws.upload.error'))
+        return
+      }
+      this.fileTransferVisible = true
+    },
   }
 }
 </script>
@@ -218,6 +248,9 @@ export default {
     .secret-level {
       color: #6cf5dc;
     }
+  }
+  .upload-file {
+    float: right;
   }
 }
 .secret-level {
