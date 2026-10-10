@@ -254,28 +254,15 @@ export default {
       this.uploadFileModal = true
     },
     doDownload (record) {
-      const getFileName = (res) => {
-        const content = res.headers['content-disposition']
-        if (content) {
-          let name = content.match(/filename\*=(.*)/)
-          name = name && decodeURIComponent(name[1].substring(7))
-          return name
-        }
-        return Date.now()
-      }
-      this.adapterApi.download(this.$http, {
+      const url = this.adapterApi.getDownloadUrl({
         ...this.adapterContext,
         path: record.path,
-      }).then(res => {
-        const aLink = document.createElement('a')
-        const URL = window.URL || window.webkitURL || window.moxURL
-        aLink.href = URL.createObjectURL(res.data)
-        document.body.appendChild(aLink)
-        aLink.download = getFileName(res)
-        aLink.click()
-        document.body.removeChild(aLink)
-        URL.revokeObjectURL(aLink.href)
       })
+      const aLink = document.createElement('a')
+      aLink.href = url
+      document.body.appendChild(aLink)
+      aLink.click()
+      document.body.removeChild(aLink)
     },
     async fetchFiles () {
       try {
