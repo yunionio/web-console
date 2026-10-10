@@ -243,6 +243,10 @@ export default {
 }
 .header {
   color: #fff;
+  height: 32px;
+  line-height: 32px;
+  padding: 0;
+  overflow: hidden;
   &.info {
     background-color: #909399;
     color: #000;
