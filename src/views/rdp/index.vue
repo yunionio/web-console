@@ -14,12 +14,14 @@
       <div class="drop-hint">{{ $t('ws.drop_upload_hint') }}</div>
     </div>
     <div>
-      <div class="header p-2 text-center" :class="socketTips.type" style="position: relative;">
-        <span class="secret-level" v-if="secretText">{{ secretText }}</span>{{ instanceName }}{{ socketTips.message }}
+      <div class="header text-center d-flex" :class="socketTips.type">
+        <div class="text flex-fill d-flex justify-content-center align-items-center" style="position: relative;">
+          <span class="secret-level" v-if="secretText">{{ secretText }}</span>{{ instanceName }}{{ socketTips.message }}
+        </div>
         <a-button
           type="primary"
           @click="uploadFileHandle"
-          class="custom-button upload-file"
+          class="custom-button upload-file mr-2"
         >{{ $t('ws.file_upload') }}</a-button>
         <a-button @click="doClickHandle()" class="ctrl-alt-delete-btn">Ctrl-Alt-Delete</a-button>
       </div>
@@ -683,6 +685,10 @@ export default {
 }
 .header {
   color: #fff;
+  height: 32px;
+  line-height: 32px;
+  padding: 0;
+  overflow: hidden;
   &.info {
     background-color: #909399;
     color: #000;
@@ -725,16 +731,6 @@ export default {
 }
 .display.focus {
   outline: none;
-}
-.upload-file {
-  position: absolute;
-  right: 160px;
-  top: 2px;
-}
-.ctrl-alt-delete-btn {
-  position: absolute;
-  right: 10px;
-  top: 2px;
 }
 .secret-level {
   position: absolute;
