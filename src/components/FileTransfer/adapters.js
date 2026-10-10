@@ -4,6 +4,8 @@
  * - container: container /tty (and future rdp) via instance_name
  */
 
+import { API_URL } from '@constants/base'
+
 /** instance_name 中的 / 编成 %2F；若已编码则先 decode 再 encode，避免 %252F */
 function normalizeContainerName (name) {
   if (!name) return ''
@@ -23,12 +25,8 @@ export const adapters = {
         params: { path },
       })
     },
-    download (http, { sessionId, path }) {
-      return http.get(`/v1/webconsole/sftp/${sessionId}/download`, {
-        params: { path },
-        responseType: 'blob',
-        timeout: 1000 * 60 * 10,
-      })
+    getDownloadUrl ({ sessionId, path }) {
+      return `${API_URL}/v1/webconsole/sftp/${sessionId}/download?path=${encodeURIComponent(path)}`
     },
     upload (http, { sessionId, path, formData, onUploadProgress }) {
       return http.post(`/v1/webconsole/sftp/${sessionId}/upload?path=${path}`, formData, {
@@ -46,12 +44,8 @@ export const adapters = {
         params: { path },
       })
     },
-    download (http, { name, path }) {
-      return http.get(`/v1/webconsole/container/${normalizeContainerName(name)}/download`, {
-        params: { path },
-        responseType: 'blob',
-        timeout: 1000 * 60 * 10,
-      })
+    getDownloadUrl ({ name, path }) {
+      return `${API_URL}/v1/webconsole/container/${normalizeContainerName(name)}/download?path=${encodeURIComponent(path)}`
     },
     upload (http, { name, path, formData, onUploadProgress }) {
       return http.post(`/v1/webconsole/container/${normalizeContainerName(name)}/upload?path=${path}`, formData, {
