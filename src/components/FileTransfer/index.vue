@@ -128,11 +128,11 @@ export default {
       type: Boolean,
       default: false,
     },
-    // sftp | container（后续 rdp 可复用 container 或扩展新 adapter）
+    // sftp | container | rdp
     adapter: {
       type: String,
       default: 'sftp',
-      validator: val => ['sftp', 'container'].includes(val),
+      validator: val => ['sftp', 'container', 'rdp'].includes(val),
     },
     sessionId: {
       type: String,
@@ -254,15 +254,22 @@ export default {
       this.uploadFileModal = true
     },
     doDownload (record) {
+      // Prefer browser-native download (cookie auth): streams to disk, no full blob in JS.
+      // Use a hidden iframe so the SPA does not navigate — otherwise App.vue
+      // beforeunload shows "Leave site?".
       const url = this.adapterApi.getDownloadUrl({
         ...this.adapterContext,
         path: record.path,
       })
-      const aLink = document.createElement('a')
-      aLink.href = url
-      document.body.appendChild(aLink)
-      aLink.click()
-      document.body.removeChild(aLink)
+      let iframe = document.getElementById('ws-file-download-iframe')
+      if (!iframe) {
+        iframe = document.createElement('iframe')
+        iframe.id = 'ws-file-download-iframe'
+        iframe.setAttribute('aria-hidden', 'true')
+        iframe.style.cssText = 'display:none;width:0;height:0;border:0;position:absolute'
+        document.body.appendChild(iframe)
+      }
+      iframe.src = url
     },
     async fetchFiles () {
       try {
@@ -303,7 +310,6 @@ export default {
         })
         return realData.sort((a, b) => b.order - a.order)
       } catch (error) {
-        console.log(error)
         return Promise.reject(error)
       } finally {
         this.loading = false
@@ -312,7 +318,8 @@ export default {
     async copyText (txt) {
       const permission = await navigator.permissions.query({ name: 'clipboard-write' })
       if (permission.state === 'denied') {
-        return console.error("Damn, we don't have permissions to do this")
+        this.$message.error(this.$t('ws.copy.error'))
+        return
       }
       try {
         await navigator.clipboard.writeText(txt)
@@ -445,6 +452,11 @@ export default {
       return true
     },
     getDownloadDisabled (record) {
+      // RDP shared drive: directories download as zip
+      const isDir = record.link_file ? record.link_file.is_dir : record.is_dir
+      if (this.adapter === 'rdp' && isDir) {
+        return false
+      }
       if (record.link_file) {
         return record.link_file.is_regular === false
       }
