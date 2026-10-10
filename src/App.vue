@@ -41,7 +41,6 @@ export default {
         const ret = new URL(referrer)
         return ret
       } catch (e) {
-        console.log('Referrer is not a valid URL', referrer)
         return {}
       }
     },
@@ -51,7 +50,6 @@ export default {
       const { referer_whitelist: refererWhitelist = '' } = parseQuery
       // 跳过检查
       if (!refererWhitelist || refererWhitelist === 'skip_check') {
-        console.log('skip_check')
         return
       }
       // 检查页面来源

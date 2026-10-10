@@ -1,8 +1,26 @@
 <template>
-  <div class="rdp-container">
+  <div
+    class="rdp-container"
+    @dragenter.prevent="onDragEnter"
+    @dragover.prevent="onDragOver"
+    @dragleave.prevent="onDragLeave"
+    @drop.prevent="onDrop"
+  >
+    <upload-top-progress ref="uploadProgress" />
+    <div
+      v-show="dragOver"
+      class="drop-overlay"
+    >
+      <div class="drop-hint">{{ $t('ws.drop_upload_hint') }}</div>
+    </div>
     <div>
       <div class="header p-2 text-center" :class="socketTips.type" style="position: relative;">
         <span class="secret-level" v-if="secretText">{{ secretText }}</span>{{ instanceName }}{{ socketTips.message }}
+        <a-button
+          type="primary"
+          @click="uploadFileHandle"
+          class="custom-button upload-file"
+        >{{ $t('ws.file_upload') }}</a-button>
         <a-button @click="doClickHandle()" class="ctrl-alt-delete-btn">Ctrl-Alt-Delete</a-button>
       </div>
     </div>
@@ -12,6 +30,12 @@
         <div ref="display" class="display" tabindex="0" />
       </div>
     </div>
+    <file-transfer
+      :visible.sync="fileTransferVisible"
+      adapter="rdp"
+      :session-id="sessionId"
+      @close="fileTransferVisible = false"
+    />
   </div>
 </template>
 
@@ -24,6 +48,10 @@ import clipboard from './libs/clipboard'
 import { addWaterMark } from '../../utils/watermark'
 import { debounce } from '../../utils/base'
 import { getConnectParams } from '@utils/auth'
+import axios from 'axios'
+import FileTransfer from '@components/FileTransfer'
+import UploadTopProgress from '@components/UploadTopProgress'
+import { adapters } from '@components/FileTransfer/adapters'
 
 Guacamole.Mouse = GuacMouse.mouse
 
@@ -44,8 +72,119 @@ const hadPort = value => {
   return reg.test(value)
 }
 
+let dropUid = 0
+
+const UPLOAD_CONCURRENCY = 2
+const SCAN_YIELD_EVERY = 40
+
+function yieldToMain () {
+  return new Promise(resolve => setTimeout(resolve, 0))
+}
+
+function readEntriesBatch (reader) {
+  return new Promise((resolve, reject) => {
+    reader.readEntries(resolve, reject)
+  })
+}
+
+function entryToFile (fileEntry) {
+  return new Promise((resolve, reject) => {
+    fileEntry.file(resolve, reject)
+  })
+}
+
+/** Recursively collect { file, path }; yields to keep UI responsive. */
+async function walkFsEntry (entry, parentPath, acc, counter) {
+  if (!entry) return
+  if (entry.isFile) {
+    const file = await entryToFile(entry)
+    acc.push({ file, path: parentPath || '/' })
+    counter.n += 1
+    if (counter.n % SCAN_YIELD_EVERY === 0) {
+      await yieldToMain()
+    }
+    return
+  }
+  if (entry.isDirectory) {
+    const dirPath = !parentPath || parentPath === '/'
+      ? `/${entry.name}`
+      : `${parentPath.replace(/\/$/, '')}/${entry.name}`
+    const reader = entry.createReader()
+    let batch
+    do {
+      batch = await readEntriesBatch(reader)
+      for (const child of batch) {
+        await walkFsEntry(child, dirPath, acc, counter)
+      }
+      if (batch.length) await yieldToMain()
+    } while (batch.length > 0)
+  }
+}
+
+/** Collect files from a drop event (supports folders via webkitGetAsEntry). */
+async function collectDroppedUploads (dataTransfer) {
+  const items = dataTransfer && dataTransfer.items
+  if (items && items.length) {
+    const entries = []
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i]
+      if (item.kind !== 'file') continue
+      const entry = item.webkitGetAsEntry ? item.webkitGetAsEntry() : null
+      if (entry) {
+        entries.push(entry)
+      }
+    }
+    if (entries.length) {
+      const uploads = []
+      const counter = { n: 0 }
+      for (const entry of entries) {
+        await walkFsEntry(entry, '/', uploads, counter)
+      }
+      return uploads
+    }
+  }
+  // Fallback: flat file list (no folder structure)
+  const files = dataTransfer && dataTransfer.files
+  if (!files || !files.length) return []
+  const uploads = []
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i]
+    const rel = file.webkitRelativePath || ''
+    if (rel && rel.includes('/')) {
+      const parts = rel.split('/')
+      parts.pop()
+      uploads.push({ file, path: '/' + parts.join('/') })
+    } else {
+      uploads.push({ file, path: '/' })
+    }
+    if ((i + 1) % SCAN_YIELD_EVERY === 0) await yieldToMain()
+  }
+  return uploads
+}
+
+/** Worker-pool queue: only `limit` uploads in flight; supports mid-queue cancel. */
+async function runUploadQueue (items, limit, { isCancelled, worker }) {
+  let next = 0
+  const runners = []
+  for (let w = 0; w < limit; w++) {
+    runners.push((async () => {
+      while (!isCancelled()) {
+        const i = next
+        next += 1
+        if (i >= items.length) return
+        await worker(items[i], i)
+      }
+    })())
+  }
+  await Promise.all(runners)
+}
+
 export default {
   name: 'RdpConnect',
+  components: {
+    FileTransfer,
+    UploadTopProgress,
+  },
   data () {
     return {
       loading: false,
@@ -63,7 +202,11 @@ export default {
         type: 'info',
         message: this.$t('connection.ing')
       },
-      connectParams: {}
+      connectParams: {},
+      sessionId: '',
+      fileTransferVisible: false,
+      dragOver: false,
+      dragDepth: 0,
     }
   },
   computed: {
@@ -87,11 +230,6 @@ export default {
       return null
     }
   },
-  watch: {
-    connectionState (state) {
-      console.log('success!!!')
-    }
-  },
   created () {
     this.getWebConsoleInfo()
   },
@@ -102,6 +240,7 @@ export default {
     getWebConsoleInfo () {
       const query = getConnectParams(this)
       this.connectParams = query
+      this.sessionId = query.session_id || ''
       if (query.api_server.includes('//')) {
         this.host = query.api_server.slice(query.api_server.indexOf('//') + 2) // 去掉双划线
       } else {
@@ -119,6 +258,138 @@ export default {
     },
     doGuacdConnect () {
       this.startGuacamole()
+    },
+    uploadFileHandle () {
+      if (!this.sessionId) {
+        this.$message.error(this.$t('ws.upload.error'))
+        return
+      }
+      this.fileTransferVisible = true
+    },
+    hasFileDrag (e) {
+      if (!e.dataTransfer || !e.dataTransfer.types) return false
+      return Array.from(e.dataTransfer.types).includes('Files')
+    },
+    onDragEnter (e) {
+      if (!this.hasFileDrag(e)) return
+      this.dragDepth += 1
+      this.dragOver = true
+    },
+    onDragOver (e) {
+      if (!this.hasFileDrag(e)) return
+      e.dataTransfer.dropEffect = 'copy'
+      this.dragOver = true
+    },
+    onDragLeave () {
+      this.dragDepth = Math.max(0, this.dragDepth - 1)
+      if (this.dragDepth === 0) {
+        this.dragOver = false
+      }
+    },
+    async onDrop (e) {
+      this.dragOver = false
+      this.dragDepth = 0
+      if (!this.sessionId) {
+        this.$message.error(this.$t('ws.upload.error'))
+        return
+      }
+      const hideScan = this.$message.loading(this.$t('ws.upload_scanning'), 0)
+      try {
+        const uploads = await collectDroppedUploads(e.dataTransfer)
+        hideScan()
+        if (!uploads.length) return
+        await this.uploadDroppedFiles(uploads)
+      } catch (err) {
+        hideScan()
+        debug('collect drop failed', err)
+        this.$message.error(this.$t('ws.upload.error'))
+      }
+    },
+    async uploadDroppedFiles (uploads) {
+      const progress = this.$refs.uploadProgress
+      let batchCancelled = false
+      const inflight = new Map() // uid -> CancelToken.source
+      const activeSnapshot = new Map() // uid -> { uid, name, percent, color }
+
+      const syncActiveUi = () => {
+        if (!batch || batchCancelled) return
+        batch.setActive(Array.from(activeSnapshot.values()))
+      }
+
+      const batch = progress
+        ? progress.startBatch({
+          total: uploads.length,
+          onCancel: () => {
+            batchCancelled = true
+            inflight.forEach(source => {
+              try {
+                source.cancel('cancelled')
+              } catch (e) {
+                // ignore
+              }
+            })
+            inflight.clear()
+            activeSnapshot.clear()
+          },
+        })
+        : null
+
+      const colors = ['#1890ff', '#52c41a', '#fa8c16', '#722ed1']
+      let colorIdx = 0
+
+      await runUploadQueue(uploads, UPLOAD_CONCURRENCY, {
+        isCancelled: () => batchCancelled,
+        worker: async ({ file, path }) => {
+          if (batchCancelled) return
+          const uid = `drop-${dropUid++}`
+          const displayName = path && path !== '/'
+            ? `${path.replace(/^\//, '')}/${file.name}`
+            : file.name
+          const source = axios.CancelToken.source()
+          const color = colors[colorIdx % colors.length]
+          colorIdx += 1
+          inflight.set(uid, source)
+          activeSnapshot.set(uid, { uid, name: displayName, percent: 0, color })
+          syncActiveUi()
+
+          const formData = new FormData()
+          formData.append('file', file)
+          try {
+            await adapters.rdp.upload(this.$http, {
+              sessionId: this.sessionId,
+              path: path || '/',
+              formData,
+              cancelToken: source.token,
+              onUploadProgress: (event) => {
+                if (batchCancelled || !event.total) return
+                const percent = Math.min(99, Math.round((event.loaded * 100) / event.total))
+                const cur = activeSnapshot.get(uid)
+                if (cur) {
+                  cur.percent = percent
+                  syncActiveUi()
+                }
+              },
+            })
+            if (batchCancelled) return
+            if (batch) batch.tickDone()
+          } catch (err) {
+            if (axios.isCancel(err) || batchCancelled) return
+            if (batch) batch.tickFail()
+            // Avoid flooding toasts on mass failures
+            if (uploads.length <= 5) {
+              this.$message.error(this.$t('ws.upload.error') + `: ${displayName}`)
+            }
+          } finally {
+            inflight.delete(uid)
+            activeSnapshot.delete(uid)
+            syncActiveUi()
+          }
+        },
+      })
+
+      if (batch && !batchCancelled) {
+        batch.finish()
+      }
     },
     send (cmd) {
       if (!this.client) {
@@ -385,7 +656,18 @@ export default {
       this.client.sendKeyEvent(1, 0xFFE3) // Ctrl
       this.client.sendKeyEvent(1, 0xFFE9) // Alt
       this.client.sendKeyEvent(1, 0xFFFF) // Delete
-    }
+    },
+    _socketClose () {
+      return () => {
+        if (this.client) {
+          try {
+            this.client.disconnect()
+          } catch (e) {
+            // ignore
+          }
+        }
+      }
+    },
   }
 }
 </script>
@@ -397,6 +679,7 @@ export default {
   height: 100%;
   background: rgba(0, 0, 0, 0.75);
   color: #fff;
+  position: relative;
 }
 .header {
   color: #fff;
@@ -443,6 +726,11 @@ export default {
 .display.focus {
   outline: none;
 }
+.upload-file {
+  position: absolute;
+  right: 160px;
+  top: 2px;
+}
 .ctrl-alt-delete-btn {
   position: absolute;
   right: 10px;
@@ -451,5 +739,23 @@ export default {
 .secret-level {
   position: absolute;
   left: 10px;
+}
+.drop-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1500;
+  background: rgba(24, 144, 255, 0.25);
+  border: 2px dashed #1890ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.drop-hint {
+  padding: 16px 24px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  font-size: 16px;
+  color: #fff;
 }
 </style>
