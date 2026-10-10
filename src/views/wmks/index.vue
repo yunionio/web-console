@@ -284,6 +284,9 @@ export default {
   .header {
     color: #fff;
     height: 32px;
+    line-height: 32px;
+    padding: 0;
+    overflow: hidden;
     position: fixed;
     top: 0;
     left: 0;
